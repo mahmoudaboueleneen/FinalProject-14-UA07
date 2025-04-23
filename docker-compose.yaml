@@ -1,0 +1,23 @@
+# This file is used to run the system locally, simulating the Kubernetes prod. environment.
+
+services:
+  # ===== Misc. =====
+
+  # ===== Users Service =====
+
+  # ===== Transactions Service =====
+
+  # ===== Notifications Service =====
+
+  # ===== Merchants Service =====
+
+  # ===== Search Service =====
+
+
+networks:
+  default:
+  users:
+  transactions:
+  notifications:
+  merchants:
+  search:
