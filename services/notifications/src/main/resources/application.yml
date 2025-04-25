@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: notifications
+
+server:
+  port: 8082

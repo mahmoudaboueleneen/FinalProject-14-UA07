@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: merchants
+
+server:
+  port: 8081

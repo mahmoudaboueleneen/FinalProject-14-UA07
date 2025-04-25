@@ -3,15 +3,15 @@
 services:
   # ===== Misc. =====
 
-  # ===== Users Service =====
-
-  # ===== Transactions Service =====
+  # ===== Merchants Service =====
 
   # ===== Notifications Service =====
 
-  # ===== Merchants Service =====
-
   # ===== Search Service =====
+
+  # ===== Transactions Service =====
+
+  # ===== Users Service =====
 
 
 networks:

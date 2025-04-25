@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: transactions
+
+server:
+  port: 8084

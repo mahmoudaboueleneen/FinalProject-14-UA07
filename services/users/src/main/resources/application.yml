@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: users
+
+server:
+  port: 8085
