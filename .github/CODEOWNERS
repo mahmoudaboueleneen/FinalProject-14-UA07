@@ -1,12 +1,11 @@
 * @mahmoudaboueleneen
 /shared/ @mahmoudaboueleneen
-/apigateway/ @mahmoudaboueleneen @marwanamgad
+/apigateway/ @marwanamgad @mahmoudaboueleneen
 /services/users @mahmoudaboueleneen @mayaasaadd @abdelrahmanAbouelkheir @Ahmedsherif74 @marwanamgad
 /services/transactions @Ibrahim-Soltan @Hamza-gehad @khaledmagdy-oss @mohamedahmedelfar @RemasOsama
 /services/notifications @Ibrahim-Soltan @Hamza-gehad @khaledmagdy-oss @mohamedahmedelfar @RemasOsama
 /services/merchants @AhmedSherif9
 /services/search @AhmedSherif9 @hassaballah17 @mohamed-ahmed121
 /k8s/ @mahmoudaboueleneen
-/observability/ @mahmoudaboueleneen @abdelrahmanAbouelkheir
-
-
+/bash/ @mahmoudaboueleneen
+/observability/ @abdelrahmanAbouelkheir @mahmoudaboueleneen
