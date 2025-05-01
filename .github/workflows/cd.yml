@@ -34,6 +34,7 @@ jobs:
           git fetch origin ${{ github.event.before }}
           git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
           cat changed_files.txt
+          echo "::set-output name=files::$(cat changed_files.txt)"
 
       - name: Check if 'shared' directory is changed
         id: shared-changed
