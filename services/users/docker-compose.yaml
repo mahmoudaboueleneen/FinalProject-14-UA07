@@ -1,0 +1,31 @@
+# This file is used to run the Users service locally for development and testing purposes.
+# It builds the Users service image instead of pulling it from the Docker Hub registry.
+
+services:
+  users-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: users-service
+    depends_on:
+      - users-db
+    ports:
+      - "8085:8085"
+    environment:
+      - spring.datasource.url=jdbc:postgresql://users-db:5435/users-db
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+    restart: always
+
+  users-db:
+    image: postgres
+    container_name: users-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users-db
+    ports:
+      - "5435:5432"
