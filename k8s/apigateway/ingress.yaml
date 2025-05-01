@@ -13,6 +13,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: apigateway
+                name: apigateway-service
                 port:
                   number: 8080
