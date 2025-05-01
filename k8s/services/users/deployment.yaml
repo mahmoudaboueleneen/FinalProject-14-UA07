@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+  labels:
+    app: users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      name: users
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users-service
+          image: mahmoudaboueleneen/amazon-replica:users-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+              protocol: TCP
+      restartPolicy: Always
+      

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transactions-deployment
+  labels:
+    app: transactions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transactions
+  template:
+    metadata:
+      name: transactions
+      labels:
+        app: transactions
+    spec:
+      containers:
+        - name: transactions-service
+          image: mahmoudaboueleneen/amazon-replica:transactions-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8084
+              protocol: TCP
+      restartPolicy: Always
+      

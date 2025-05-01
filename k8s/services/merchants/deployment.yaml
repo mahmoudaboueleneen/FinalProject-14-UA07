@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: merchants-deployment
+  labels:
+    app: merchants
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: merchants
+  template:
+    metadata:
+      name: merchants
+      labels:
+        app: merchants
+    spec:
+      containers:
+        - name: merchants-service
+          image: mahmoudaboueleneen/amazon-replica:merchants-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+      restartPolicy: Always
+      

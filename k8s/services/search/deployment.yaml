@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-deployment
+  labels:
+    app: search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: search
+  template:
+    metadata:
+      name: search
+      labels:
+        app: search
+    spec:
+      containers:
+        - name: search-service
+          image: mahmoudaboueleneen/amazon-replica:search-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8083
+              protocol: TCP
+      restartPolicy: Always
+      
