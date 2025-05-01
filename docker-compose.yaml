@@ -1,23 +1,41 @@
 # This file is used to run the system locally, simulating the Kubernetes prod. environment.
+# It pulls the images from the Docker Hub registry instead of building them locally.
+# To use the local built images, use the docker compose files in each service folder respectively.
 
 services:
-  # ===== Misc. =====
+  # ===== Miscellaneous Services =====
 
-  # ===== Merchants Service =====
+  # ===== Merchants Microservice =====
 
-  # ===== Notifications Service =====
+  # ===== Notifications Microservice =====
 
-  # ===== Search Service =====
+  # ===== Search Microservice =====
 
-  # ===== Transactions Service =====
+  # ===== Transactions Microservice =====
 
-  # ===== Users Service =====
+  # ===== Users Microservice =====
+  users-service:
+    image: mahmoudaboueleneen/amazon-replica:users-service
+    container_name: users-service
+    depends_on:
+      - users-db
+    ports:
+      - "8085:8085"
+    environment:
+      - spring.datasource.url=jdbc:postgresql://users-db:5435/users-db
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+    restart: always
 
-
-networks:
-  default:
-  users:
-  transactions:
-  notifications:
-  merchants:
-  search:
+  users-db:
+    image: postgres
+    container_name: users-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users-db
+    ports:
+      - "5435:5432"

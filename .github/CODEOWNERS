@@ -1,9 +1,9 @@
 * @mahmoudaboueleneen
 /shared/ @mahmoudaboueleneen
-/api-gateway/ @mahmoudaboueleneen @marwanamgad
+/apigateway/ @mahmoudaboueleneen @marwanamgad
 /services/users @mahmoudaboueleneen @mayaasaadd @abdelrahmanAbouelkheir @Ahmedsherif74 @marwanamgad
-/services/transactions @Ibrahim-Soltan
-/services/notifications @Ibrahim-Soltan
+/services/transactions @Ibrahim-Soltan @Hamza-gehad @khaledmagdy-oss @mohamedahmedelfar @RemasOsama
+/services/notifications @Ibrahim-Soltan @Hamza-gehad @khaledmagdy-oss @mohamedahmedelfar @RemasOsama
 /services/merchants @AhmedSherif9
 /services/search @AhmedSherif9 @hassaballah17 @mohamed-ahmed121
 /k8s/ @mahmoudaboueleneen
