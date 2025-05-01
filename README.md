@@ -26,3 +26,4 @@
 
 ## Contributors
 
+See the AUTHORS file for a list of contributors to this project.
