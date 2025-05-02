@@ -83,7 +83,7 @@ jobs:
 #          docker push mahmoudaboueleneen/amazon-replica:transactions-service
 
       - name: Build and push Users Image
-        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
         run: |
           docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
           docker push mahmoudaboueleneen/amazon-replica:users-service
@@ -158,8 +158,8 @@ jobs:
 
   notify_discord:
     runs-on: ubuntu-latest
-    # TODO: Uncomment this when the deploy_to_k8s job is ready.
-    #  needs: deploy_to_k8s
+    # TODO: Uncomment when deploy_to_k8s job is ready
+    # needs: deploy_to_k8s
 
     steps:
       - name: Set up timestamp
@@ -176,11 +176,13 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
-          COMMIT_URL="${{ github.event.head_commit.url }}"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          COMMIT_LINK="[View Commit]($COMMIT_URL)"
           WORKFLOW_NAME="${{ github.workflow }}"
           BUILD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BUILD_LINK="[View Logs]($BUILD_URL)"
           TIMESTAMP="${{ env.TIMESTAMP }}"
-  
+
           PAYLOAD=$(jq -n \
             --arg title "Kubernetes Deployment ✅" \
             --arg desc "All services have been successfully deployed to Kubernetes." \
@@ -188,9 +190,9 @@ jobs:
             --arg branch "$BRANCH_NAME" \
             --arg commit "$COMMIT_MESSAGE" \
             --arg author "$COMMIT_AUTHOR" \
-            --arg commit_url "$COMMIT_URL" \
+            --arg commit_url "$COMMIT_LINK" \
             --arg workflow "$WORKFLOW_NAME" \
-            --arg build_url "$BUILD_URL" \
+            --arg build_url "$BUILD_LINK" \
             --arg timestamp "$TIMESTAMP" \
             '{
               embeds: [{
@@ -201,14 +203,14 @@ jobs:
                   { name: "Branch", value: $branch, inline: true },
                   { name: "Commit", value: $commit, inline: true },
                   { name: "Author", value: $author, inline: true },
-                  { name: "Commit URL", value: "[View Commit](" + $commit_url + ")", inline: false },
+                  { name: "Commit URL", value: $commit_url, inline: false },
                   { name: "Workflow", value: $workflow, inline: false },
-                  { name: "Run", value: "[View Logs](" + $build_url + ")", inline: false },
+                  { name: "Run", value: $build_url, inline: false },
                   { name: "Timestamp", value: $timestamp, inline: true }
                 ]
               }]
             }')
-  
+
           curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
 
       - name: Notify Discord on failure
@@ -219,11 +221,13 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
-          COMMIT_URL="${{ github.event.head_commit.url }}"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          COMMIT_LINK="[View Commit]($COMMIT_URL)"
           WORKFLOW_NAME="${{ github.workflow }}"
           BUILD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BUILD_LINK="[View Logs]($BUILD_URL)"
           TIMESTAMP="${{ env.TIMESTAMP }}"
-  
+
           PAYLOAD=$(jq -n \
             --arg title "Kubernetes Deployment ❌" \
             --arg desc "Deployment to Kubernetes failed. Please check the logs." \
@@ -231,9 +235,9 @@ jobs:
             --arg branch "$BRANCH_NAME" \
             --arg commit "$COMMIT_MESSAGE" \
             --arg author "$COMMIT_AUTHOR" \
-            --arg commit_url "$COMMIT_URL" \
+            --arg commit_url "$COMMIT_LINK" \
             --arg workflow "$WORKFLOW_NAME" \
-            --arg build_url "$BUILD_URL" \
+            --arg build_url "$BUILD_LINK" \
             --arg timestamp "$TIMESTAMP" \
             '{
               embeds: [{
@@ -244,12 +248,12 @@ jobs:
                   { name: "Branch", value: $branch, inline: true },
                   { name: "Commit", value: $commit, inline: true },
                   { name: "Author", value: $author, inline: true },
-                  { name: "Commit URL", value: "[View Commit](" + $commit_url + ")", inline: false },
+                  { name: "Commit URL", value: $commit_url, inline: false },
                   { name: "Workflow", value: $workflow, inline: false },
-                  { name: "Run", value: "[View Logs](" + $build_url + ")", inline: false },
+                  { name: "Run", value: $build_url, inline: false },
                   { name: "Timestamp", value: $timestamp, inline: true }
                 ]
               }]
             }')
-  
+
           curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
