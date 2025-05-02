@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build_and_push:
@@ -40,6 +37,7 @@ jobs:
           FILES=$(paste -sd ',' changed_files.txt)
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
 
+      # Can add more checks here for common changes affecting all services, not just the 'shared' directory
       - name: Check if 'shared' directory is changed
         id: shared-changed
         run: |
@@ -83,7 +81,7 @@ jobs:
 #          docker push mahmoudaboueleneen/amazon-replica:transactions-service
 
       - name: Build and push Users Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
         run: |
           docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
           docker push mahmoudaboueleneen/amazon-replica:users-service
