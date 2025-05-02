@@ -12,7 +12,7 @@ services:
     ports:
       - "8085:8085"
     environment:
-      - spring.datasource.url=jdbc:postgresql://users-db:5435/users-db
+      - spring.datasource.url=jdbc:postgresql://users-db:5432/users-db
       - spring.datasource.username=postgres
       - spring.datasource.password=postgres
       - spring.datasource.driver-class-name=org.postgresql.Driver
