@@ -1,0 +1,233 @@
+name: Build and Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn -DskipTests -B package --file pom.xml
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git fetch origin ${{ github.event.before }}
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
+          cat changed_files.txt
+          echo "files=$(cat changed_files.txt)" >> $GITHUB_OUTPUT
+
+      - name: Check if 'shared' directory is changed
+        id: shared-changed
+        run: |
+          if grep -q "shared" changed_files.txt; then
+            echo "shared directory has changed. Rebuilding and redeploying all services."
+            echo "shared-changed=true" >> $GITHUB_ENV
+          else
+            echo "shared directory has not changed."
+            echo "shared-changed=false" >> $GITHUB_ENV
+          fi
+
+      # Build and push images only for changed services
+#      - name: Build and push API Gateway Image
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
+#        run: |
+#          docker build ./apigateway --tag mahmoudaboueleneen/amazon-replica:apigateway
+#          docker push mahmoudaboueleneen/amazon-replica:apigateway
+
+#      - name: Build and push Merchants Image
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
+#        run: |
+#          docker build ./services/merchants --tag mahmoudaboueleneen/amazon-replica:merchants-service
+#          docker push mahmoudaboueleneen/amazon-replica:merchants-service
+
+#      - name: Build and push Notifications Image
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
+#        run: |
+#          docker build ./services/notifications --tag mahmoudaboueleneen/amazon-replica:notifications-service
+#          docker push mahmoudaboueleneen/amazon-replica:notifications-service
+
+#      - name: Build and push Search Image
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
+#        run: |
+#          docker build ./services/search --tag mahmoudaboueleneen/amazon-replica:search-service
+#          docker push mahmoudaboueleneen/amazon-replica:search-service
+
+#      - name: Build and push Transactions Image
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
+#        run: |
+#          docker build ./services/transactions --tag mahmoudaboueleneen/amazon-replica:transactions-service
+#          docker push mahmoudaboueleneen/amazon-replica:transactions-service
+
+      - name: Build and push Users Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
+        run: |
+          docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
+          docker push mahmoudaboueleneen/amazon-replica:users-service
+
+#  deploy_to_k8s:
+#    runs-on: ubuntu-latest
+#    needs: build_and_push
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up kubectl
+#        uses: azure/setup-kubectl@v1  # TODO: Use the actual action based on our CSP like Google Cloud's `setup-gcloud` if using GKE.
+#        with:
+#          version: 'latest'
+#
+#      - name: Set up kubeconfig
+#        run: |
+#          mkdir -p ~/.kube
+#          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+#        env:
+#          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+#
+#      - name: Apply API Gateway Deployment and Service
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
+#        run: |
+#          kubectl apply -f k8s/apigateway/deployment.yaml
+#          kubectl apply -f k8s/apigateway/service.yaml
+#
+#      - name: Apply Merchants Deployment and Service
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
+#        run: |
+#          kubectl apply -f k8s/services/merchants/deployment.yaml
+#          kubectl apply -f k8s/services/merchants/service.yaml
+#
+#      - name: Apply Notifications Deployment and Service
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
+#        run: |
+#          kubectl apply -f k8s/services/notifications/deployment.yaml
+#          kubectl apply -f k8s/services/notifications/service.yaml
+#
+#      - name: Apply Search Deployment and Service
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
+#        run: |
+#          kubectl apply -f k8s/services/search/deployment.yaml
+#          kubectl apply -f k8s/services/search/service.yaml
+#
+#      - name: Apply Transactions Deployment and Service
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
+#        run: |
+#          kubectl apply -f k8s/services/transactions/deployment.yaml
+#          kubectl apply -f k8s/services/transactions/service.yaml
+#
+#      - name: Apply Users Deployment and Service
+#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
+#        run: |
+#          kubectl apply -f k8s/services/users/deployment.yaml
+#          kubectl apply -f k8s/services/users/service.yaml
+#
+#      - name: Check deployment status
+#        run: |
+#          kubectl get deployments
+#          kubectl get pods
+#          kubectl get services
+#          kubectl rollout status deployment/apigateway-deployment
+#          kubectl rollout status deployment/merchants-deployment
+#          kubectl rollout status deployment/notifications-deployment
+#          kubectl rollout status deployment/search-deployment
+#          kubectl rollout status deployment/transactions-deployment
+#          kubectl rollout status deployment/users-deployment
+
+  notify_discord:
+    runs-on: ubuntu-latest
+#    TODO: Uncomment the following line when the deploy_to_k8s job is uncommented.
+#    needs: deploy_to_k8s
+
+    steps:
+      - name: Set up timestamp
+        id: timestamp
+        run: |
+          TIMESTAMP=$(date -d "${{ github.event.head_commit.timestamp }}" "+%Y-%m-%d %H:%M:%S %Z")
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+
+      - name: Notify Discord on success
+        if: ${{ success() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          BRANCH_NAME="${{ github.ref }}"
+          BRANCH_NAME=${BRANCH_NAME#refs/heads/}
+          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+          COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
+          COMMIT_URL="${{ github.event.head_commit.url }}"
+          WORKFLOW_NAME="${{ github.workflow }}"
+          BUILD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          RUN_ID="${{ github.run_id }}"
+          TIMESTAMP="${{ env.TIMESTAMP }}"
+
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "embeds": [
+              {
+                "title": "Kubernetes Deployment ✅",
+                "description": "All services have been successfully deployed to Kubernetes.",
+                "color": 3066993,
+                "fields": [
+                  { "name": "Branch", "value": "'"${BRANCH_NAME}"'", "inline": true },
+                  { "name": "Commit", "value": "'"${COMMIT_MESSAGE}"'", "inline": true },
+                  { "name": "Author", "value": "'"${COMMIT_AUTHOR}"'", "inline": true },
+                  { "name": "Commit URL", "value": "[View Commit]('"${COMMIT_URL}"')", "inline": false },
+                  { "name": "Workflow", "value": "'"${WORKFLOW_NAME}"'", "inline": false },
+                  { "name": "Run", "value": "[View Logs]('"${BUILD_URL}"')", "inline": false },
+                  { "name": "Timestamp", "value": "'"${TIMESTAMP}"'", "inline": true }
+                ]
+              }
+            ]
+          }' $DISCORD_WEBHOOK_URL
+
+      - name: Notify Discord on failure
+        if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          BRANCH_NAME="${{ github.ref }}"
+          BRANCH_NAME=${BRANCH_NAME#refs/heads/}
+          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+          COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
+          COMMIT_URL="${{ github.event.head_commit.url }}"
+          WORKFLOW_NAME="${{ github.workflow }}"
+          BUILD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          RUN_ID="${{ github.run_id }}"
+          TIMESTAMP="${{ env.TIMESTAMP }}"
+
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "embeds": [
+              {
+                "title": "Kubernetes Deployment FAILED ❌",
+                "description": "Deployment to Kubernetes failed. Please check the logs.",
+                "color": 15158332,
+                "fields": [
+                  { "name": "Branch", "value": "'"${BRANCH_NAME}"'", "inline": true },
+                  { "name": "Commit", "value": "'"${COMMIT_MESSAGE}"'", "inline": true },
+                  { "name": "Author", "value": "'"${COMMIT_AUTHOR}"'", "inline": true },
+                  { "name": "Commit URL", "value": "[View Commit]('"${COMMIT_URL}"')", "inline": false },
+                  { "name": "Workflow", "value": "'"${WORKFLOW_NAME}"'", "inline": false },
+                  { "name": "Run", "value": "[View Logs]('"${BUILD_URL}"')", "inline": false },
+                  { "name": "Timestamp", "value": "'"${TIMESTAMP}"'", "inline": true }
+                ]
+              }
+            ]
+          }' $DISCORD_WEBHOOK_URL

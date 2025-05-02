@@ -1,6 +1,7 @@
 # Amazon Replica: A Massively Scalable Distributed Microservices E-Commerce Application.
 
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
+![DigitalOcean](https://img.shields.io/badge/DigitalOcean-1433d6?style=for-the-badge&logo=digitalocean&logoColor=white&labelColor=1433d6)
 ![Nginx](https://img.shields.io/badge/Nginx-009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-%23FF6600.svg?style=for-the-badge&amp;logo=rabbitmq&amp;logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
@@ -26,3 +27,4 @@
 
 ## Contributors
 
+See the AUTHORS file for a list of contributors to this project.
