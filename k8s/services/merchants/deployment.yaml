@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: merchants-deployment
-  labels:
-    app: merchants
 spec:
   replicas: 1
   selector:
@@ -11,7 +9,6 @@ spec:
       app: merchants
   template:
     metadata:
-      name: merchants
       labels:
         app: merchants
     spec:
@@ -21,4 +18,3 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
-              protocol: TCP

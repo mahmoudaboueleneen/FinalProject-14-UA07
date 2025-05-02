@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notifications-deployment
-  labels:
-    app: notifications
 spec:
   replicas: 1
   selector:
@@ -11,7 +9,6 @@ spec:
       app: notifications
   template:
     metadata:
-      name: notifications
       labels:
         app: notifications
     spec:
@@ -21,4 +18,3 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
-              protocol: TCP
