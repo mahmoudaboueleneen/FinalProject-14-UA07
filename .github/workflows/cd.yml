@@ -34,8 +34,10 @@ jobs:
           git fetch origin ${{ github.event.before }}
           git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
           cat changed_files.txt
-          echo "files=$(cat changed_files.txt)" >> $GITHUB_OUTPUT
+          FILES=$(paste -sd ',' changed_files.txt)
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
 
+      # Can add more checks here for common changes affecting all services, not just the 'shared' directory
       - name: Check if 'shared' directory is changed
         id: shared-changed
         run: |
@@ -154,8 +156,8 @@ jobs:
 
   notify_discord:
     runs-on: ubuntu-latest
-#    TODO: Uncomment the following line when the deploy_to_k8s job is uncommented.
-#    needs: deploy_to_k8s
+    # TODO: Uncomment when deploy_to_k8s job is ready
+    # needs: deploy_to_k8s
 
     steps:
       - name: Set up timestamp
@@ -169,65 +171,87 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          BRANCH_NAME="${{ github.ref }}"
-          BRANCH_NAME=${BRANCH_NAME#refs/heads/}
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
-          COMMIT_URL="${{ github.event.head_commit.url }}"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          COMMIT_LINK="[View Commit]($COMMIT_URL)"
           WORKFLOW_NAME="${{ github.workflow }}"
           BUILD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          RUN_ID="${{ github.run_id }}"
+          BUILD_LINK="[View Logs]($BUILD_URL)"
           TIMESTAMP="${{ env.TIMESTAMP }}"
 
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "embeds": [
-              {
-                "title": "Kubernetes Deployment ✅",
-                "description": "All services have been successfully deployed to Kubernetes.",
-                "color": 3066993,
-                "fields": [
-                  { "name": "Branch", "value": "'"${BRANCH_NAME}"'", "inline": true },
-                  { "name": "Commit", "value": "'"${COMMIT_MESSAGE}"'", "inline": true },
-                  { "name": "Author", "value": "'"${COMMIT_AUTHOR}"'", "inline": true },
-                  { "name": "Commit URL", "value": "[View Commit]('"${COMMIT_URL}"')", "inline": false },
-                  { "name": "Workflow", "value": "'"${WORKFLOW_NAME}"'", "inline": false },
-                  { "name": "Run", "value": "[View Logs]('"${BUILD_URL}"')", "inline": false },
-                  { "name": "Timestamp", "value": "'"${TIMESTAMP}"'", "inline": true }
+          PAYLOAD=$(jq -n \
+            --arg title "Kubernetes Deployment ✅" \
+            --arg desc "All services have been successfully deployed to Kubernetes." \
+            --argjson color 3066993 \
+            --arg branch "$BRANCH_NAME" \
+            --arg commit "$COMMIT_MESSAGE" \
+            --arg author "$COMMIT_AUTHOR" \
+            --arg commit_url "$COMMIT_LINK" \
+            --arg workflow "$WORKFLOW_NAME" \
+            --arg build_url "$BUILD_LINK" \
+            --arg timestamp "$TIMESTAMP" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $desc,
+                color: $color,
+                fields: [
+                  { name: "Branch", value: $branch, inline: true },
+                  { name: "Commit", value: $commit, inline: true },
+                  { name: "Author", value: $author, inline: true },
+                  { name: "Commit URL", value: $commit_url, inline: false },
+                  { name: "Workflow", value: $workflow, inline: false },
+                  { name: "Run", value: $build_url, inline: false },
+                  { name: "Timestamp", value: $timestamp, inline: true }
                 ]
-              }
-            ]
-          }' $DISCORD_WEBHOOK_URL
+              }]
+            }')
+
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
 
       - name: Notify Discord on failure
         if: ${{ failure() }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          BRANCH_NAME="${{ github.ref }}"
-          BRANCH_NAME=${BRANCH_NAME#refs/heads/}
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
-          COMMIT_URL="${{ github.event.head_commit.url }}"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          COMMIT_LINK="[View Commit]($COMMIT_URL)"
           WORKFLOW_NAME="${{ github.workflow }}"
           BUILD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          RUN_ID="${{ github.run_id }}"
+          BUILD_LINK="[View Logs]($BUILD_URL)"
           TIMESTAMP="${{ env.TIMESTAMP }}"
 
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "embeds": [
-              {
-                "title": "Kubernetes Deployment FAILED ❌",
-                "description": "Deployment to Kubernetes failed. Please check the logs.",
-                "color": 15158332,
-                "fields": [
-                  { "name": "Branch", "value": "'"${BRANCH_NAME}"'", "inline": true },
-                  { "name": "Commit", "value": "'"${COMMIT_MESSAGE}"'", "inline": true },
-                  { "name": "Author", "value": "'"${COMMIT_AUTHOR}"'", "inline": true },
-                  { "name": "Commit URL", "value": "[View Commit]('"${COMMIT_URL}"')", "inline": false },
-                  { "name": "Workflow", "value": "'"${WORKFLOW_NAME}"'", "inline": false },
-                  { "name": "Run", "value": "[View Logs]('"${BUILD_URL}"')", "inline": false },
-                  { "name": "Timestamp", "value": "'"${TIMESTAMP}"'", "inline": true }
+          PAYLOAD=$(jq -n \
+            --arg title "Kubernetes Deployment ❌" \
+            --arg desc "Deployment to Kubernetes failed. Please check the logs." \
+            --argjson color 15158332 \
+            --arg branch "$BRANCH_NAME" \
+            --arg commit "$COMMIT_MESSAGE" \
+            --arg author "$COMMIT_AUTHOR" \
+            --arg commit_url "$COMMIT_LINK" \
+            --arg workflow "$WORKFLOW_NAME" \
+            --arg build_url "$BUILD_LINK" \
+            --arg timestamp "$TIMESTAMP" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $desc,
+                color: $color,
+                fields: [
+                  { name: "Branch", value: $branch, inline: true },
+                  { name: "Commit", value: $commit, inline: true },
+                  { name: "Author", value: $author, inline: true },
+                  { name: "Commit URL", value: $commit_url, inline: false },
+                  { name: "Workflow", value: $workflow, inline: false },
+                  { name: "Run", value: $build_url, inline: false },
+                  { name: "Timestamp", value: $timestamp, inline: true }
                 ]
-              }
-            ]
-          }' $DISCORD_WEBHOOK_URL
+              }]
+            }')
+
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
