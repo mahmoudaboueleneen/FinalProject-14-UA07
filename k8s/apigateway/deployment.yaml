@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: apigateway-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: apigateway
@@ -15,6 +15,6 @@ spec:
       containers:
         - name: apigateway
           image: mahmoudaboueleneen/amazon-replica:apigateway
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
