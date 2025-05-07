@@ -1,0 +1,24 @@
+services:
+  notifications-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notifications-service
+    depends_on:
+      - notifications-mongo
+    ports:
+      - "8082:8082"
+    environment:
+      - spring.data.mongodb.uri=mongodb://mongo:mongo@notifications-mongo:27017/notifications-db?authSource=admin
+    restart: always
+
+  notifications-mongo:
+    image: mongo
+    container_name: notifications-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: notifications-db

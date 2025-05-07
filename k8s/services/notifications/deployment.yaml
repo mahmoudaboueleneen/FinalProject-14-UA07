@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      containers:
+        - name: notifications-service
+          image: mahmoudaboueleneen/amazon-replica:notifications-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082

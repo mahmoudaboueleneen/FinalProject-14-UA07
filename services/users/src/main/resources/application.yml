@@ -1,6 +1,20 @@
 spring:
   application:
     name: users
-
+  datasource:
+    url: jdbc:postgresql://localhost:5435/users-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
 server:
   port: 8085

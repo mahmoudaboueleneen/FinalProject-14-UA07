@@ -1,0 +1,30 @@
+
+
+services:
+  transactions-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transactions-service
+    depends_on:
+      - transactions-db
+    ports:
+      - "8084:8084"
+    environment:
+      - spring.datasource.url=jdbc:postgresql://users-db:5432/transactions-db
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+    restart: always
+
+  transactions-db:
+    image: postgres
+    container_name: transactions-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: transactions-db
+    ports:
+      - "5435:5432"
