@@ -38,6 +38,7 @@ services:
     container_name: merchants-service
     depends_on:
       - merchants-db
+      - rabbitmq
     ports:
       - "8081:8081"
     environment:
@@ -66,6 +67,7 @@ services:
     container_name: notifications-service
     depends_on:
       - notifications-db
+      - rabbitmq
     ports:
       - "8082:8082"
     environment:
@@ -106,6 +108,7 @@ services:
     container_name: transactions-service
     depends_on:
     - transactions-db
+    - rabbitmq
     ports:
     - "8084:8084"
     environment:
