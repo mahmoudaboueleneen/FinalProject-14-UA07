@@ -5,6 +5,11 @@ spring:
     mongodb:
       uri: mongodb://root:example@localhost:27017/merchants-db?authSource=admin
       database: merchants-db
+    redis:
+      host: localhost
+      port: 6380
+  cache:
+    type: redis
   rabbitmq:
     host: localhost
     port: 5672

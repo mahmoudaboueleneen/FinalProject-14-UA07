@@ -9,11 +9,14 @@ services:
     container_name: notifications-service
     depends_on:
       - notifications-db
+      - notifications-cache
     ports:
       - "8082:8082"
     environment:
       - spring.data.mongodb.uri=mongodb://root:example@notifications-db:27017/notifications-db?authSource=admin
       - spring.data.mongodb.database=notifications-db
+      - spring.data.redis.host=notifications-cache
+      - spring.data.redis.port=6379
     restart: always
 
   notifications-db:
@@ -26,3 +29,9 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: notifications-db
+
+  notifications-cache:
+    image: redis:latest
+    container_name: notifications-cache
+    ports:
+      - "6381:6379"

@@ -5,6 +5,11 @@ spring:
     mongodb:
       uri: mongodb://root:example@localhost:27017/notifications-db?authSource=admin
       database: notifications-db
+    redis:
+      host: localhost
+      port: 6381
+  cache:
+    type: redis
   rabbitmq:
     host: localhost
     port: 5672

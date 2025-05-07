@@ -28,6 +28,24 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
 
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisInsight
+    ports:
+      - "5540:5540"
+    restart: always
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    restart: always
+
   # ============== MERCHANTS MICROSERVICE ==============
 
   merchants-service:
@@ -37,13 +55,17 @@ services:
       dockerfile: Dockerfile
     container_name: merchants-service
     depends_on:
-      - merchants-db
       - rabbitmq
+      - merchants-db
+      - merchants-cache
     ports:
       - "8081:8081"
     environment:
       - spring.data.mongodb.uri=mongodb://root:example@merchants-db:27017/merchants-db?authSource=admin
       - spring.data.mongodb.database=merchants-db
+      - spring.rabbitmq.host=rabbitmq
+      - spring.data.redis.host=merchants-cache
+      - spring.data.redis.port=6379
     restart: always
 
   merchants-db:
@@ -57,6 +79,26 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: merchants-db
 
+  merchants-mongo-express:
+    image: mongo-express
+    container_name: merchants-mongo-express
+    ports:
+      - "8000:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@merchants-db:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - merchants-db
+    restart: always
+
+  merchants-cache:
+    image: redis:latest
+    container_name: merchants-cache
+    ports:
+      - "6380:6379"
+
   # ============== NOTIFICATIONS MICROSERVICE ==============
 
   notifications-service:
@@ -66,13 +108,17 @@ services:
       dockerfile: Dockerfile
     container_name: notifications-service
     depends_on:
-      - notifications-db
       - rabbitmq
+      - notifications-db
+      - notifications-cache
     ports:
       - "8082:8082"
     environment:
       - spring.data.mongodb.uri=mongodb://root:example@notifications-db:27017/notifications-db?authSource=admin
       - spring.data.mongodb.database=notifications-db
+      - spring.rabbitmq.host=rabbitmq
+      - spring.data.redis.host=notifications-cache
+      - spring.data.redis.port=6379
     restart: always
 
   notifications-db:
@@ -86,6 +132,26 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: notifications-db
 
+  notifications-mongo-express:
+    image: mongo-express
+    container_name: notifications-mongo-express
+    ports:
+      - "8001:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@notifications-db:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - notifications-db
+    restart: always
+
+  notifications-cache:
+    image: redis:latest
+    container_name: notifications-cache
+    ports:
+      - "6381:6379"
+
   # ============== SEARCH MICROSERVICE ==============
 
   search-service:
@@ -94,9 +160,20 @@ services:
       context: ./services/search
       dockerfile: Dockerfile
     container_name: search-service
+    depends_on:
+      - search-cache
     ports:
       - "8083:8083"
+    environment:
+      - spring.data.redis.host=search-cache
+      - spring.data.redis.port=6379
     restart: always
+
+  search-cache:
+    image: redis:latest
+    container_name: search-cache
+    ports:
+      - "6382:6379"
 
   # ============== TRANSACTIONS MICROSERVICE ==============
 
@@ -107,8 +184,9 @@ services:
       dockerfile: Dockerfile
     container_name: transactions-service
     depends_on:
-    - transactions-db
-    - rabbitmq
+      - rabbitmq
+      - transactions-db
+      - transactions-cache
     ports:
     - "8084:8084"
     environment:
@@ -117,6 +195,9 @@ services:
     - spring.datasource.password=postgres
     - spring.datasource.driver-class-name=org.postgresql.Driver
     - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+    - spring.rabbitmq.host=rabbitmq
+    - spring.data.redis.host=transactions-cache
+    - spring.data.redis.port=6379
     restart: always
 
   transactions-db:
@@ -129,6 +210,12 @@ services:
       POSTGRES_DB: transactions-db
     ports:
       - "5434:5432"
+
+  transactions-cache:
+    image: redis:latest
+    container_name: transactions-cache
+    ports:
+      - "6383:6379"
 
   # ============== USERS MICROSERVICE ==============
 

@@ -20,10 +20,10 @@ public class Wallet {
     //other constructors are implemented by NoArgs and AllArgsConstructor
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
-    @Column(columnDefinition = "uuid", nullable = false)
+    @Column(nullable = false)
     private UUID userId;
 
     private Double amount;

@@ -7,6 +7,17 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: search-service
+    depends_on:
+      - search-cache
     ports:
       - "8083:8083"
+    environment:
+      - spring.data.redis.host=search-cache
+      - spring.data.redis.port=6379
     restart: always
+
+  search-cache:
+    image: redis:latest
+    container_name: search-cache
+    ports:
+      - "6382:6379"
