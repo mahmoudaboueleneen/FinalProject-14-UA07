@@ -1,6 +1,38 @@
 spring:
   application:
     name: apigateway
-
+  cloud:
+    gateway:
+      routes:
+        - id: merchants-service
+          uri: ${MERCHANTS_SERVICE_URI}
+          predicates:
+            - Path=/api/v1/merchants/**
+          filters:
+            - StripPrefix=2
+        - id: notifications-service
+          uri: ${NOTIFICATIONS_SERVICE_URI}
+          predicates:
+            - Path=/api/v1/notifications/**
+          filters:
+            - StripPrefix=2
+        - id: search-service
+          uri: ${SEARCH_SERVICE_URI}
+          predicates:
+            - Path=/api/v1/search/**
+          filters:
+            - StripPrefix=2
+        - id: transactions-service
+          uri: ${TRANSACTIONS_SERVICE_URI}
+          predicates:
+            - Path=/api/v1/transactions/**
+          filters:
+            - StripPrefix=2
+        - id: users-service
+          uri: ${USERS_SERVICE_URI}
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - StripPrefix=2
 server:
   port: 8080
