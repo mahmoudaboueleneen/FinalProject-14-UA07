@@ -1,12 +1,14 @@
 spring:
   application:
     name: notifications
-
+  data:
+    mongodb:
+      uri: mongodb://root:example@localhost:27017/notifications-db?authSource=admin
+      database: notifications-db
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
-
 server:
   port: 8082

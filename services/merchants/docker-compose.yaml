@@ -1,2 +1,28 @@
 # This file is used to run the Merchants service locally for development and testing purposes.
 # It builds the Merchants service image instead of pulling it from the Docker Hub registry.
+
+services:
+  merchants-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: merchants-service
+    depends_on:
+      - merchants-db
+    ports:
+      - "8081:8081"
+    environment:
+      - spring.data.mongodb.uri=mongodb://root:example@merchants-db:27017/merchants-db?authSource=admin
+      - spring.data.mongodb.database=merchants-db
+    restart: always
+
+  merchants-db:
+    image: mongo
+    container_name: merchants-db
+    restart: always
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: merchants-db
