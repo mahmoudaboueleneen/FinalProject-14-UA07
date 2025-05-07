@@ -78,7 +78,6 @@ public class User {
     public User(String email, String phone, String password, Role role, Instant createdAt, String fullName, String shippingAddress, String billingAddress,
                 String businessName, String businessEmail, String businessPhone, String taxId,
                 String businessAddress, String websiteUrl, String supportContact, String department) {
-        this.id=id;
         this.email = email;
         this.phone = phone;
         this.password = password;

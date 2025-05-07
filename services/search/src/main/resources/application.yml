@@ -1,6 +1,5 @@
 spring:
   application:
     name: search
-
 server:
   port: 8083
