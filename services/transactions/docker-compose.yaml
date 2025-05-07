@@ -9,6 +9,7 @@ services:
     container_name: transactions-service
     depends_on:
       - transactions-db
+      - transactions-cache
     ports:
       - "8084:8084"
     environment:
@@ -17,6 +18,8 @@ services:
       - spring.datasource.password=postgres
       - spring.datasource.driver-class-name=org.postgresql.Driver
       - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+      - spring.data.redis.host=transactions-cache
+      - spring.data.redis.port=6379
     restart: always
 
   transactions-db:
@@ -29,3 +32,9 @@ services:
       POSTGRES_DB: transactions-db
     ports:
       - "5434:5432"
+
+  transactions-cache:
+    image: redis:latest
+    container_name: transactions-cache
+    ports:
+      - "6383:6379"

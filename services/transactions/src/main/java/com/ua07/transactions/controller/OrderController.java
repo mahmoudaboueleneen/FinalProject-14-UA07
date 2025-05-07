@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
@@ -21,7 +22,7 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/confirm")
-    public boolean confirmOrder(@PathVariable Long id) {
+    public boolean confirmOrder(@PathVariable UUID id) {
         return service.confirmOrder(id);
     }
 
@@ -31,12 +32,12 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Order> getById(@PathVariable Long id) {
+    public Optional<Order> getById(@PathVariable UUID id) {
         return service.getOrderById(id);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         service.deleteOrder(id);
     }
 }
