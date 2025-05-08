@@ -4,5 +4,7 @@ public class RabbitMQConstants {
 
     public static final String MERCHANT_QUEUE = "merchant-queue";
     public static final String TRANSACTION_QUEUE = "transaction-queue";
+    public static final String SEARCH_QUEUE = "search.queue";
+
 
 }
