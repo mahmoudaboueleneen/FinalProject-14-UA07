@@ -1,25 +1,25 @@
 package com.ua07.merchants.command;
 
+import com.ua07.merchants.dto.RecommendProductsRequest;
+import com.ua07.merchants.dto.RecommendProductsResponse;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
+import com.ua07.shared.command.Command;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class RecommendProductsCommand implements Command {
+public class RecommendProductsCommand implements Command<RecommendProductsRequest, RecommendProductsResponse> {
 
-    private final String productId;
     private final ProductRepository productRepository;
 
-    public RecommendProductsCommand(String productId, ProductRepository productRepository) {
-        this.productId = productId;
+    public RecommendProductsCommand(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Override
-    public Object execute() {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
+    public RecommendProductsResponse execute(RecommendProductsRequest request) {
+        Optional<Product> optionalProduct = productRepository.findById(request.getProductId());
 
         if (optionalProduct.isPresent()) {
 
@@ -28,13 +28,22 @@ public class RecommendProductsCommand implements Command {
 
             List<Product> ProductsWithSameCategory = productRepository.findByCategory(category);
 
-            return ProductsWithSameCategory.stream()
-                    .filter(p -> !p.getId().equals(productId))
+            List<Product> recommendations = ProductsWithSameCategory.stream()
+                    .filter(p -> !p.getId().equals(request.getProductId()))
                     .limit(10)
-                    .collect(Collectors.toList());
+                    .toList();
+
+            return new RecommendProductsResponse(recommendations);
         }
         else {
-            throw new RuntimeException("Product not found with ID: " + productId);
+            throw new RuntimeException("Product not found with ID: " + request.getProductId());
         }
     }
+
+    @Override
+    public void undo() {
+        // Implement undo logic if needed
+        throw new UnsupportedOperationException("Undo not supported for RecommendProductsCommand");
+    }
+
 }

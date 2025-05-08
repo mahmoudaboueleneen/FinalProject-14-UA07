@@ -1,29 +1,28 @@
 package com.ua07.merchants.command;
 
+import com.ua07.merchants.dto.AdjustStockRequest;
+import com.ua07.merchants.dto.AdjustStockResponse;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
+import com.ua07.shared.command.Command;
 
 import java.util.Optional;
 
-public class AdjustStockCommand implements Command {
+public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustStockResponse> {
 
-    private final String productId;
-    private final int stockChange;
     private final ProductRepository productRepository;
 
-    public AdjustStockCommand(String productId, int stockChange, ProductRepository productRepository) {
-        this.productId = productId;
-        this.stockChange = stockChange;
+    public AdjustStockCommand(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Override
-    public Object execute() {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
+    public AdjustStockResponse execute(AdjustStockRequest request) {
+        Optional<Product> optionalProduct = productRepository.findById(request.getProductId());
 
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            int newStock = product.getStock() + stockChange;
+            int newStock = product.getStock() + request.getStockChange();
             if (newStock < 0) newStock = 0;
 
             Product updated = new Product.ProductBuilder()
@@ -36,9 +35,17 @@ public class AdjustStockCommand implements Command {
                     .additionalAttributes(product.getAdditionalAttributes())
                     .build();
 
-            return productRepository.save(updated);
+            productRepository.save(updated);
+            return new AdjustStockResponse(updated);
         } else {
-            throw new RuntimeException("Product not found with ID: " + productId);
+            throw new RuntimeException("Product not found with ID: " + request.getProductId());
         }
     }
+
+    @Override
+    public void undo() {
+        // Implement undo logic if needed
+        throw new UnsupportedOperationException("Undo not supported for AdjustStockCommand");
+    }
+
 }
