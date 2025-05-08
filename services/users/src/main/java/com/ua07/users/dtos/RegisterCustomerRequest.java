@@ -1,6 +1,5 @@
 package com.ua07.users.dtos;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

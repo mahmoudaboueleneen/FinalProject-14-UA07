@@ -24,10 +24,10 @@ public class PhoneLoginStrategy implements LoginStrategy {
     @Override
     public String login(LoginRequest request) {
         User user = userRepository.findByPhone(request.getIdentifier())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Invalid Credentials"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid password");
+            throw new IllegalArgumentException("Invalid Credentials");
         }
 
         return jwtService.generateToken(user.getId(), user.getRole());
