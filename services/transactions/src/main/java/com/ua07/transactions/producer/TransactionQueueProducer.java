@@ -1,6 +1,6 @@
 package com.ua07.transactions.producer;
 
-import com.ua07.transactions.config.QueueConfig;
+import com.ua07.shared.rabbitmq.RabbitMQConstants;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +22,7 @@ public class TransactionQueueProducer {
         payload.put("type", eventType); // e.g. ORDER_CONFIRMED, STATUS_UPDATED
         payload.put("message", message);
 
-        rabbitTemplate.convertAndSend(QueueConfig.TRANSACTION_QUEUE, payload);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.TRANSACTION_QUEUE, payload);
     }
+
 }

@@ -1,6 +1,6 @@
 package com.ua07.merchants.producer;
 
-import com.ua07.merchants.config.QueueConfig;
+import com.ua07.shared.rabbitmq.RabbitMQConstants;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +22,7 @@ public class MerchantQueueProducer {
         message.put("productId", productId);
         message.put("remainingStock", remainingStock);
 
-        rabbitTemplate.convertAndSend(QueueConfig.MERCHANT_QUEUE, message);
+        rabbitTemplate.convertAndSend(RabbitMQConstants.MERCHANT_QUEUE, message);
     }
+
 }

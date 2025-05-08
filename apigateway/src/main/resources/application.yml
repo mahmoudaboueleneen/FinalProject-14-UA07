@@ -36,3 +36,5 @@ spring:
             - StripPrefix=2
 server:
   port: 8080
+jwt:
+  secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3

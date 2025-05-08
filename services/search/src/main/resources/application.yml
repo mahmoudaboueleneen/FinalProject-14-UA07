@@ -1,6 +1,11 @@
 spring:
   application:
     name: search
-
+  data:
+    redis:
+      host: localhost
+      port: 6382
+  cache:
+    type: redis
 server:
   port: 8083
