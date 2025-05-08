@@ -4,10 +4,11 @@ import com.ua07.shared.enums.Role;
 import com.ua07.users.dtos.RegisterAdminRequest;
 import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
-import com.ua07.users.dtos.LoginRequest;  // Import the LoginRequest DTO
+import com.ua07.users.dtos.LoginRequest;
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
-import com.ua07.shared.jwt.JwtService;
+import com.ua07.users.strategies.EmailLoginStrategy;
+import com.ua07.users.strategies.PhoneLoginStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,18 +18,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final Authenticator authenticator;  // Injecting Authenticator
+    private final Authenticator authenticator;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, Authenticator authenticator) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, Authenticator authenticator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authenticator = authenticator;  // Initializing Authenticator
+        this.authenticator = authenticator;
     }
 
-    // Register Admin
     public User registerAdmin(RegisterAdminRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -42,7 +40,6 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Register Merchant
     public User registerMerchant(RegisterMerchantRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -62,7 +59,6 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Register Customer
     public User registerCustomer(RegisterCustomerRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -77,8 +73,14 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Login
     public String login(LoginRequest request) {
-        return authenticator.login(request);  // Delegate login to the Authenticator
+        if (request.getIdentifier().contains("@")) {
+            authenticator.setStrategy(new EmailLoginStrategy());
+        } else {
+            authenticator.setStrategy(new PhoneLoginStrategy());
+        }
+
+        return authenticator.login(request);
     }
+
 }

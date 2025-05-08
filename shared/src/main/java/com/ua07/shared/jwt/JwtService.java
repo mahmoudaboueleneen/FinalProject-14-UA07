@@ -19,6 +19,8 @@ public class JwtService {
 
     private Key signingKey;
 
+    private static final long DEFAULT_EXPIRATION_MILLIS = 1000 * 60 * 60 * 24; // 1 day
+
     @PostConstruct
     public void init() {
         this.signingKey = Keys.hmacShaKeyFor(secretKey.getBytes());
@@ -32,12 +34,12 @@ public class JwtService {
                 .getBody();
     }
 
-    public String generateToken(UUID userId, Role role, long expirationMillis) {
+    public String generateToken(UUID userId, Role role) {
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .claim("role", role.name())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
+                .setExpiration(new Date(System.currentTimeMillis() + DEFAULT_EXPIRATION_MILLIS))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
