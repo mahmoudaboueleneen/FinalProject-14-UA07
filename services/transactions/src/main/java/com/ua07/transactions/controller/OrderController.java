@@ -17,6 +17,8 @@ public class OrderController {
 
     @PostMapping("/create")
     public Order createOrder(@RequestBody Order order) {
+
+        System.out.println("Creating order: " + order);
         return service.createOrder(order);
     }
 
@@ -38,5 +40,11 @@ public class OrderController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteOrder(id);
+
+
+    @GetMapping("/confirmed")
+    public List<Order> getConfirmedOrders(@RequestParam String startDate, @RequestParam String endDate) {
+        return service.getConfirmedOrders(startDate, endDate);
     }
+
 }

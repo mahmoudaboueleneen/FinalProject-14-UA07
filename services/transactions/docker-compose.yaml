@@ -11,7 +11,7 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - spring.datasource.url=jdbc:postgresql://users-db:5432/transactions-db
+      - spring.datasource.url=jdbc:postgresql://transactions-db:5432/transactions-db
       - spring.datasource.username=postgres
       - spring.datasource.password=postgres
       - spring.datasource.driver-class-name=org.postgresql.Driver
