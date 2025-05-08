@@ -17,6 +17,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public Order createOrder(@RequestBody Order order) {
+        System.out.println("Creating order: " + order);
         return service.createOrder(order);
     }
 
