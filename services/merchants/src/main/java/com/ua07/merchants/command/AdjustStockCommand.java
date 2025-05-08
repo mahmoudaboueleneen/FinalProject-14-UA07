@@ -25,14 +25,14 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
             int newStock = product.getStock() + request.getStockChange();
             if (newStock < 0) newStock = 0;
 
-            Product updated = new Product.ProductBuilder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .stock(newStock)
-                    .category(product.getCategory())
-                    .additionalAttributes(product.getAdditionalAttributes())
+            Product updated = Product.builder()
+                    .withId(product.getId())
+                    .withName(product.getName())
+                    .withDescription(product.getDescription())
+                    .withPrice(product.getPrice())
+                    .withStock(newStock)
+                    .withCategory(product.getCategory())
+                    .withAdditionalAttributes(product.getAdditionalAttributes())
                     .build();
 
             productRepository.save(updated);
