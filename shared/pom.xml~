@@ -32,7 +32,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JJWT Jackson Serializer -->g
+        <!-- JJWT Jackson Serializer -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
