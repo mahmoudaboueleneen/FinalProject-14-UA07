@@ -4,8 +4,11 @@ import com.ua07.shared.enums.Role;
 import com.ua07.users.dtos.RegisterAdminRequest;
 import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
+import com.ua07.users.dtos.LoginRequest;
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
+import com.ua07.users.strategies.EmailLoginStrategy;
+import com.ua07.users.strategies.PhoneLoginStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,13 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Authenticator authenticator;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, Authenticator authenticator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticator = authenticator;
     }
 
     public User registerAdmin(RegisterAdminRequest request) {
@@ -67,4 +72,15 @@ public class AuthService {
                 .build();
         return userRepository.save(user);
     }
+
+    public String login(LoginRequest request) {
+        if (request.getIdentifier().contains("@")) {
+            authenticator.setStrategy(new EmailLoginStrategy());
+        } else {
+            authenticator.setStrategy(new PhoneLoginStrategy());
+        }
+
+        return authenticator.login(request);
+    }
+
 }

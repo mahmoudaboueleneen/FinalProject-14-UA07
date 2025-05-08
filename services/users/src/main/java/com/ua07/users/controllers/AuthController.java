@@ -1,5 +1,6 @@
 package com.ua07.users.controllers;
 
+import com.ua07.users.dtos.LoginRequest;
 import com.ua07.users.dtos.RegisterAdminRequest;
 import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
@@ -20,6 +21,18 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            String token = authService.login(loginRequest);
+            return ResponseEntity.ok()
+                    .header("Set-Cookie", "token=" + token + "; HttpOnly; Secure; SameSite=Strict")
+                    .body("Login successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
+    }
+
     @PostMapping("/register/admin")
     public ResponseEntity<User> registerAdmin(@RequestBody RegisterAdminRequest request) {
         User user = authService.registerAdmin(request);
@@ -37,4 +50,5 @@ public class AuthController {
         User user = authService.registerCustomer(request);
         return ResponseEntity.ok(user);
     }
+
 }
