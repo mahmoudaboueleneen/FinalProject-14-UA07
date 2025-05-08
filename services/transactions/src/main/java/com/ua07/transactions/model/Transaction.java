@@ -3,6 +3,8 @@ package com.ua07.transactions.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -19,8 +21,8 @@ public class Transaction {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "order_id")

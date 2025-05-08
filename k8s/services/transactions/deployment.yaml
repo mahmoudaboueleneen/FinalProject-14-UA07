@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: transactions-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: transactions
@@ -15,6 +15,6 @@ spec:
       containers:
         - name: transactions-service
           image: mahmoudaboueleneen/amazon-replica:transactions-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8084

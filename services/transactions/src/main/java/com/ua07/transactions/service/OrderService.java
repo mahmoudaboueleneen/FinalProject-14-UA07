@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -26,7 +27,7 @@ public class OrderService {
         return orderRepo.save(order);
     }
 
-    public boolean confirmOrder(Long orderId) {
+    public boolean confirmOrder(UUID orderId) {
         Optional<Order> optionalOrder = orderRepo.findById(orderId);
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
@@ -42,11 +43,11 @@ public class OrderService {
         return orderRepo.findAll();
     }
 
-    public Optional<Order> getOrderById(Long id) {
+    public Optional<Order> getOrderById(UUID id) {
         return orderRepo.findById(id);
     }
 
-    public void deleteOrder(Long id) {
+    public void deleteOrder(UUID id) {
         orderRepo.deleteById(id);
     }
 
@@ -55,4 +56,5 @@ public class OrderService {
         LocalDateTime end = LocalDateTime.parse(endDate);
         return orderRepo.findByStatusAndCreatedAtBetween(OrderStatus.CONFIRMED, start, end);
     }
+
 }
