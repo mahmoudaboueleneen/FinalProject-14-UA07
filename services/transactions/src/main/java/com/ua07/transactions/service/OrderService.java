@@ -49,4 +49,10 @@ public class OrderService {
     public void deleteOrder(Long id) {
         orderRepo.deleteById(id);
     }
+
+    public List<Order> getConfirmedOrders(String startDate, String endDate) {
+        LocalDateTime start = LocalDateTime.parse(startDate);
+        LocalDateTime end = LocalDateTime.parse(endDate);
+        return orderRepo.findByStatusAndCreatedAtBetween(OrderStatus.CONFIRMED, start, end);
+    }
 }

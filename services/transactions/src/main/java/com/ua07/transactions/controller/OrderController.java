@@ -40,4 +40,9 @@ public class OrderController {
     public void delete(@PathVariable Long id) {
         service.deleteOrder(id);
     }
+
+    @GetMapping("/confirmed")
+    public List<Order> getConfirmedOrders(@RequestParam String startDate, @RequestParam String endDate) {
+        return service.getConfirmedOrders(startDate, endDate);
+    }
 }
