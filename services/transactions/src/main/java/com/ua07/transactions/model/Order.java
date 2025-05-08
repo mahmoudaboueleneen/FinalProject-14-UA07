@@ -6,11 +6,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import io.micrometer.common.lang.Nullable;
+
 @Entity
+@Table(name = "orders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders")
 public class Order {
 
     //no need for getters and setter for using lombok
@@ -35,7 +37,7 @@ public class Order {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "uuid", nullable = false)
     private UUID userId;
     private Double totalAmount;
 
@@ -43,8 +45,11 @@ public class Order {
     private OrderStatus status;
 
     private LocalDateTime createdAt;
+    @Nullable
     private LocalDateTime confirmedAt;
+    @Nullable
     private LocalDateTime cancelledAt;
+    @Nullable
     private LocalDateTime deliveredAt;
 
     private String shippingAddress;
