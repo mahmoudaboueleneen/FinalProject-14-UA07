@@ -1,0 +1,27 @@
+package com.ua07.users.strategy;
+
+import com.ua07.users.models.User;
+import com.ua07.users.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class PhoneLoginStrategy implements LoginStrategy {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public PhoneLoginStrategy(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public boolean authenticate(String identifier, String password) {
+        // Find the user by phone number
+        User user = userRepository.findByPhone(identifier).orElse(null);
+        if (user != null && user.getPassword().equals(password)) {
+            return true; // Authentication successful
+        }
+        return false; // Authentication failed
+    }
+}

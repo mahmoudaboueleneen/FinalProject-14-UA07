@@ -6,6 +6,7 @@ import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
+import com.ua07.shared.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,13 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public User registerAdmin(RegisterAdminRequest request) {
@@ -66,5 +69,24 @@ public class AuthService {
                 .withRole(Role.CUSTOMER)
                 .build();
         return userRepository.save(user);
+    }
+    public String login(String identifier, String password) {
+        User user = getUserByIdentifier(identifier);
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        // Generate the JWT token for the authenticated user
+        String token = jwtService.generateToken(user);
+        return token;
+    }
+
+    private User getUserByIdentifier(String identifier) {
+        // Check if the identifier is an email or phone and retrieve the user
+        if (identifier.contains("@")) {
+            return userRepository.findByEmail(identifier).orElse(null);
+        } else {
+            return userRepository.findByPhone(identifier).orElse(null);
+        }
     }
 }
