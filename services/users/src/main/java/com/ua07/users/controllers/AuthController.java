@@ -4,6 +4,7 @@ import com.ua07.users.dtos.RegisterAdminRequest;
 import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
 import com.ua07.users.models.User;
+import com.ua07.users.services.AuthService;
 import com.ua07.users.services.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final Authenticator authenticator;
+    private final AuthService authService;
 
     @Autowired
-    public AuthController(Authenticator authenticator) {
+    public AuthController(Authenticator authenticator, AuthService authService) {
         this.authenticator = authenticator;
+        this.authService = authService;
     }
 
     // Endpoint to handle user login via either email or phone
