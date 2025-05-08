@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LoginRequest {
     private String identifier; // email or phone
-    private String password;   // User's password
+    private String password;
 }

@@ -13,18 +13,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final Authenticator authenticator;
+    private final EmailLoginStrategy emailLoginStrategy;
+    private final PhoneLoginStrategy phoneLoginStrategy;
+
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
+            Pattern.CASE_INSENSITIVE
+    );
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, Authenticator authenticator) {
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       Authenticator authenticator,
+                       EmailLoginStrategy emailLoginStrategy,
+                       PhoneLoginStrategy phoneLoginStrategy) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticator = authenticator;
+        this.emailLoginStrategy = emailLoginStrategy;
+        this.phoneLoginStrategy = phoneLoginStrategy;
     }
 
     public User registerAdmin(RegisterAdminRequest request) {
@@ -74,10 +89,12 @@ public class AuthService {
     }
 
     public String login(LoginRequest request) {
-        if (request.getIdentifier().contains("@")) {
-            authenticator.setStrategy(new EmailLoginStrategy());
+        String identifier = request.getIdentifier();
+
+        if (EMAIL_PATTERN.matcher(identifier).matches()) {
+            authenticator.setStrategy(emailLoginStrategy);
         } else {
-            authenticator.setStrategy(new PhoneLoginStrategy());
+            authenticator.setStrategy(phoneLoginStrategy);
         }
 
         return authenticator.login(request);

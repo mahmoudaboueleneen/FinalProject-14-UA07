@@ -2,7 +2,6 @@ package com.ua07.users.dtos;
 
 import lombok.*;
 
-
 @Setter
 @Getter
 @AllArgsConstructor
