@@ -1,5 +1,6 @@
 package com.ua07.users.services;
 
+import com.ua07.users.dtos.LoginRequest;
 import com.ua07.users.strategy.EmailLoginStrategy;
 import com.ua07.users.strategy.PhoneLoginStrategy;
 import com.ua07.users.strategy.LoginStrategy;
@@ -9,18 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class Authenticator {
 
-    private LoginStrategy loginStrategy;
+    private final EmailLoginStrategy emailLoginStrategy;
+    private final PhoneLoginStrategy phoneLoginStrategy;
 
-    public void setStrategy(LoginStrategy loginStrategy) {
-        this.loginStrategy = loginStrategy;
+    @Autowired
+    public Authenticator(EmailLoginStrategy emailLoginStrategy, PhoneLoginStrategy phoneLoginStrategy) {
+        this.emailLoginStrategy = emailLoginStrategy;
+        this.phoneLoginStrategy = phoneLoginStrategy;
     }
 
-    public String login(String identifier, String password) {
-        if (identifier.contains("@")) {
-            setStrategy(new EmailLoginStrategy());
+    public String login(LoginRequest request) {
+        // Determine which strategy to use based on the identifier (email or phone)
+        if (request.getIdentifier().contains("@")) {
+            return emailLoginStrategy.authenticate(request.getIdentifier(), request.getPassword());
         } else {
-            setStrategy(new PhoneLoginStrategy());
+            return phoneLoginStrategy.authenticate(request.getIdentifier(), request.getPassword());
         }
-        return loginStrategy.authenticate(identifier, password);
     }
 }

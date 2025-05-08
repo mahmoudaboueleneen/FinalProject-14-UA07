@@ -8,6 +8,8 @@ import com.ua07.users.dtos.LoginRequest;  // Import the LoginRequest DTO
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
 import com.ua07.shared.jwt.JwtService;
+import com.ua07.users.strategy.EmailLoginStrategy;
+import com.ua07.users.strategy.PhoneLoginStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,6 @@ public class AuthService {
         this.authenticator = authenticator;  // Initializing Authenticator
     }
 
-    // Register Admin
     public User registerAdmin(RegisterAdminRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -42,7 +43,6 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Register Merchant
     public User registerMerchant(RegisterMerchantRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -62,7 +62,6 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Register Customer
     public User registerCustomer(RegisterCustomerRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -77,8 +76,12 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Login
     public String login(LoginRequest request) {
-        return authenticator.login(request);  // Delegate login to the Authenticator
+        if (request.getIdentifier().contains("@")) {  // Fixing the method call
+            authenticator.setStrategy(new EmailLoginStrategy());
+        } else {
+            authenticator.setStrategy(new PhoneLoginStrategy());
+        }
+        return authenticator.login(request.getIdentifier(), request.getPassword());
     }
 }
