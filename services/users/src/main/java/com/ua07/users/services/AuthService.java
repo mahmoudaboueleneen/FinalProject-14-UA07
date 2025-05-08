@@ -4,6 +4,7 @@ import com.ua07.shared.enums.Role;
 import com.ua07.users.dtos.RegisterAdminRequest;
 import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
+import com.ua07.users.dtos.LoginRequest;  // Import the LoginRequest DTO
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
 import com.ua07.shared.jwt.JwtService;
@@ -17,12 +18,14 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final Authenticator authenticator;  // Injecting Authenticator
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, Authenticator authenticator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.authenticator = authenticator;  // Initializing Authenticator
     }
 
     public User registerAdmin(RegisterAdminRequest request) {
@@ -70,23 +73,9 @@ public class AuthService {
                 .build();
         return userRepository.save(user);
     }
-    public String login(String identifier, String password) {
-        User user = getUserByIdentifier(identifier);
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
 
-        // Generate the JWT token for the authenticated user
-        String token = jwtService.generateToken(user);
-        return token;
-    }
-
-    private User getUserByIdentifier(String identifier) {
-        // Check if the identifier is an email or phone and retrieve the user
-        if (identifier.contains("@")) {
-            return userRepository.findByEmail(identifier).orElse(null);
-        } else {
-            return userRepository.findByPhone(identifier).orElse(null);
-        }
+    public String login(LoginRequest loginRequest) {
+        // Delegate authentication to Authenticator using the LoginRequest DTO
+        return authenticator.login(loginRequest.getIdentifier(), loginRequest.getPassword());
     }
 }

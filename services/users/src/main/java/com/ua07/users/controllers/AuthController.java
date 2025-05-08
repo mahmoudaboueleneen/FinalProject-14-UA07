@@ -1,11 +1,11 @@
 package com.ua07.users.controllers;
 
+import com.ua07.users.dtos.LoginRequest;  // Import the LoginRequest DTO
 import com.ua07.users.dtos.RegisterAdminRequest;
 import com.ua07.users.dtos.RegisterCustomerRequest;
 import com.ua07.users.dtos.RegisterMerchantRequest;
 import com.ua07.users.models.User;
 import com.ua07.users.services.AuthService;
-import com.ua07.users.services.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,21 +14,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final Authenticator authenticator;
     private final AuthService authService;
 
     @Autowired
-    public AuthController(Authenticator authenticator, AuthService authService) {
-        this.authenticator = authenticator;
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     // Endpoint to handle user login via either email or phone
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String identifier, @RequestParam String password) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // Delegate authentication to the Authenticator
-            String token = authenticator.login(identifier, password);
+            // Delegate authentication to the AuthService using the LoginRequest DTO
+            String token = authService.login(loginRequest);
             // Set the JWT token in HttpOnly cookie and return the response
             return ResponseEntity.ok()
                     .header("Set-Cookie", "token=" + token + "; HttpOnly; Secure; SameSite=Strict")
@@ -41,7 +39,7 @@ public class AuthController {
 
     @PostMapping("/register/admin")
     public ResponseEntity<User> registerAdmin(@RequestBody RegisterAdminRequest request) {
-        User user = AuthService.registerAdmin(request);
+        User user = authService.registerAdmin(request);
         return ResponseEntity.ok(user);
     }
 
