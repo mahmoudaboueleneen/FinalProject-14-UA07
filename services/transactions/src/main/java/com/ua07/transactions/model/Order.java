@@ -11,6 +11,7 @@ import io.micrometer.common.lang.Nullable;
 @Entity
 @Table(name = "orders")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {

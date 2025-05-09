@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OrderLineItem {
 
     public OrderLineItem(UUID productId, String name, Integer count,

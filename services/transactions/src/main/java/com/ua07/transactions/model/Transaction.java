@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
