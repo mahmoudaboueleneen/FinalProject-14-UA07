@@ -9,12 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterCustomerRequest {
-    private String email;
-    private String phone;
+public class LoginRequest {
+    private String identifier; // email or phone
     private String password;
-    private String fullName;
-
-    private String shippingAddress;
-    private String billingAddress;
 }

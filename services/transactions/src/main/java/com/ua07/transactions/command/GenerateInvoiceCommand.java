@@ -1,8 +1,9 @@
-package com.ua07.transactions.payment;
+package com.ua07.transactions.command;
 
 import com.ua07.transactions.model.Order;
 
 public class GenerateInvoiceCommand extends OrderCommand{
+
     public GenerateInvoiceCommand(Order order) {
         super(order);
     }

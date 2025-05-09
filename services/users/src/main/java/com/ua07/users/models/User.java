@@ -29,11 +29,13 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @CreationTimestamp
     private Instant createdAt;
+
 
     // Common
     private String fullName;
@@ -56,6 +58,9 @@ public class User {
 
     public User() {
     }
+
+
+
 
     public User(UUID id, String email, String phone, String password,
                 Role role, Instant createdAt, String fullName, String shippingAddress,
@@ -101,6 +106,8 @@ public class User {
         this.supportContact = supportContact;
         this.department = department;
     }
+
+
 
 
 }
