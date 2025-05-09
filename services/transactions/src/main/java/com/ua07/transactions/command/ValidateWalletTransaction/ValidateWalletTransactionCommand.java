@@ -5,17 +5,17 @@ import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.Wallet;
 import com.ua07.transactions.repository.WalletRepository;
 
-public class ValidateWalletTransaction implements Command<ValidateWalletTransactionRequest, ValidateWalletTransactionResponse> {
+public class ValidateWalletTransactionCommand implements Command<ValidateWalletTransactionCommandRequest, ValidateWalletTransactionCommandResponse> {
 
     WalletRepository walletRepository;
 
-    public ValidateWalletTransaction(WalletRepository walletRepository) {
+    public ValidateWalletTransactionCommand(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 
     @Override
-    public ValidateWalletTransactionResponse execute(ValidateWalletTransactionRequest request) {
-        ValidateWalletTransactionResponse response = new ValidateWalletTransactionResponse();
+    public ValidateWalletTransactionCommandResponse execute(ValidateWalletTransactionCommandRequest request) {
+        ValidateWalletTransactionCommandResponse response = new ValidateWalletTransactionCommandResponse();
         try {
             Order order = request.getOrder();
             

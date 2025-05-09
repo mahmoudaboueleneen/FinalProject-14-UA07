@@ -6,7 +6,7 @@ import com.ua07.transactions.model.Transaction;
 import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 
-public class RecordTransaction implements Command<RecordTransactionRequest, RecordTransactionResponse> {
+public class RecordTransactionCommand implements Command<RecordTransactionCommandRequest, RecordTransactionCommandResponse> {
 
     OrderRepository orderRepository;
     
@@ -14,14 +14,14 @@ public class RecordTransaction implements Command<RecordTransactionRequest, Reco
 
     Transaction transaction;
 
-    public RecordTransaction(OrderRepository orderRepository, TransactionRepository transactionRepository) {
+    public RecordTransactionCommand(OrderRepository orderRepository, TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
         this.orderRepository = orderRepository;
     }
 
     @Override
-    public RecordTransactionResponse execute(RecordTransactionRequest request) {
-        RecordTransactionResponse response = new RecordTransactionResponse();
+    public RecordTransactionCommandResponse execute(RecordTransactionCommandRequest request) {
+        RecordTransactionCommandResponse response = new RecordTransactionCommandResponse();
         try {
             Order order = request.getOrder();
             Transaction transaction = new Transaction(order,request.getPaymentMethod(),request.getTransactionStatus());

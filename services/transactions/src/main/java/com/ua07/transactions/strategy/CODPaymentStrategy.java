@@ -3,8 +3,8 @@ package com.ua07.transactions.strategy;
 import org.springframework.stereotype.Component;
 
 import com.ua07.shared.command.CommandExecutor;
-import com.ua07.transactions.command.RecordTransaction.RecordTransaction;
-import com.ua07.transactions.command.RecordTransaction.RecordTransactionRequest;
+import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommand;
+import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommandRequest;
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
 import com.ua07.transactions.model.TransactionStatus;
@@ -25,8 +25,8 @@ public class CODPaymentStrategy implements PaymentStrategy {
     }
     
     public void pay(Order order) {
-        RecordTransactionRequest request = new RecordTransactionRequest(order, PaymentMethod.COD, TransactionStatus.PENDING);
-        RecordTransaction command = new RecordTransaction(this.orderRepository,this.transactionRepository);
+        RecordTransactionCommandRequest request = new RecordTransactionCommandRequest(order, PaymentMethod.COD, TransactionStatus.PENDING);
+        RecordTransactionCommand command = new RecordTransactionCommand(this.orderRepository,this.transactionRepository);
 
         System.out.println("Executing COD payment strategy for order: " + order.getId());
         commandExecutor.execute(command, request);

@@ -4,10 +4,10 @@ package com.ua07.transactions.command.ValidateWalletTransaction;
 import com.ua07.shared.command.CommandRequest;
 import com.ua07.transactions.model.Order;
 
-public class ValidateWalletTransactionRequest extends CommandRequest{
+public class ValidateWalletTransactionCommandRequest extends CommandRequest{
     Order order;
 
-    public ValidateWalletTransactionRequest(Order order) {
+    public ValidateWalletTransactionCommandRequest(Order order) {
         this.order = order;
     }
     
