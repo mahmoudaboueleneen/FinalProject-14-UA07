@@ -1,18 +1,20 @@
 package com.ua07.users.services;
 
 import com.ua07.shared.enums.Role;
-import com.ua07.users.dtos.RegisterAdminRequest;
-import com.ua07.users.dtos.RegisterCustomerRequest;
-import com.ua07.users.dtos.RegisterMerchantRequest;
-import com.ua07.users.dtos.LoginRequest;
+import com.ua07.users.dtos.*;
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
 import com.ua07.users.strategies.EmailLoginStrategy;
 import com.ua07.users.strategies.PhoneLoginStrategy;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
@@ -102,5 +104,37 @@ public class AuthService {
 
         return authenticator.login(request);
     }
+
+
+
+
+    public void logout(HttpServletResponse response) {
+        ResponseCookie clearedCookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, clearedCookie.toString());
+    }
+
+    public void changePassword(UUID userId, ChangePasswordRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encodedPassword);
+
+
+        userRepository.save(user);
+    }
+
+
 
 }
