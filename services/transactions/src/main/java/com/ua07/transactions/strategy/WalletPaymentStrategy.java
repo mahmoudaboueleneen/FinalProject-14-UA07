@@ -45,14 +45,14 @@ public class WalletPaymentStrategy implements PaymentStrategy {
         ValidateWalletTransactionCommandResponse validateWalletTransactionResponse = commandExecutor.execute(validateWalletTransaction, validateWalletTransactionRequest);
 
         if(!validateWalletTransactionResponse.isSuccess()){
-            throw new RuntimeException("Wallet transaction failed: " + validateWalletTransactionResponse.getMessage());
+            throw new IllegalArgumentException("Wallet transaction validation failed: " + validateWalletTransactionResponse.getMessage());
         }
 
         ProcessWalletPaymentCommand processWalletPayment = new ProcessWalletPaymentCommand(walletRepository);
         ProcessWalletPaymentCommandRequest processWalletPaymentRequest = new ProcessWalletPaymentCommandRequest(order);
 
         ProcessWalletPaymentCommandResponse processWalletPaymentResponse =commandExecutor.execute(processWalletPayment, processWalletPaymentRequest);
-        if(!processWalletPaymentResponse.isSuccess()){
+        if (!processWalletPaymentResponse.isSuccess()) {
             throw new RuntimeException("Wallet transaction processing failed: " + processWalletPaymentResponse.getMessage());
         }
 

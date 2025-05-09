@@ -1,6 +1,5 @@
 package com.ua07.transactions.strategy;
 
-import org.springframework.stereotype.Component;
 
 import com.ua07.shared.command.CommandExecutor;
 import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommand;
