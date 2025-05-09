@@ -5,7 +5,9 @@ import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.Wallet;
 import com.ua07.transactions.repository.WalletRepository;
 
-public class ValidateWalletTransactionCommand implements Command<ValidateWalletTransactionCommandRequest, ValidateWalletTransactionCommandResponse> {
+public class ValidateWalletTransactionCommand
+        implements Command<
+                ValidateWalletTransactionCommandRequest, ValidateWalletTransactionCommandResponse> {
 
     WalletRepository walletRepository;
 
@@ -14,11 +16,13 @@ public class ValidateWalletTransactionCommand implements Command<ValidateWalletT
     }
 
     @Override
-    public ValidateWalletTransactionCommandResponse execute(ValidateWalletTransactionCommandRequest request) {
-        ValidateWalletTransactionCommandResponse response = new ValidateWalletTransactionCommandResponse();
+    public ValidateWalletTransactionCommandResponse execute(
+            ValidateWalletTransactionCommandRequest request) {
+        ValidateWalletTransactionCommandResponse response =
+                new ValidateWalletTransactionCommandResponse();
         try {
             Order order = request.getOrder();
-            
+
             Wallet wallet = walletRepository.findByUserId(order.getUserId());
             if (wallet == null) {
                 response.setSuccess(false);
@@ -36,10 +40,10 @@ public class ValidateWalletTransactionCommand implements Command<ValidateWalletT
             response.setMessage(e.getMessage());
         }
         return response;
-}
+    }
 
     @Override
     public void undo() {
-        //Nothing to undo in this case
+        // Nothing to undo in this case
     }
 }

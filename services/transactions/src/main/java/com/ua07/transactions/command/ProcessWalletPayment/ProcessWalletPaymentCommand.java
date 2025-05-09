@@ -5,10 +5,13 @@ import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.Wallet;
 import com.ua07.transactions.repository.WalletRepository;
 
-public class ProcessWalletPaymentCommand implements Command<ProcessWalletPaymentCommandRequest, ProcessWalletPaymentCommandResponse> {
+public class ProcessWalletPaymentCommand
+        implements Command<
+                ProcessWalletPaymentCommandRequest, ProcessWalletPaymentCommandResponse> {
 
     WalletRepository walletRepository;
     Order order;
+
     public ProcessWalletPaymentCommand(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
@@ -18,7 +21,7 @@ public class ProcessWalletPaymentCommand implements Command<ProcessWalletPayment
         ProcessWalletPaymentCommandResponse response = new ProcessWalletPaymentCommandResponse();
         try {
             order = request.getOrder();
-            
+
             Wallet wallet = walletRepository.findByUserId(order.getUserId());
 
             wallet.setAmount(wallet.getAmount() - order.getTotalAmount());
@@ -30,13 +33,12 @@ public class ProcessWalletPaymentCommand implements Command<ProcessWalletPayment
             response.setMessage(e.getMessage());
         }
         return response;
-}
+    }
 
     @Override
     public void undo() {
         Wallet wallet = walletRepository.findByUserId(order.getUserId());
         wallet.setAmount(wallet.getAmount() + order.getTotalAmount());
         walletRepository.save(wallet);
-        
     }
 }

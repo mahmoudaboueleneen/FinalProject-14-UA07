@@ -6,11 +6,10 @@ import com.ua07.users.models.User;
 import com.ua07.users.services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,7 +27,9 @@ public class AuthController {
         try {
             String token = authService.login(loginRequest);
             return ResponseEntity.ok()
-                    .header("Set-Cookie", "accessToken=" + token + "; HttpOnly; Secure; SameSite=Strict")
+                    .header(
+                            "Set-Cookie",
+                            "accessToken=" + token + "; HttpOnly; Secure; SameSite=Strict")
                     .body("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Login failed: " + e.getMessage());
@@ -62,10 +63,8 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(
             @RequestBody @Valid ChangePasswordRequest request,
-            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId
-    ) {
+            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId) {
         authService.changePassword(userId, request);
         return ResponseEntity.ok("Password changed successfully");
     }
-
 }

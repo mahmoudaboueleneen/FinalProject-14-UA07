@@ -1,12 +1,9 @@
 package com.ua07.transactions.model;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Data
@@ -14,8 +11,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderLineItem {
 
-    public OrderLineItem(UUID productId, String name, Integer count,
-                         Double unitCost, Double totalCost, Order order) {
+    public OrderLineItem(
+            UUID productId,
+            String name,
+            Integer count,
+            Double unitCost,
+            Double totalCost,
+            Order order) {
         this.productId = productId;
         this.name = name;
         this.count = count;
@@ -24,12 +26,10 @@ public class OrderLineItem {
         this.order = order;
     }
 
-//no need for getters and setter for using lombok
-    //other constructors are implemented by NoArgs and AllArgsConstructor
+    // no need for getters and setter for using lombok
+    // other constructors are implemented by NoArgs and AllArgsConstructor
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+    @Id @GeneratedValue private UUID id;
 
     private UUID productId;
     private String name;
@@ -41,5 +41,4 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     @JsonBackReference
     private Order order;
-
 }

@@ -1,49 +1,45 @@
 package com.ua07.notifications.models;
 
+import java.time.Instant;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
-import java.time.Instant;
-import java.util.UUID;
-
 @Document(collection = "notifications")
 public class Notification {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     // Required Fields
     private Instant timestamp;
     private Boolean isRead;
     private UUID userId;
 
-
-
     // customer-specific
-    @Nullable
-    private String message;
+    @Nullable private String message;
 
-    @Nullable
-    private NotificationType type;
+    @Nullable private NotificationType type;
 
+    // merchant-specific
+    @Nullable private String productIdInShortage;
 
+    @Nullable private Integer currentCount;
 
-    //merchant-specific
-    @Nullable
-    private String productIdInShortage;
-
-    @Nullable
-    private Integer currentCount;
-
-    @Nullable
-    private Integer threshold;
+    @Nullable private Integer threshold;
 
     public Notification() {}
 
-    public Notification(String id, Instant timestamp, Boolean isRead, UUID userId,
-                        String message, NotificationType type,
-                        String productIdInShortage, Integer currentCount, Integer threshold) {
+    public Notification(
+            String id,
+            Instant timestamp,
+            Boolean isRead,
+            UUID userId,
+            String message,
+            NotificationType type,
+            String productIdInShortage,
+            Integer currentCount,
+            Integer threshold) {
         this.id = id;
         this.timestamp = timestamp;
         this.isRead = isRead;
@@ -55,30 +51,75 @@ public class Notification {
         this.threshold = threshold;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public Instant getTimestamp() { return timestamp; }
-    public void setTimestamp(Instant timestamp) { this.timestamp = timestamp; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public Boolean getIsRead() { return isRead; }
-    public void setIsRead(Boolean isRead) { this.isRead = isRead; }
+    public Instant getTimestamp() {
+        return timestamp;
+    }
 
-    public UUID getUserId() { return userId; }
-    public void setUserId(UUID userId) { this.userId = userId; }
+    public void setTimestamp(Instant timestamp) {
+        this.timestamp = timestamp;
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public Boolean getIsRead() {
+        return isRead;
+    }
 
-    public NotificationType getType() { return type; }
-    public void setType(NotificationType type) { this.type = type; }
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
+    }
 
-    public String getProductIdInShortage() { return productIdInShortage; }
-    public void setProductIdInShortage(String productIdInShortage) { this.productIdInShortage = productIdInShortage; }
+    public UUID getUserId() {
+        return userId;
+    }
 
-    public Integer getCurrentCount() { return currentCount; }
-    public void setCurrentCount(Integer currentCount) { this.currentCount = currentCount; }
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
-    public Integer getThreshold() { return threshold; }
-    public void setThreshold(Integer threshold) { this.threshold = threshold; }
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+
+    public void setType(NotificationType type) {
+        this.type = type;
+    }
+
+    public String getProductIdInShortage() {
+        return productIdInShortage;
+    }
+
+    public void setProductIdInShortage(String productIdInShortage) {
+        this.productIdInShortage = productIdInShortage;
+    }
+
+    public Integer getCurrentCount() {
+        return currentCount;
+    }
+
+    public void setCurrentCount(Integer currentCount) {
+        this.currentCount = currentCount;
+    }
+
+    public Integer getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(Integer threshold) {
+        this.threshold = threshold;
+    }
 }

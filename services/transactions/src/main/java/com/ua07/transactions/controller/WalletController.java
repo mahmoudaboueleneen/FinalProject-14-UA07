@@ -1,15 +1,13 @@
 package com.ua07.transactions.controller;
 
+import com.ua07.transactions.model.Wallet;
+import com.ua07.transactions.service.WalletService;
 import java.util.UUID;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ua07.transactions.model.Wallet;
-import com.ua07.transactions.service.WalletService;
 
 @RestController
 @RequestMapping("/wallets")
@@ -35,9 +33,4 @@ public class WalletController {
     public double getBalance(UUID userId) {
         return walletService.getWalletBalance(userId);
     }
-
-
-
-
-
 }

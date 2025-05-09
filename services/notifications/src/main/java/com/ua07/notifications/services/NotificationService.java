@@ -1,31 +1,27 @@
 package com.ua07.notifications.services;
 
+import com.ua07.notifications.command.NotificationInvoker;
 import com.ua07.notifications.command.SendEmailNotificationCommand;
 import com.ua07.notifications.command.SendInAppNotificationCommand;
-import com.ua07.notifications.command.NotificationInvoker;
 import com.ua07.notifications.models.Notification;
 import com.ua07.notifications.repositories.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    @Autowired private NotificationRepository notificationRepository;
 
-    @Autowired
-    private NotificationInvoker invoker;
-
-
+    @Autowired private NotificationInvoker invoker;
 
     public void sendInAppNotification(Notification notification) {
-        SendInAppNotificationCommand sendInAppNotificationCommand = new SendInAppNotificationCommand();
+        SendInAppNotificationCommand sendInAppNotificationCommand =
+                new SendInAppNotificationCommand();
 
         invoker.setCommand(sendInAppNotificationCommand);
         invoker.executeCommand(notification);
@@ -37,8 +33,6 @@ public class NotificationService {
         invoker.setCommand(emailNotificationCommand);
         invoker.executeCommand(notification);
     }
-
-
 
     public Notification createNotification(Notification notification) {
         notification.setTimestamp(Instant.now());
@@ -59,7 +53,8 @@ public class NotificationService {
     }
 
     public List<Notification> getUnreadNotifications(UUID userId, int page, int size) {
-        return notificationRepository.findByUserIdAndIsReadFalse(userId); // add pagination if needed
+        return notificationRepository.findByUserIdAndIsReadFalse(
+                userId); // add pagination if needed
     }
 
     public Notification markAsRead(String id) {
@@ -73,7 +68,8 @@ public class NotificationService {
     }
 
     public void markAllAsRead(UUID userId) {
-        List<Notification> notifications = notificationRepository.findByUserIdAndIsReadFalse(userId);
+        List<Notification> notifications =
+                notificationRepository.findByUserIdAndIsReadFalse(userId);
         notifications.forEach(n -> n.setIsRead(true));
         notificationRepository.saveAll(notifications);
     }

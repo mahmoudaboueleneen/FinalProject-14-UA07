@@ -2,19 +2,17 @@ package com.ua07.notifications.controllers;
 
 import com.ua07.notifications.models.Preferences;
 import com.ua07.notifications.services.PreferencesService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("preferences")
 public class PreferencesController {
 
-    @Autowired
-    private PreferencesService service;
+    @Autowired private PreferencesService service;
 
     @PostMapping
     public Preferences createOrUpdate(@RequestBody Preferences preferences) {

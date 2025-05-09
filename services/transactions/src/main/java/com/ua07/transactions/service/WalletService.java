@@ -1,12 +1,9 @@
 package com.ua07.transactions.service;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
-import com.ua07.transactions.repository.WalletRepository;
-
 import com.ua07.transactions.model.Wallet;
+import com.ua07.transactions.repository.WalletRepository;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 public class WalletService {
@@ -38,5 +35,4 @@ public class WalletService {
         wallet.setAmount(wallet.getAmount() + amount);
         walletRepository.save(wallet);
     }
-    
 }

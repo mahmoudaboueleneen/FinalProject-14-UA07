@@ -1,8 +1,5 @@
 package com.ua07.transactions.strategy;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.ua07.shared.command.CommandExecutor;
 import com.ua07.transactions.command.ProcessWalletPayment.ProcessWalletPaymentCommand;
 import com.ua07.transactions.command.ProcessWalletPayment.ProcessWalletPaymentCommandRequest;
@@ -30,44 +27,61 @@ public class WalletPaymentStrategy implements PaymentStrategy {
 
     TransactionRepository transactionRepository;
 
-    public WalletPaymentStrategy(CommandExecutor commandExecutor, OrderRepository orderRepository, TransactionRepository transactionRepository, WalletRepository walletRepository) {
+    public WalletPaymentStrategy(
+            CommandExecutor commandExecutor,
+            OrderRepository orderRepository,
+            TransactionRepository transactionRepository,
+            WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
         this.commandExecutor = commandExecutor;
         this.orderRepository = orderRepository;
         this.transactionRepository = transactionRepository;
     }
-    
+
     public void pay(Order order) {
 
-        ValidateWalletTransactionCommand validateWalletTransaction = new ValidateWalletTransactionCommand(walletRepository);
-        ValidateWalletTransactionCommandRequest validateWalletTransactionRequest = new ValidateWalletTransactionCommandRequest(order);
+        ValidateWalletTransactionCommand validateWalletTransaction =
+                new ValidateWalletTransactionCommand(walletRepository);
+        ValidateWalletTransactionCommandRequest validateWalletTransactionRequest =
+                new ValidateWalletTransactionCommandRequest(order);
 
-        ValidateWalletTransactionCommandResponse validateWalletTransactionResponse = commandExecutor.execute(validateWalletTransaction, validateWalletTransactionRequest);
+        ValidateWalletTransactionCommandResponse validateWalletTransactionResponse =
+                commandExecutor.execute(
+                        validateWalletTransaction, validateWalletTransactionRequest);
 
-        if(!validateWalletTransactionResponse.isSuccess()){
-            throw new IllegalArgumentException("Wallet transaction validation failed: " + validateWalletTransactionResponse.getMessage());
+        if (!validateWalletTransactionResponse.isSuccess()) {
+            throw new IllegalArgumentException(
+                    "Wallet transaction validation failed: "
+                            + validateWalletTransactionResponse.getMessage());
         }
 
-        ProcessWalletPaymentCommand processWalletPayment = new ProcessWalletPaymentCommand(walletRepository);
-        ProcessWalletPaymentCommandRequest processWalletPaymentRequest = new ProcessWalletPaymentCommandRequest(order);
+        ProcessWalletPaymentCommand processWalletPayment =
+                new ProcessWalletPaymentCommand(walletRepository);
+        ProcessWalletPaymentCommandRequest processWalletPaymentRequest =
+                new ProcessWalletPaymentCommandRequest(order);
 
-        ProcessWalletPaymentCommandResponse processWalletPaymentResponse =commandExecutor.execute(processWalletPayment, processWalletPaymentRequest);
+        ProcessWalletPaymentCommandResponse processWalletPaymentResponse =
+                commandExecutor.execute(processWalletPayment, processWalletPaymentRequest);
         if (!processWalletPaymentResponse.isSuccess()) {
-            throw new RuntimeException("Wallet transaction processing failed: " + processWalletPaymentResponse.getMessage());
+            throw new RuntimeException(
+                    "Wallet transaction processing failed: "
+                            + processWalletPaymentResponse.getMessage());
         }
 
-        RecordTransactionCommandRequest request = new RecordTransactionCommandRequest(order, PaymentMethod.WALLET, TransactionStatus.APPROVED);
-        RecordTransactionCommand command = new RecordTransactionCommand(this.orderRepository,this.transactionRepository);
+        RecordTransactionCommandRequest request =
+                new RecordTransactionCommandRequest(
+                        order, PaymentMethod.WALLET, TransactionStatus.APPROVED);
+        RecordTransactionCommand command =
+                new RecordTransactionCommand(this.orderRepository, this.transactionRepository);
 
-        RecordTransactionCommandResponse recordTransactionResponse = commandExecutor.execute(command, request);
+        RecordTransactionCommandResponse recordTransactionResponse =
+                commandExecutor.execute(command, request);
 
-        if(!recordTransactionResponse.isSuccess()){
+        if (!recordTransactionResponse.isSuccess()) {
             commandExecutor.undoLast(); // Undo the wallet payment if transaction recording fails
-            throw new RuntimeException("Wallet transaction recording failed: " + recordTransactionResponse.getMessage());
+            throw new RuntimeException(
+                    "Wallet transaction recording failed: "
+                            + recordTransactionResponse.getMessage());
         }
-
-        
-
     }
-
 }

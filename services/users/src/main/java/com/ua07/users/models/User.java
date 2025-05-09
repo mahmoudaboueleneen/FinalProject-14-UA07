@@ -2,23 +2,21 @@ package com.ua07.users.models;
 
 import com.ua07.shared.enums.Role;
 import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import java.time.Instant;
-import java.util.UUID;
 
 @Builder(setterPrefix = "with")
 @Getter
 @Setter
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+    @Id @GeneratedValue private UUID id;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -29,13 +27,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @CreationTimestamp
-    private Instant createdAt;
-
+    @CreationTimestamp private Instant createdAt;
 
     // Common
     private String fullName;
@@ -56,17 +51,26 @@ public class User {
     // ADMIN
     private String department;
 
-    public User() {
-    }
+    public User() {}
 
-
-
-
-    public User(UUID id, String email, String phone, String password,
-                Role role, Instant createdAt, String fullName, String shippingAddress,
-                String billingAddress, String businessName, String businessEmail,
-                String businessPhone, String taxId, String businessAddress,
-                String websiteUrl, String supportContact, String department) {
+    public User(
+            UUID id,
+            String email,
+            String phone,
+            String password,
+            Role role,
+            Instant createdAt,
+            String fullName,
+            String shippingAddress,
+            String billingAddress,
+            String businessName,
+            String businessEmail,
+            String businessPhone,
+            String taxId,
+            String businessAddress,
+            String websiteUrl,
+            String supportContact,
+            String department) {
         this.id = id;
         this.email = email;
         this.phone = phone;
@@ -86,9 +90,23 @@ public class User {
         this.department = department;
     }
 
-    public User(String email, String phone, String password, Role role, Instant createdAt, String fullName, String shippingAddress, String billingAddress,
-                String businessName, String businessEmail, String businessPhone, String taxId,
-                String businessAddress, String websiteUrl, String supportContact, String department) {
+    public User(
+            String email,
+            String phone,
+            String password,
+            Role role,
+            Instant createdAt,
+            String fullName,
+            String shippingAddress,
+            String billingAddress,
+            String businessName,
+            String businessEmail,
+            String businessPhone,
+            String taxId,
+            String businessAddress,
+            String websiteUrl,
+            String supportContact,
+            String department) {
         this.email = email;
         this.phone = phone;
         this.password = password;
@@ -106,8 +124,4 @@ public class User {
         this.supportContact = supportContact;
         this.department = department;
     }
-
-
-
-
 }

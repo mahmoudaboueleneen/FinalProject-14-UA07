@@ -6,15 +6,17 @@ import com.ua07.transactions.model.Transaction;
 import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 
-public class RecordTransactionCommand implements Command<RecordTransactionCommandRequest, RecordTransactionCommandResponse> {
+public class RecordTransactionCommand
+        implements Command<RecordTransactionCommandRequest, RecordTransactionCommandResponse> {
 
     OrderRepository orderRepository;
-    
+
     TransactionRepository transactionRepository;
 
     Transaction transaction;
 
-    public RecordTransactionCommand(OrderRepository orderRepository, TransactionRepository transactionRepository) {
+    public RecordTransactionCommand(
+            OrderRepository orderRepository, TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
         this.orderRepository = orderRepository;
     }
@@ -24,7 +26,9 @@ public class RecordTransactionCommand implements Command<RecordTransactionComman
         RecordTransactionCommandResponse response = new RecordTransactionCommandResponse();
         try {
             Order order = request.getOrder();
-            Transaction transaction = new Transaction(order,request.getPaymentMethod(),request.getTransactionStatus());
+            Transaction transaction =
+                    new Transaction(
+                            order, request.getPaymentMethod(), request.getTransactionStatus());
             this.transaction = transaction;
             order.setTransaction(transaction);
             orderRepository.save(order);
@@ -35,7 +39,7 @@ public class RecordTransactionCommand implements Command<RecordTransactionComman
             response.setSuccess(false);
         }
         return response;
-}
+    }
 
     @Override
     public void undo() {

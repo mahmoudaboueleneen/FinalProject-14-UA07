@@ -2,19 +2,17 @@ package com.ua07.notifications.controllers;
 
 import com.ua07.notifications.models.Notification;
 import com.ua07.notifications.services.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("notifications")
 public class NotificationController {
 
-    @Autowired
-    private NotificationService service;
+    @Autowired private NotificationService service;
 
     @PostMapping
     public Notification create(@RequestBody Notification notification) {
@@ -37,9 +35,10 @@ public class NotificationController {
     }
 
     @GetMapping("/unread/")
-    public List<Notification> getUnread(@RequestParam UUID userId,
-                                        @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "10") int size) {
+    public List<Notification> getUnread(
+            @RequestParam UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         return service.getUnreadNotifications(userId, page, size);
     }
 
@@ -62,5 +61,4 @@ public class NotificationController {
     public void sendEmail(@RequestBody Notification notification) {
         service.sendEmailNotification(notification);
     }
-
 }

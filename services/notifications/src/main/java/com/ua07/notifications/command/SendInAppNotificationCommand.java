@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SendInAppNotificationCommand implements NotificationCommand {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    @Autowired private NotificationRepository notificationRepository;
 
     @Override
     public void execute(Notification notification) {

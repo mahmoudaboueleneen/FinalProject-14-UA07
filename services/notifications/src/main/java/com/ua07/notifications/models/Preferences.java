@@ -1,23 +1,20 @@
 package com.ua07.notifications.models;
 
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
-import java.util.UUID;
-
 @Document(collection = "preferences")
 public class Preferences {
 
-    @Id
-    private UUID id;
+    @Id private UUID id;
 
     private UUID userId;
 
     private Boolean notifyByMail;
 
-    @Nullable
-    private Integer productShortageThreshold;
+    @Nullable private Integer productShortageThreshold;
 
     // Constructors
     public Preferences() {}
@@ -30,13 +27,26 @@ public class Preferences {
 
     // Getters and Setters
 
-    public UUID getUserId() { return userId; }
-    public void setUserId(UUID userId) { this.userId = userId; }
+    public UUID getUserId() {
+        return userId;
+    }
 
-    public Boolean getNotifyByMail() { return notifyByMail; }
-    public void setNotifyByMail(Boolean notifyByMail) { this.notifyByMail = notifyByMail; }
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
-    public Integer getProductShortageThreshold() { return productShortageThreshold; }
+    public Boolean getNotifyByMail() {
+        return notifyByMail;
+    }
+
+    public void setNotifyByMail(Boolean notifyByMail) {
+        this.notifyByMail = notifyByMail;
+    }
+
+    public Integer getProductShortageThreshold() {
+        return productShortageThreshold;
+    }
+
     public void setProductShortageThreshold(Integer productShortageThreshold) {
         this.productShortageThreshold = productShortageThreshold;
     }

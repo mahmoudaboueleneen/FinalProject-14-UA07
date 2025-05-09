@@ -1,12 +1,11 @@
 package com.ua07.merchants.dto;
 
 import com.ua07.shared.command.CommandRequest;
+import java.time.YearMonth;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.YearMonth;
 
 @Getter
 @Setter
@@ -15,5 +14,3 @@ import java.time.YearMonth;
 public class GenerateSalesReportRequest extends CommandRequest {
     private YearMonth yearMonth;
 }
-
-
