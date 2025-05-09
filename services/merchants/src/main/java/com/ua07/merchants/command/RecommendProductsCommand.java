@@ -5,11 +5,11 @@ import com.ua07.merchants.dto.RecommendProductsResponse;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.Command;
-
 import java.util.List;
 import java.util.Optional;
 
-public class RecommendProductsCommand implements Command<RecommendProductsRequest, RecommendProductsResponse> {
+public class RecommendProductsCommand
+        implements Command<RecommendProductsRequest, RecommendProductsResponse> {
 
     private final ProductRepository productRepository;
 
@@ -28,14 +28,14 @@ public class RecommendProductsCommand implements Command<RecommendProductsReques
 
             List<Product> ProductsWithSameCategory = productRepository.findByCategory(category);
 
-            List<Product> recommendations = ProductsWithSameCategory.stream()
-                    .filter(p -> !p.getId().equals(request.getProductId()))
-                    .limit(10)
-                    .toList();
+            List<Product> recommendations =
+                    ProductsWithSameCategory.stream()
+                            .filter(p -> !p.getId().equals(request.getProductId()))
+                            .limit(10)
+                            .toList();
 
             return new RecommendProductsResponse(recommendations);
-        }
-        else {
+        } else {
             throw new RuntimeException("Product not found with ID: " + request.getProductId());
         }
     }
@@ -45,5 +45,4 @@ public class RecommendProductsCommand implements Command<RecommendProductsReques
         // Implement undo logic if needed
         throw new UnsupportedOperationException("Undo not supported for RecommendProductsCommand");
     }
-
 }

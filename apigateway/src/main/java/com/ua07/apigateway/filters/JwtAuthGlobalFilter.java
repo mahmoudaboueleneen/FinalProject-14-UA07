@@ -39,17 +39,18 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
                             .header(AuthConstants.USER_ID_HEADER, userId)
                             .build();
 
-                    ServerWebExchange mutatedExchange = exchange.mutate()
-                            .request(mutatedRequest)
-                            .build();
+                    ServerWebExchange mutatedExchange =
+                            exchange.mutate().request(mutatedRequest).build();
 
                     return chain.filter(mutatedExchange);
                 } else {
-                    exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+                    exchange.getResponse()
+                            .setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
                     return exchange.getResponse().setComplete();
                 }
             } catch (Exception e) {
-                exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+                exchange.getResponse()
+                        .setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
         }

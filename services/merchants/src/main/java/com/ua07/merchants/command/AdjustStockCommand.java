@@ -5,7 +5,6 @@ import com.ua07.merchants.dto.AdjustStockResponse;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.Command;
-
 import java.util.Optional;
 
 public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustStockResponse> {
@@ -25,15 +24,16 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
             int newStock = product.getStock() + request.getStockChange();
             if (newStock < 0) newStock = 0;
 
-            Product updated = Product.builder()
-                    .withId(product.getId())
-                    .withName(product.getName())
-                    .withDescription(product.getDescription())
-                    .withPrice(product.getPrice())
-                    .withStock(newStock)
-                    .withCategory(product.getCategory())
-                    .withAdditionalAttributes(product.getAdditionalAttributes())
-                    .build();
+            Product updated =
+                    Product.builder()
+                            .withId(product.getId())
+                            .withName(product.getName())
+                            .withDescription(product.getDescription())
+                            .withPrice(product.getPrice())
+                            .withStock(newStock)
+                            .withCategory(product.getCategory())
+                            .withAdditionalAttributes(product.getAdditionalAttributes())
+                            .build();
 
             productRepository.save(updated);
             return new AdjustStockResponse(updated);
@@ -47,5 +47,4 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
         // Implement undo logic if needed
         throw new UnsupportedOperationException("Undo not supported for AdjustStockCommand");
     }
-
 }

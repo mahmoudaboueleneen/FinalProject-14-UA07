@@ -4,15 +4,16 @@ import com.ua07.merchants.client.OrderClient;
 import com.ua07.merchants.dto.GenerateSalesReportRequest;
 import com.ua07.merchants.dto.GenerateSalesReportResponse;
 import com.ua07.shared.command.Command;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
-public class GenerateSalesReportCommand implements Command<GenerateSalesReportRequest, GenerateSalesReportResponse> {
+public class GenerateSalesReportCommand
+        implements Command<GenerateSalesReportRequest, GenerateSalesReportResponse> {
 
     private final OrderClient orderClient;
 
@@ -26,21 +27,22 @@ public class GenerateSalesReportCommand implements Command<GenerateSalesReportRe
         LocalDate endDate = request.getYearMonth().atEndOfMonth();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
-        List<Map<String, Object>> orders = orderClient.getConfirmedOrders(
-                formatter.format(startDate),
-                formatter.format(endDate)
-        );
+        List<Map<String, Object>> orders =
+                orderClient.getConfirmedOrders(
+                        formatter.format(startDate), formatter.format(endDate));
 
         Map<String, ProductSalesData> report = new HashMap<>();
 
         for (Map<String, Object> order : orders) {
-            List<Map<String, Object>> lineItems = (List<Map<String, Object>>) order.get("lineItems");
+            List<Map<String, Object>> lineItems =
+                    (List<Map<String, Object>>) order.get("lineItems");
             for (Map<String, Object> item : lineItems) {
                 String productId = String.valueOf(item.get("productId"));
                 int count = ((Number) item.get("count")).intValue();
                 double unitCost = ((Number) item.get("unitCost")).doubleValue();
 
-                ProductSalesData data = report.getOrDefault(productId, new ProductSalesData(0, 0.0));
+                ProductSalesData data =
+                        report.getOrDefault(productId, new ProductSalesData(0, 0.0));
                 data.totalQuantity += count;
                 data.totalRevenue += count * unitCost;
 
@@ -50,7 +52,11 @@ public class GenerateSalesReportCommand implements Command<GenerateSalesReportRe
 
         List<ProductSalesReport> reportList = new ArrayList<>();
         for (Map.Entry<String, ProductSalesData> entry : report.entrySet()) {
-            reportList.add(new ProductSalesReport(entry.getKey(), entry.getValue().totalQuantity, entry.getValue().totalRevenue));
+            reportList.add(
+                    new ProductSalesReport(
+                            entry.getKey(),
+                            entry.getValue().totalQuantity,
+                            entry.getValue().totalRevenue));
         }
 
         return new GenerateSalesReportResponse(reportList);
@@ -58,12 +64,16 @@ public class GenerateSalesReportCommand implements Command<GenerateSalesReportRe
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Undo not supported for GenerateSalesReportCommand");
+        throw new UnsupportedOperationException(
+                "Undo not supported for GenerateSalesReportCommand");
     }
 
-    //INNER CLASSES
+    // INNER CLASSES
 
-    @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ProductSalesReport {
         private String productId;
         private int totalQuantity;

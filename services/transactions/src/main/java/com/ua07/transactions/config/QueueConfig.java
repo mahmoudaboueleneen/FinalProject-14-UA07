@@ -12,5 +12,4 @@ public class QueueConfig {
     public Queue transactionQueue() {
         return new Queue(RabbitMQConstants.TRANSACTION_QUEUE, true);
     }
-
 }
