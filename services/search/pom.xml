@@ -75,7 +75,13 @@
             <artifactId>spring-cloud-openfeign-core</artifactId>
             <version>4.2.1</version>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.ua07</groupId>
+			<artifactId>merchants</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
