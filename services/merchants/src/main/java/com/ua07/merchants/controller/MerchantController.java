@@ -16,6 +16,9 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 
 @RestController
 @RequestMapping("/products")
@@ -52,12 +55,14 @@ public class MerchantController {
         return productRepository.findAll();
     }
 
+    @Cacheable(value = "product", key = "#id")
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
+    @CachePut(value = "product", key = "#id")
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable UUID id, @RequestBody Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -81,6 +86,7 @@ public class MerchantController {
         }
     }
 
+    @CacheEvict(value = "product", key = "#id")
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable UUID id) {
         if (!productRepository.existsById(id)) {
