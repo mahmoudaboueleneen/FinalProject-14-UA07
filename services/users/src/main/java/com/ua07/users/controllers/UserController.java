@@ -1,5 +1,6 @@
 package com.ua07.users.controllers;
 
+import com.ua07.shared.auth.AuthConstants;
 import com.ua07.users.models.User;
 import com.ua07.users.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ public class UserController {
         return "Hello from User Service";
     }
 
-
     // Get all users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -40,13 +40,12 @@ public class UserController {
 
     // Get current user
     @GetMapping("/current")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader(value = "X-User-Id", required = true) UUID userId) {
+    public ResponseEntity<User> getCurrentUser(@RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId) {
         if (userId == null) {
             return ResponseEntity.badRequest().build(); // or throw a custom exception
         }
         return ResponseEntity.ok(userService.getUserById(userId));
     }
-
 
     // Update user
     @PutMapping("/{id}")
@@ -60,6 +59,5 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }

@@ -1,13 +1,16 @@
 package com.ua07.users.controllers;
 
-import com.ua07.users.dtos.RegisterAdminRequest;
-import com.ua07.users.dtos.RegisterCustomerRequest;
-import com.ua07.users.dtos.RegisterMerchantRequest;
+import com.ua07.shared.auth.AuthConstants;
+import com.ua07.users.dtos.*;
 import com.ua07.users.models.User;
 import com.ua07.users.services.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -18,6 +21,18 @@ public class AuthController {
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            String token = authService.login(loginRequest);
+            return ResponseEntity.ok()
+                    .header("Set-Cookie", "accessToken=" + token + "; HttpOnly; Secure; SameSite=Strict")
+                    .body("Login successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Login failed: " + e.getMessage());
+        }
     }
 
     @PostMapping("/register/admin")
@@ -37,4 +52,20 @@ public class AuthController {
         User user = authService.registerCustomer(request);
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        authService.logout(response);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @RequestBody @Valid ChangePasswordRequest request,
+            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId
+    ) {
+        authService.changePassword(userId, request);
+        return ResponseEntity.ok("Password changed successfully");
+    }
+
 }

@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,6 +26,7 @@ public class Transaction {
     @GeneratedValue
     private UUID id;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;

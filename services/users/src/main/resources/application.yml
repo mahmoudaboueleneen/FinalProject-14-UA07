@@ -9,7 +9,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     generate-ddl: true
     show-sql: true
     properties:
@@ -18,3 +18,8 @@ spring:
         use_sql_comments: true
 server:
   port: 8085
+jwt:
+  secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3
+
+
+
