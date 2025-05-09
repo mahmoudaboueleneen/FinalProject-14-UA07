@@ -1,4 +1,10 @@
 package com.ua07.search.specification;
+import com.ua07.merchants.model.Product;
+import java.util.List;
 
-public class ProductSpecification {
+public interface ProductSpecification {
+    boolean isSatisfiedBy(Product product);
+
+    List<Product> filter(List<Product> products);
+
 }
