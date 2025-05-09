@@ -59,13 +59,7 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, String jwtSecret) {
-        this.email = email;
-        this.password = password;
 
-        this.createdAt = Instant.now();
-
-    }
 
 
     public User(UUID id, String email, String phone, String password,
