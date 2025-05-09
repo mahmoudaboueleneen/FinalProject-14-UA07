@@ -54,14 +54,14 @@ public class InvoiceService {
     public static void main(String[] args) {
         // Create dummy line items
         OrderLineItem item1 = new OrderLineItem();
-        item1.setProductId("P001");
+        item1.setProductId(UUID.randomUUID());
         item1.setName("Widget");
         item1.setCount(2);
         item1.setUnitCost(10.0);
         item1.setTotalCost(20.0);
 
         OrderLineItem item2 = new OrderLineItem();
-        item2.setProductId("P002");
+        item2.setProductId(UUID.randomUUID());
         item2.setName("Gadget");
         item2.setCount(1);
         item2.setUnitCost(15.0);
