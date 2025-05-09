@@ -7,6 +7,7 @@ import lombok.*;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {

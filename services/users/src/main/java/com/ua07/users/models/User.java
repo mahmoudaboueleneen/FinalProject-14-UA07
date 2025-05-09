@@ -30,7 +30,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @CreationTimestamp private Instant createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
 
     // Common
     private String fullName;
@@ -51,26 +52,14 @@ public class User {
     // ADMIN
     private String department;
 
-    public User() {}
+    public User() {
+    }
 
-    public User(
-            UUID id,
-            String email,
-            String phone,
-            String password,
-            Role role,
-            Instant createdAt,
-            String fullName,
-            String shippingAddress,
-            String billingAddress,
-            String businessName,
-            String businessEmail,
-            String businessPhone,
-            String taxId,
-            String businessAddress,
-            String websiteUrl,
-            String supportContact,
-            String department) {
+    public User(UUID id, String email, String phone, String password,
+                Role role, Instant createdAt, String fullName, String shippingAddress,
+                String billingAddress, String businessName, String businessEmail,
+                String businessPhone, String taxId, String businessAddress,
+                String websiteUrl, String supportContact, String department) {
         this.id = id;
         this.email = email;
         this.phone = phone;
@@ -124,4 +113,5 @@ public class User {
         this.supportContact = supportContact;
         this.department = department;
     }
+
 }

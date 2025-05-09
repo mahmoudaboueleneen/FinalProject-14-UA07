@@ -10,6 +10,7 @@ import lombok.*;
 @Entity
 @Table(name = "orders")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {

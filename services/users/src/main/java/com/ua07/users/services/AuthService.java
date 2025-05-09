@@ -1,5 +1,6 @@
 package com.ua07.users.services;
 
+import com.ua07.shared.auth.AuthConstants;
 import com.ua07.shared.enums.Role;
 import com.ua07.users.dtos.*;
 import com.ua07.users.models.User;
@@ -11,10 +12,14 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
@@ -107,31 +112,29 @@ public class AuthService {
     }
 
     public void logout(HttpServletResponse response) {
-        ResponseCookie clearedCookie =
-                ResponseCookie.from("accessToken", "")
-                        .httpOnly(true)
-                        .secure(true)
-                        .path("/")
-                        .maxAge(0)
-                        .sameSite("Strict")
-                        .build();
+        ResponseCookie clearedCookie = ResponseCookie.from(AuthConstants.ACCESS_TOKEN_COOKIE, "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
 
         response.setHeader(HttpHeaders.SET_COOKIE, clearedCookie.toString());
     }
 
     public void changePassword(UUID userId, ChangePasswordRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
         }
 
-        User user =
-                userRepository
-                        .findById(userId)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found with ID: " + userId));
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);
 
         userRepository.save(user);
     }
+
 }

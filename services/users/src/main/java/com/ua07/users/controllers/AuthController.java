@@ -27,9 +27,7 @@ public class AuthController {
         try {
             String token = authService.login(loginRequest);
             return ResponseEntity.ok()
-                    .header(
-                            "Set-Cookie",
-                            "accessToken=" + token + "; HttpOnly; Secure; SameSite=Strict")
+                    .header("Set-Cookie", AuthConstants.ACCESS_TOKEN_COOKIE + "=" + token + "; HttpOnly; Secure; SameSite=Strict")
                     .body("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Login failed: " + e.getMessage());
@@ -55,15 +53,16 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
+    public ResponseEntity<String> logout(HttpServletResponse response) {
         authService.logout(response);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Logged out successfully");
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(
             @RequestBody @Valid ChangePasswordRequest request,
-            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId) {
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId
+    ) {
         authService.changePassword(userId, request);
         return ResponseEntity.ok("Password changed successfully");
     }

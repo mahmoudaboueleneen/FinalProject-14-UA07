@@ -1,5 +1,6 @@
 package com.ua07.apigateway.filters;
 
+import com.ua07.shared.auth.AuthConstants;
 import com.ua07.shared.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -13,23 +14,30 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
 
-    @Autowired private JwtService jwtService;
+    private final JwtService jwtService;
+
+    @Autowired
+    public JwtAuthGlobalFilter(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Override
-    public Mono<Void> filter(
-            ServerWebExchange exchange,
-            org.springframework.cloud.gateway.filter.GatewayFilterChain chain) {
-        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+    public Mono<Void> filter(ServerWebExchange exchange, org.springframework.cloud.gateway.filter.GatewayFilterChain chain) {
+        String token = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+        if (exchange.getRequest().getCookies().containsKey(AuthConstants.ACCESS_TOKEN_COOKIE)) {
+            token = exchange.getRequest().getCookies().getFirst(AuthConstants.ACCESS_TOKEN_COOKIE).getValue();
+        }
+
+        if (token != null) {
             try {
                 String userId = String.valueOf(jwtService.extractUserId(token));
 
                 if (userId != null && jwtService.isTokenValid(token)) {
-                    // Mutate the request to add X-User-Id header
-                    ServerHttpRequest mutatedRequest =
-                            exchange.getRequest().mutate().header("X-User-Id", userId).build();
+                    // Add user ID header for downstream microservices
+                    ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                            .header(AuthConstants.USER_ID_HEADER, userId)
+                            .build();
 
                     ServerWebExchange mutatedExchange =
                             exchange.mutate().request(mutatedRequest).build();
@@ -47,7 +55,7 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
             }
         }
 
-        // No auth header — continue without user ID
+        // No token found, continue unauthenticated
         return chain.filter(exchange);
     }
 
@@ -55,4 +63,5 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
     public int getOrder() {
         return -1; // High precedence
     }
+
 }
