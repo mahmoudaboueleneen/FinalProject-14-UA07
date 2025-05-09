@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface WalletRepository extends JpaRepository<Wallet, UUID> {
     Wallet findByUserId(UUID userId);
+    
 }
