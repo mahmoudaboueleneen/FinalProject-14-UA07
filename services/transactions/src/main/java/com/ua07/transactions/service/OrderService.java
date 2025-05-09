@@ -3,17 +3,33 @@ package com.ua07.transactions.service;
 import com.ua07.transactions.model.*;
 import com.ua07.transactions.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderService {
 
+    private final OrderRepository orderRepository;
+
     @Autowired
-    private OrderRepository orderRepo;
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    public Order getOrderById(UUID id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + id));
+    }
 
     public Order createOrder(Order order) {
         order.setStatus(OrderStatus.CREATED);
@@ -23,36 +39,39 @@ public class OrderService {
                 .mapToDouble(OrderLineItem::getTotalCost)
                 .sum();
         order.setTotalAmount(totalAmount);
-        return orderRepo.save(order);
+
+        return orderRepository.save(order);
     }
 
-    public boolean confirmOrder(Long orderId) {
-        Optional<Order> optionalOrder = orderRepo.findById(orderId);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            order.setStatus(OrderStatus.CONFIRMED);
-            order.setConfirmedAt(LocalDateTime.now());
-            orderRepo.save(order);
-            return true;
+    public void deleteOrder(UUID id) {
+        if (!orderRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + id);
         }
-        return false;
+        orderRepository.deleteById(id);
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepo.findAll();
-    }
+    public boolean confirmOrder(UUID orderId) {
+        // Order order = orderRepository.findById(orderId)
+        //         .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + orderId));
 
-    public Optional<Order> getOrderById(Long id) {
-        return orderRepo.findById(id);
-    }
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
 
-    public void deleteOrder(Long id) {
-        orderRepo.deleteById(id);
+        if (optionalOrder.isEmpty()) {
+            return false;
+        }
+
+        Order order = optionalOrder.get();
+        order.setStatus(OrderStatus.CONFIRMED);
+        order.setConfirmedAt(LocalDateTime.now());
+        orderRepository.save(order);
+        return true;
     }
 
     public List<Order> getConfirmedOrders(String startDate, String endDate) {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);
-        return orderRepo.findByStatusAndCreatedAtBetween(OrderStatus.CONFIRMED, start, end);
+
+        return orderRepository.findByStatusAndCreatedAtBetween(OrderStatus.CONFIRMED, start, end);
     }
+
 }

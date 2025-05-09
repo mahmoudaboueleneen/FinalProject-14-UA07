@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: users-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: users
@@ -15,6 +15,6 @@ spec:
       containers:
         - name: users-service
           image: mahmoudaboueleneen/amazon-replica:users-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8085

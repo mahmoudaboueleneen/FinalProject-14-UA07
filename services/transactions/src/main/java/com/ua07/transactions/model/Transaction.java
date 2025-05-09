@@ -3,6 +3,10 @@ package com.ua07.transactions.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Data
 @Builder
@@ -20,9 +24,10 @@ public class Transaction {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;

@@ -35,8 +35,8 @@ public class Order {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(columnDefinition = "uuid", nullable = false)
     private UUID userId;

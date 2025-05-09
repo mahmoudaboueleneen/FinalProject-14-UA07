@@ -1,6 +1,3 @@
-// OpenAPIConfig.java
-
-
 package com.ua07.users.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -15,20 +12,21 @@ import java.util.List;
 @Configuration
 public class OpenAPIConfig {
 
-  @Bean
-  public OpenAPI openAPI() {
-    Server devServer = new Server();
+    @Bean
+    public OpenAPI openAPI() {
+        Server devServer = new Server();
 
-    Contact contact = new Contact();
-    contact.setEmail("mahmoudaboueleneen@gmail.com");
-    contact.setName("Mahmoud Abou Eleneen");
-    contact.setUrl("https://www.github.com/mahmoudaboueleneen");
+        Contact contact = new Contact();
+        contact.setEmail("mahmoudaboueleneen@gmail.com");
+        contact.setName("Mahmoud Abou Eleneen");
+        contact.setUrl("https://www.github.com/mahmoudaboueleneen");
 
-    Info info = new Info()
-      .title("Amazon Replica - Users Microservice API")
-      .version("1.0")
-      .contact(contact);
+        Info info = new Info()
+                .title("Amazon Replica - Users Microservice API")
+                .version("1.0")
+                .contact(contact);
 
-    return new OpenAPI().info(info).servers(List.of(devServer));
-  }
+        return new OpenAPI().info(info).servers(List.of(devServer));
+    }
+
 }

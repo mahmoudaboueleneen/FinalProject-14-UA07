@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: search-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: search
@@ -15,6 +15,6 @@ spec:
       containers:
         - name: search-service
           image: mahmoudaboueleneen/amazon-replica:search-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8083

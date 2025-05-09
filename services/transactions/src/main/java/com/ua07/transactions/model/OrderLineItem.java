@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -13,7 +15,7 @@ import lombok.*;
 @Builder
 public class OrderLineItem {
 
-    public OrderLineItem(String productId, String name, Integer count,
+    public OrderLineItem(UUID productId, String name, Integer count,
                          Double unitCost, Double totalCost, Order order) {
         this.productId = productId;
         this.name = name;
@@ -27,10 +29,10 @@ public class OrderLineItem {
     //other constructors are implemented by NoArgs and AllArgsConstructor
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
-    private String productId;
+    private UUID productId;
     private String name;
     private Integer count;
     private Double unitCost;
