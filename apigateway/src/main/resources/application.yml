@@ -16,6 +16,12 @@ spring:
             - Path=/api/v1/notifications/**
           filters:
             - StripPrefix=2
+        - id: preferences-path
+          uri: ${NOTIFICATIONS_SERVICE_URI}
+          predicates:
+            - Path=/api/v1/preferences/**
+          filters:
+            - StripPrefix=2
         - id: search-path
           uri: ${SEARCH_SERVICE_URI}
           predicates:
