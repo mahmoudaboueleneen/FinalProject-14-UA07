@@ -29,11 +29,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String jwtSecret;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @CreationTimestamp
     private Instant createdAt;
+    private Instant updatedAt;
 
     // Common
     private String fullName;
@@ -56,6 +60,15 @@ public class User {
 
     public User() {
     }
+
+    public User(String email, String password, String jwtSecret) {
+        this.email = email;
+        this.password = password;
+        this.jwtSecret = jwtSecret;
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
 
     public User(UUID id, String email, String phone, String password,
                 Role role, Instant createdAt, String fullName, String shippingAddress,
@@ -101,6 +114,8 @@ public class User {
         this.supportContact = supportContact;
         this.department = department;
     }
+
+
 
 
 }
