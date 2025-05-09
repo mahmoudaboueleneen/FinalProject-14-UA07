@@ -3,49 +3,54 @@ package com.ua07.transactions.controller;
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
 
+    private final OrderService orderService;
+
     @Autowired
-    private OrderService service;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
-    @PostMapping("/create")
-    public Order createOrder(@RequestBody Order order) {
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
 
-        System.out.println("Creating order: " + order);
-        return service.createOrder(order);
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
+    }
+
+    // TODO: This should take a DTO instead.. and take the User ID from the AuthConstants.USER_ID_HEADER header
+    @PostMapping
+    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        return ResponseEntity.ok(orderService.createOrder(order));
+    }
+
+    // TODO: Add update!!!
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable UUID id) {
+        orderService.deleteOrder(id);
     }
 
     @PostMapping("/{id}/confirm")
     public boolean confirmOrder(@PathVariable UUID id) {
-        return service.confirmOrder(id);
-    }
-
-    @GetMapping
-    public List<Order> getAll() {
-        return service.getAllOrders();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Order> getById(@PathVariable UUID id) {
-        return service.getOrderById(id);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        service.deleteOrder(id);
+        return orderService.confirmOrder(id);
     }
     
     @GetMapping("/confirmed")
     public List<Order> getConfirmedOrders(@RequestParam String startDate, @RequestParam String endDate) {
-        return service.getConfirmedOrders(startDate, endDate);
+        return orderService.getConfirmedOrders(startDate, endDate);
     }
 
 }

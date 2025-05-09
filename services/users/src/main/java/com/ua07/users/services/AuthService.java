@@ -42,6 +42,9 @@ public class AuthService {
         this.phoneLoginStrategy = phoneLoginStrategy;
     }
 
+    // TODO: Add validation for email and phone number formats
+    // TODO: Add validation for password strength
+    // TODO: Add validation for unique email and phone numbers
     public User registerAdmin(RegisterAdminRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.builder()
