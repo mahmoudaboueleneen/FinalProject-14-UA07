@@ -10,6 +10,8 @@ import java.util.UUID;
 public class Preferences {
 
     @Id
+    private UUID id;
+
     private UUID userId;
 
     private Boolean notifyByMail;

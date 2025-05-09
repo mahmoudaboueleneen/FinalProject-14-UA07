@@ -1,7 +1,7 @@
 package com.ua07.notifications.services;
 
-import com.ua07.notifications.command.EmailNotificationCommand;
-import com.ua07.notifications.command.InAppNotificationCommand;
+import com.ua07.notifications.command.SendEmailNotificationCommand;
+import com.ua07.notifications.command.SendInAppNotificationCommand;
 import com.ua07.notifications.command.NotificationInvoker;
 import com.ua07.notifications.models.Notification;
 import com.ua07.notifications.repositories.NotificationRepository;
@@ -22,18 +22,18 @@ public class NotificationService {
     @Autowired
     private NotificationInvoker invoker;
 
-    @Autowired
-    private InAppNotificationCommand inAppNotificationCommand;
 
-    @Autowired
-    private EmailNotificationCommand emailNotificationCommand;
 
     public void sendInAppNotification(Notification notification) {
-        invoker.setCommand(inAppNotificationCommand);
+        SendInAppNotificationCommand sendInAppNotificationCommand = new SendInAppNotificationCommand();
+
+        invoker.setCommand(sendInAppNotificationCommand);
         invoker.executeCommand(notification);
     }
 
     public void sendEmailNotification(Notification notification) {
+        SendEmailNotificationCommand emailNotificationCommand = new SendEmailNotificationCommand();
+
         invoker.setCommand(emailNotificationCommand);
         invoker.executeCommand(notification);
     }

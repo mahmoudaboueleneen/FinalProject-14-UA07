@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InAppNotificationCommand implements NotificationCommand {
+public class SendInAppNotificationCommand implements NotificationCommand {
 
     @Autowired
     private NotificationRepository notificationRepository;

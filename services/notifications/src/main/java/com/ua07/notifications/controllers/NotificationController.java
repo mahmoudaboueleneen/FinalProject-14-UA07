@@ -36,8 +36,8 @@ public class NotificationController {
         service.deleteNotification(id);
     }
 
-    @GetMapping("/unread/{userId}")
-    public List<Notification> getUnread(@PathVariable UUID userId,
+    @GetMapping("/unread/")
+    public List<Notification> getUnread(@RequestParam UUID userId,
                                         @RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "10") int size) {
         return service.getUnreadNotifications(userId, page, size);
@@ -48,8 +48,8 @@ public class NotificationController {
         return service.markAsRead(id);
     }
 
-    @PostMapping("/mark-all-read/{userId}")
-    public void markAllAsRead(@PathVariable UUID userId) {
+    @PostMapping("/mark-all-read/")
+    public void markAllAsRead(@RequestParam UUID userId) {
         service.markAllAsRead(userId);
     }
 
