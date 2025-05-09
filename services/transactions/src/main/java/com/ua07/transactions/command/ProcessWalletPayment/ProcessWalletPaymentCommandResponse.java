@@ -3,7 +3,7 @@ package com.ua07.transactions.command.ProcessWalletPayment;
 import com.ua07.shared.command.CommandResponse;
 
 
-public class ProcessWalletPaymentResponse extends CommandResponse{
+public class ProcessWalletPaymentCommandResponse extends CommandResponse{
 
 
     boolean success;

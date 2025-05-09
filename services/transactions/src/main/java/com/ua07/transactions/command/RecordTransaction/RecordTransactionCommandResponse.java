@@ -4,7 +4,7 @@ import com.ua07.shared.command.CommandResponse;
 import com.ua07.transactions.model.Transaction;
 
 
-public class RecordTransactionResponse extends CommandResponse{
+public class RecordTransactionCommandResponse extends CommandResponse{
 
     Transaction transaction;
     boolean success;

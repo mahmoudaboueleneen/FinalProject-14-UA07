@@ -6,12 +6,12 @@ import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
 import com.ua07.transactions.model.TransactionStatus;
 
-public class RecordTransactionRequest extends CommandRequest{
+public class RecordTransactionCommandRequest extends CommandRequest{
     Order order;
     PaymentMethod paymentMethod;
     TransactionStatus transactionStatus;
 
-    public RecordTransactionRequest(Order order, PaymentMethod paymentMethod,TransactionStatus transactionStatus) {
+    public RecordTransactionCommandRequest(Order order, PaymentMethod paymentMethod,TransactionStatus transactionStatus) {
         this.paymentMethod = paymentMethod;
         this.order = order;
         this.transactionStatus = transactionStatus;

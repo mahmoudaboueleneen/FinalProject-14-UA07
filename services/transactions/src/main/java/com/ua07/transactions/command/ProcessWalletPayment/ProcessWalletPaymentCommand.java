@@ -5,17 +5,17 @@ import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.Wallet;
 import com.ua07.transactions.repository.WalletRepository;
 
-public class ProcessWalletPayment implements Command<ProcessWalletPaymentRequest, ProcessWalletPaymentResponse> {
+public class ProcessWalletPaymentCommand implements Command<ProcessWalletPaymentCommandRequest, ProcessWalletPaymentCommandResponse> {
 
     WalletRepository walletRepository;
     Order order;
-    public ProcessWalletPayment(WalletRepository walletRepository) {
+    public ProcessWalletPaymentCommand(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 
     @Override
-    public ProcessWalletPaymentResponse execute(ProcessWalletPaymentRequest request) {
-        ProcessWalletPaymentResponse response = new ProcessWalletPaymentResponse();
+    public ProcessWalletPaymentCommandResponse execute(ProcessWalletPaymentCommandRequest request) {
+        ProcessWalletPaymentCommandResponse response = new ProcessWalletPaymentCommandResponse();
         try {
             order = request.getOrder();
             
