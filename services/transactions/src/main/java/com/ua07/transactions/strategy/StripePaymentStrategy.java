@@ -1,5 +1,4 @@
-package com.ua07.transactions.payment;
-
+package com.ua07.transactions.strategy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,7 +8,8 @@ import com.ua07.transactions.model.PaymentMethod;
 import com.ua07.transactions.service.StripeService;
 
 @Component
-public class StripePayment extends PaymentStrategy {
+public class StripePaymentStrategy extends PaymentStrategy {
+
     @Autowired
     private StripeService stripeService;
 
@@ -22,4 +22,5 @@ public class StripePayment extends PaymentStrategy {
     public PaymentMethod getPaymentMethod() {
         return PaymentMethod.CARD;
     }
+
 }

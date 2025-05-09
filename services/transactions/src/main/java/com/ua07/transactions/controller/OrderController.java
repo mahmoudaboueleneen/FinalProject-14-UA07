@@ -3,9 +3,9 @@ package com.ua07.transactions.controller;
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
 
-import com.ua07.transactions.payment.PayCommand;
-import com.ua07.transactions.payment.PaymentInvoker;
-import com.ua07.transactions.payment.PaymentStrategy;
+import com.ua07.transactions.command.PayCommand;
+import com.ua07.transactions.command.PaymentInvoker;
+import com.ua07.transactions.strategy.PaymentStrategy;
 
 import com.ua07.transactions.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
