@@ -34,8 +34,17 @@ public class MerchantController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        product.setId(UUID.randomUUID());
-        return productRepository.save(product);
+        Product createdProduct = Product.builder()
+                .withId(UUID.randomUUID())
+                .withName(product.getName())
+                .withDescription(product.getDescription())
+                .withPrice(product.getPrice())
+                .withStock(product.getStock())
+                .withCategory(product.getCategory())
+                .withAdditionalAttributes(product.getAdditionalAttributes())
+                .build();
+
+        return productRepository.save(createdProduct);
     }
 
     @GetMapping
