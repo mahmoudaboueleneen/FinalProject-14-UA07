@@ -127,7 +127,7 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);
-        user.setJwtSecret(UUID.randomUUID().toString()); // Rotate JWT secret
+
 
         userRepository.save(user);
     }
