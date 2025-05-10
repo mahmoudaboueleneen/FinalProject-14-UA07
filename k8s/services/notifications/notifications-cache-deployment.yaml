@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-cache-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications-cache
+  template:
+    metadata:
+      labels:
+        app: notifications-cache
+    spec:
+      containers:
+        - name: notifications-cache
+          image: redis
+          ports:
+            - containerPort: 6379

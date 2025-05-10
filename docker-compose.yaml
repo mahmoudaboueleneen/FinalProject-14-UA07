@@ -66,6 +66,7 @@ services:
       - spring.rabbitmq.host=rabbitmq
       - spring.data.redis.host=merchants-cache
       - spring.data.redis.port=6379
+      - transactions.service.url=http://transactions-service:8084/orders
     restart: always
 
   merchants-db:

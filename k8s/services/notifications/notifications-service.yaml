@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: merchants-service
+  name: notifications-service
 spec:
   type: ClusterIP
   selector:
-    app: merchants
+    app: notifications
   ports:
-    - port: 80
-      targetPort: 8081
+    - port: 8080
+      targetPort: 8082
       protocol: TCP

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: notifications-service
+  name: users-service
 spec:
   type: ClusterIP
   selector:
-    app: notifications
+    app: users
   ports:
-    - port: 80
-      targetPort: 8082
+    - port: 8080
+      targetPort: 8085
       protocol: TCP

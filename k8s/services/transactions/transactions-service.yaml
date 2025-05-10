@@ -7,6 +7,6 @@ spec:
   selector:
     app: transactions
   ports:
-    - port: 80
+    - port: 8080
       targetPort: 8084
       protocol: TCP
