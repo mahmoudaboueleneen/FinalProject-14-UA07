@@ -38,7 +38,9 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                     .withPrice(product.getPrice())
                     .withStock(newStock)
                     .withCategory(product.getCategory())
+                    .withCreatedAt(product.getCreatedAt())
                     .withAdditionalAttributes(product.getAdditionalAttributes())
+                    .withReviews(product.getReviews())
                     .build();
 
             productRepository.save(updated);
@@ -69,7 +71,9 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                     .withPrice(product.getPrice())
                     .withStock(newStock)
                     .withCategory(product.getCategory())
+                    .withCreatedAt(product.getCreatedAt())
                     .withAdditionalAttributes(product.getAdditionalAttributes())
+                    .withReviews(product.getReviews())
                     .build();
 
             productRepository.save(reverted);

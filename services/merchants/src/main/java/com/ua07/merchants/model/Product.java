@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,7 +24,8 @@ public class Product {
     private double price;
     private int stock;
     private String category;
-
+    private LocalDateTime createdAt;
     private Map<String, Object> additionalAttributes;
 
+    private List<Review> reviews;
 }
