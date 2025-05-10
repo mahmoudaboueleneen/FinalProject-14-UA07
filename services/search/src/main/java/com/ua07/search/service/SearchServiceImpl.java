@@ -4,9 +4,9 @@ import com.ua07.merchants.model.Product;
 import com.ua07.search.client.ProductClient;
 import com.ua07.search.dto.SearchRequestDTO;
 import com.ua07.search.specification.SpecificationBuilder;
+import com.ua07.search.strategy.ReflectionBasedStrategyFactory;
 import com.ua07.search.strategy.SortType;
 import com.ua07.search.strategy.SortingStrategy;
-import com.ua07.search.strategy.SortingStrategyFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,9 @@ import java.util.List;
 public class SearchServiceImpl implements SearchService {
 
     private final ProductClient productClient;
-    private final SortingStrategyFactory sortingStrategyFactory;
+    private final ReflectionBasedStrategyFactory sortingStrategyFactory;
 
-    public SearchServiceImpl(ProductClient productClient, SortingStrategyFactory sortingStrategyFactory) {
+    public SearchServiceImpl(ProductClient productClient, ReflectionBasedStrategyFactory sortingStrategyFactory) {
         this.productClient = productClient;
         this.sortingStrategyFactory = sortingStrategyFactory;
     }
