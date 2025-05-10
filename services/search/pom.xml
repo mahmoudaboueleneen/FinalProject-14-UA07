@@ -89,11 +89,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>MiniProject1</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
