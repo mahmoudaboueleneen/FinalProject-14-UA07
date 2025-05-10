@@ -2,6 +2,7 @@ package com.ua07.merchants.command;
 
 import com.ua07.merchants.dto.AdjustStockRequest;
 import com.ua07.merchants.dto.AdjustStockResponse;
+import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.Command;
@@ -12,8 +13,6 @@ import java.util.Optional;
 public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustStockResponse> {
 
     private final ProductRepository productRepository;
-
-    private AdjustStockRequest RequestExecuted;
 
     public AdjustStockCommand(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -30,20 +29,56 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Resulting stock cannot be negative");
             };
 
-            Product updated = Product.builder()
-                    .withId(product.getId())
-                    .withName(product.getName())
-                    .withDescription(product.getDescription())
-                    .withPrice(product.getPrice())
-                    .withStock(newStock)
-                    .withCategory(product.getCategory())
-                    .withCreatedAt(product.getCreatedAt())
-                    .withAdditionalAttributes(product.getAdditionalAttributes())
-                    .withReviews(product.getReviews())
-                    .build();
+            Product updated;
+            if(product.getCategory() == Category.LAPTOPS){
+                updated = Product.builder()
+                        .withId(product.getId())
+                        .withName(product.getName())
+                        .withDescription(product.getDescription())
+                        .withPrice(product.getPrice())
+                        .withStock(newStock)
+                        .withCategory(product.getCategory())
+                        .withCreatedAt(product.getCreatedAt())
+                        .withReviews(product.getReviews())
+                        .withProcessor(product.getProcessor())
+                        .withRam(product.getRam())
+                        .withStorage(product.getStorage())
+                        .build();
+            } else if (product.getCategory() == Category.BOOKS) {
+                updated = Product.builder()
+                        .withId(product.getId())
+                        .withName(product.getName())
+                        .withDescription(product.getDescription())
+                        .withPrice(product.getPrice())
+                        .withStock(newStock)
+                        .withCategory(product.getCategory())
+                        .withCreatedAt(product.getCreatedAt())
+                        .withReviews(product.getReviews())
+                        .withAuthor(product.getAuthor())
+                        .withGenre(product.getGenre())
+                        .withPages(product.getPages())
+                        .build();
+            }
+            else if (product.getCategory() == Category.JACKETS){
+                updated = Product.builder()
+                        .withId(product.getId())
+                        .withName(product.getName())
+                        .withDescription(product.getDescription())
+                        .withPrice(product.getPrice())
+                        .withStock(newStock)
+                        .withCategory(product.getCategory())
+                        .withCreatedAt(product.getCreatedAt())
+                        .withReviews(product.getReviews())
+                        .withSize(product.getSize())
+                        .withMaterial(product.getMaterial())
+                        .withColor(product.getColor())
+                        .build();
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported product category");
+            }
 
             productRepository.save(updated);
-            RequestExecuted = request;
             return new AdjustStockResponse(updated);
         } else {
             throw new RuntimeException("Product not found with ID: " + request.getProductId());
@@ -52,32 +87,6 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
 
     @Override
     public void undo() {
-        if (RequestExecuted == null) {
-            throw new IllegalStateException("No execution history found for undo");
-        }
-
-        Optional<Product> optionalProduct = productRepository.findById(RequestExecuted.getProductId());
-
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            int revertedStockChange = -RequestExecuted.getStockChange();
-            int newStock = product.getStock() + revertedStockChange;
-
-            Product reverted = Product.builder()
-                    .withId(product.getId())
-                    .withName(product.getName())
-                    .withDescription(product.getDescription())
-                    .withPrice(product.getPrice())
-                    .withStock(newStock)
-                    .withCategory(product.getCategory())
-                    .withCreatedAt(product.getCreatedAt())
-                    .withAdditionalAttributes(product.getAdditionalAttributes())
-                    .withReviews(product.getReviews())
-                    .build();
-
-            productRepository.save(reverted);
-        } else {
-            throw new RuntimeException("Product not found with ID: " + RequestExecuted.getProductId());
-        }
+        throw new UnsupportedOperationException("Undo not supported for AdjustCommand");
     }
 }
