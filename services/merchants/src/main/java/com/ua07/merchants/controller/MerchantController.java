@@ -3,7 +3,6 @@ package com.ua07.merchants.controller;
 import com.ua07.merchants.client.OrderClient;
 import com.ua07.merchants.command.AdjustStockCommand;
 import com.ua07.merchants.command.GenerateSalesReportCommand;
-import com.ua07.merchants.command.RecommendProductsCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
@@ -102,13 +101,6 @@ public class MerchantController {
     ) {
         AdjustStockRequest request = new AdjustStockRequest(productID, stockChange);
         AdjustStockCommand command = new AdjustStockCommand(productRepository);
-        return commandExecutor.execute(command, request);
-    }
-
-    @GetMapping("/{id}/recommendations")
-    public RecommendProductsResponse recommendProducts(@PathVariable UUID id) {
-        RecommendProductsRequest request = new RecommendProductsRequest(id);
-        RecommendProductsCommand command = new RecommendProductsCommand(productRepository);
         return commandExecutor.execute(command, request);
     }
 
