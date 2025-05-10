@@ -71,12 +71,6 @@
             <artifactId>spring-cloud-openfeign-core</artifactId>
             <version>4.2.1</version>
         </dependency>
-		<dependency>
-			<groupId>com.ua07</groupId>
-			<artifactId>merchants</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>

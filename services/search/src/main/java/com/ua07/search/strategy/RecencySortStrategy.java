@@ -1,6 +1,6 @@
 package com.ua07.search.strategy;
 
-import com.ua07.merchants.model.Product;
+import com.ua07.search.model.Product;
 
 import java.util.Comparator;
 import java.util.List;

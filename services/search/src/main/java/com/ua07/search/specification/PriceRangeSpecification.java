@@ -1,6 +1,6 @@
 package com.ua07.search.specification;
 
-import com.ua07.merchants.model.Product;
+import com.ua07.search.model.Product;
 
 public class PriceRangeSpecification implements ProductSpecification {
     private final Double minPrice;

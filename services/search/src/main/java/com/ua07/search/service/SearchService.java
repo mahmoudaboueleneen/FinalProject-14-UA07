@@ -1,7 +1,7 @@
 package com.ua07.search.service;
 
-import com.ua07.merchants.model.Product;
 import com.ua07.search.dto.SearchRequestDTO;
+import com.ua07.search.model.Product;
 
 import java.util.List;
 

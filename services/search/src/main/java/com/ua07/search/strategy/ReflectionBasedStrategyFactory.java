@@ -8,7 +8,7 @@ import java.util.Map;
 @Component
 public class ReflectionBasedStrategyFactory {
     private final Map<SortType, SortingStrategy> strategies = new EnumMap<>(SortType.class);
-    private static final String BASE_PACKAGE = "com.ua07.search.strategy.sorting";
+    private static final String BASE_PACKAGE = "com.ua07.search.strategy";
 
     public ReflectionBasedStrategyFactory() {
         for (SortType type : SortType.values()) {

@@ -1,7 +1,6 @@
 package com.ua07.search.specification;
 
-import com.ua07.merchants.model.Product;
-import org.springframework.cloud.context.named.NamedContextFactory;
+import com.ua07.search.model.Product;
 
 public class CategorySpecification implements ProductSpecification {
     private final String category;
@@ -15,7 +14,7 @@ public class CategorySpecification implements ProductSpecification {
         if (category == null || category.isBlank()) {
             return true;
         }
-        return category.equalsIgnoreCase(product.getCategory());
+        return category.equalsIgnoreCase(String.valueOf(product.getCategory()));
     }
 
 }

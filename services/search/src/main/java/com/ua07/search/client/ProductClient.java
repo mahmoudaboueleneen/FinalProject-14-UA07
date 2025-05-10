@@ -1,6 +1,6 @@
 package com.ua07.search.client;
 
-import com.ua07.merchants.model.Product;
+import com.ua07.search.model.Product;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

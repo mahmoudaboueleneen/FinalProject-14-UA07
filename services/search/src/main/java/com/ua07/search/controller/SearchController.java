@@ -1,8 +1,8 @@
 package com.ua07.search.controller;
 
-import com.ua07.merchants.model.Product;
 import com.ua07.search.dto.SearchRequestDTO;
 import com.ua07.search.dto.SearchResultDTO;
+import com.ua07.search.model.Product;
 import com.ua07.search.service.SearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;

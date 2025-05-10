@@ -1,7 +1,6 @@
 package com.ua07.search.specification;
 
-
-import com.ua07.merchants.model.Product;
+import com.ua07.search.model.Product;
 
 public class KeywordSpecification implements ProductSpecification {
     private final String keyword;
