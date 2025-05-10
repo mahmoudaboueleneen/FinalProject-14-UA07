@@ -1,10 +1,7 @@
 package com.ua07.search.specification;
 
 import com.ua07.merchants.model.Product;
-
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.cloud.context.named.NamedContextFactory;
 
 public class CategorySpecification implements ProductSpecification {
     private final String category;
@@ -15,17 +12,10 @@ public class CategorySpecification implements ProductSpecification {
 
     @Override
     public boolean isSatisfiedBy(Product product) {
-        if (category == null || category.isEmpty()) {
+        if (category == null || category.isBlank()) {
             return true;
         }
         return category.equalsIgnoreCase(product.getCategory());
-    }
-
-    @Override
-    public List<Product> filter(List<Product> products) {
-        return products.stream()
-                .filter(this::isSatisfiedBy)
-                .collect(Collectors.toList());
     }
 
 }
