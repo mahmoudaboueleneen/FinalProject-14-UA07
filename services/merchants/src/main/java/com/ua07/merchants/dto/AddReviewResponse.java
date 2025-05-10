@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecommendProductsResponse extends CommandResponse {
-    List<Product> recommendedProducts;
+public class AddReviewResponse extends CommandResponse {
+    private Product updatedProduct;
 }
+
