@@ -18,3 +18,10 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8083
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+            - name: SPRING_DATA_REDIS_HOST
+              value: search-cache-service
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"

@@ -1,18 +1,20 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: apigateway-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  ingressClassName: nginx
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: apigateway-service
-                port:
-                  number: 8080
+# Note: This would be used when deploying to an actual prod environment.
+# For now, just expose the API Gateway directly.
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: apigateway-ingress
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+#spec:
+#  ingressClassName: nginx
+#  rules:
+#    - http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: apigateway-service
+#                port:
+#                  number: 8080

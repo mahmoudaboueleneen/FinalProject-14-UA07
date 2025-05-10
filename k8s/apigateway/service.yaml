@@ -5,10 +5,11 @@ metadata:
 spec:
   # We still use ClusterIP for the API Gateway because traffic first goes to the Ingress controller,
   # which then routes to the API Gateway service.
-  type: ClusterIP
+#  type: ClusterIP
+  type: NodePort # Using NodePort for testing purposes
   selector:
     app: apigateway
   ports:
     - port: 80
       targetPort: 8080
-      protocol: TCP
+      nodePort: 30081 # NodePort for testing purposes

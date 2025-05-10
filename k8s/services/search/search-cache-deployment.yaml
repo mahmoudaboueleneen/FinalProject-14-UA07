@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-cache-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: search-cache
+  template:
+    metadata:
+      labels:
+        app: search-cache
+    spec:
+      containers:
+        - name: search-cache
+          image: redis
+          ports:
+            - containerPort: 6379
