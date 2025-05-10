@@ -8,8 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients(basePackages = "com.ua07.search.client")
 public class SearchApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SearchApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(SearchApplication.class, args);
+    }
 }

@@ -1,9 +1,8 @@
 package com.ua07.transactions.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Data
@@ -16,12 +15,10 @@ public class Wallet {
         this.amount = amount;
     }
 
-    //no need for getters and setter for using lombok
-    //other constructors are implemented by NoArgs and AllArgsConstructor
+    // no need for getters and setter for using lombok
+    // other constructors are implemented by NoArgs and AllArgsConstructor
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+    @Id @GeneratedValue private UUID id;
 
     @Column(nullable = false)
     private UUID userId;

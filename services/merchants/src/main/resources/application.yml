@@ -17,3 +17,6 @@ spring:
     password: guest
 server:
   port: 8081
+transactions:
+  service:
+    url: http://localhost:8084/orders

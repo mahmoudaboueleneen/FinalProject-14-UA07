@@ -2,36 +2,25 @@ package com.ua07.transactions.controller;
 
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
-
-import com.ua07.transactions.command.PayCommand;
-import com.ua07.transactions.command.PaymentInvoker;
-import com.ua07.transactions.strategy.PaymentStrategy;
-
 import com.ua07.transactions.service.OrderService;
+import com.ua07.transactions.service.PaymentService;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
 
-    private final Map<PaymentMethod, PaymentStrategy> strategyMap;
     private final OrderService orderService;
+    private final PaymentService paymentService;
 
     @Autowired
-    public OrderController(OrderService orderService, List<PaymentStrategy> strategies) {
+    public OrderController(OrderService orderService, PaymentService paymentService) {
         this.orderService = orderService;
-        this.strategyMap = strategies.stream()
-                .collect(Collectors.toMap(PaymentStrategy::getPaymentMethod, Function.identity()));
+        this.paymentService = paymentService;
     }
 
     @GetMapping
@@ -44,7 +33,8 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
-    // TODO: This should take a DTO instead.. and take the User ID from the AuthConstants.USER_ID_HEADER header
+    // TODO: This should take a DTO instead.. and take the User ID from the
+    // AuthConstants.USER_ID_HEADER header
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         return ResponseEntity.ok(orderService.createOrder(order));
@@ -61,25 +51,16 @@ public class OrderController {
     public boolean confirmOrder(@PathVariable UUID id) {
         return orderService.confirmOrder(id);
     }
-    
+
     @GetMapping("/confirmed")
-    public List<Order> getConfirmedOrders(@RequestParam String startDate, @RequestParam String endDate) {
+    public List<Order> getConfirmedOrders(
+            @RequestParam String startDate, @RequestParam String endDate) {
         return orderService.getConfirmedOrders(startDate, endDate);
     }
 
-    @PostMapping("/{id}/pay")
-    public Object payOrder(@PathVariable UUID id, @RequestParam PaymentMethod paymentMethod) throws Exception {
-        Order order = orderService.getOrderById(id);
-
-        PaymentStrategy paymentStrategy = strategyMap.get(paymentMethod);
-        if (paymentStrategy == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported payment method: " + paymentMethod);
-        }
-
-        PaymentInvoker invoker = new PaymentInvoker();
-        PayCommand payCommand = new PayCommand(order, paymentStrategy);
-        invoker.setCommand(payCommand);
-        return invoker.executeCommand();
+    @PostMapping("/{orderId}/pay")
+    public void payOrder(@PathVariable UUID orderId, @RequestParam PaymentMethod paymentMethod)
+            throws Exception {
+        paymentService.pay(orderId, paymentMethod);
     }
-
 }

@@ -1,40 +1,54 @@
+server:
+  port: 8080
+jwt:
+  secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3 # Same exact secret as in users-service
 spring:
   application:
     name: apigateway
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       routes:
-        - id: merchants-service
-          uri: ${MERCHANTS_SERVICE_URI}
+        - id: products-path
+          uri: http://localhost:8081
           predicates:
-            - Path=/api/v1/merchants/**
+            - Path=/api/v1/products/**
           filters:
             - StripPrefix=2
-        - id: notifications-service
-          uri: ${NOTIFICATIONS_SERVICE_URI}
+        - id: notifications-path
+          uri: http://localhost:8082
           predicates:
             - Path=/api/v1/notifications/**
           filters:
             - StripPrefix=2
-        - id: search-service
-          uri: ${SEARCH_SERVICE_URI}
+        - id: preferences-path
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/preferences/**
+          filters:
+            - StripPrefix=2
+        - id: search-path
+          uri: http://localhost:8083
           predicates:
             - Path=/api/v1/search/**
           filters:
             - StripPrefix=2
-        - id: transactions-service
-          uri: ${TRANSACTIONS_SERVICE_URI}
+        - id: orders-path
+          uri: http://localhost:8084
           predicates:
-            - Path=/api/v1/transactions/**
+            - Path=/api/v1/orders/**
           filters:
             - StripPrefix=2
-        - id: users-service
-          uri: ${USERS_SERVICE_URI}
+        - id: users-path
+          uri: http://localhost:8085
           predicates:
             - Path=/api/v1/users/**
           filters:
             - StripPrefix=2
-server:
-  port: 8080
-jwt:
-  secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3
+        - id: auth-path
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=2

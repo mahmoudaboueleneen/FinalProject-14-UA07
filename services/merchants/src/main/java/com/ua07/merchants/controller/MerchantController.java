@@ -1,9 +1,9 @@
 package com.ua07.merchants.controller;
 
 import com.ua07.merchants.client.OrderClient;
+import com.ua07.merchants.command.AddReviewCommand;
 import com.ua07.merchants.command.AdjustStockCommand;
 import com.ua07.merchants.command.GenerateSalesReportCommand;
-import com.ua07.merchants.command.RecommendProductsCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.repository.ProductRepository;
@@ -12,10 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 
 @RestController
 @RequestMapping("/products")
@@ -34,8 +39,19 @@ public class MerchantController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        product.setId(UUID.randomUUID());
-        return productRepository.save(product);
+        Product createdProduct = Product.builder()
+                .withId(UUID.randomUUID())
+                .withName(product.getName())
+                .withDescription(product.getDescription())
+                .withPrice(product.getPrice())
+                .withStock(product.getStock())
+                .withCategory(product.getCategory())
+                .withCreatedAt(LocalDateTime.now())
+                .withAdditionalAttributes(product.getAdditionalAttributes())
+                .withReviews(new ArrayList<>())
+                .build();
+
+        return productRepository.save(createdProduct);
     }
 
     @GetMapping
@@ -43,12 +59,14 @@ public class MerchantController {
         return productRepository.findAll();
     }
 
+    @Cacheable(value = "product", key = "#id")
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
+    @CachePut(value = "product", key = "#id")
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable UUID id, @RequestBody Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -63,7 +81,9 @@ public class MerchantController {
                     .withPrice(updated.getPrice())
                     .withStock(updated.getStock())
                     .withCategory(updated.getCategory())
+                    .withCreatedAt(updated.getCreatedAt())
                     .withAdditionalAttributes(updated.getAdditionalAttributes())
+                    .withReviews(updated.getReviews())
                     .build();
 
             return productRepository.save(updatedProduct);
@@ -72,6 +92,7 @@ public class MerchantController {
         }
     }
 
+    @CacheEvict(value = "product", key = "#id")
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable UUID id) {
         if (!productRepository.existsById(id)) {
@@ -80,20 +101,13 @@ public class MerchantController {
         productRepository.deleteById(id);
     }
 
-    @PutMapping("/{productID}/adjustStock")
+    @PutMapping("/{productId}/adjustStock")
     public AdjustStockResponse adjustStock(
-            @PathVariable UUID productID,
+            @PathVariable UUID productId,
             @RequestParam int stockChange
     ) {
-        AdjustStockRequest request = new AdjustStockRequest(productID, stockChange);
+        AdjustStockRequest request = new AdjustStockRequest(productId, stockChange);
         AdjustStockCommand command = new AdjustStockCommand(productRepository);
-        return commandExecutor.execute(command, request);
-    }
-
-    @GetMapping("/{id}/recommendations")
-    public RecommendProductsResponse recommendProducts(@PathVariable UUID id) {
-        RecommendProductsRequest request = new RecommendProductsRequest(id);
-        RecommendProductsCommand command = new RecommendProductsCommand(productRepository);
         return commandExecutor.execute(command, request);
     }
 
@@ -104,6 +118,18 @@ public class MerchantController {
     ) {
         GenerateSalesReportRequest request = new GenerateSalesReportRequest(yearMonth);
         GenerateSalesReportCommand command = new GenerateSalesReportCommand(orderClient);
+        return commandExecutor.execute(command, request);
+    }
+
+    @PostMapping("/{productId}/addReview")
+    public AddReviewResponse addReview(
+            @PathVariable UUID productId,
+            @RequestHeader(value = "User-ID", required = true) UUID userId,
+            @RequestParam int rating,
+            @RequestParam String comment
+    ) {
+        AddReviewRequest request = new AddReviewRequest(productId, userId, rating, comment);
+        AddReviewCommand command = new AddReviewCommand(productRepository);
         return commandExecutor.execute(command, request);
     }
 

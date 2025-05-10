@@ -1,5 +1,0 @@
-MERCHANTS_SERVICE_URI: http://merchants-service:8081
-NOTIFICATIONS_SERVICE_URI: http://notifications-service:8082
-SEARCH_SERVICE_URI: http://search-service:8083
-TRANSACTIONS_SERVICE_URI: http://transactions-service:8084
-USERS_SERVICE_URI: http://users-service:8085

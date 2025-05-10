@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: merchants-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: merchants
+  template:
+    metadata:
+      labels:
+        app: merchants
+    spec:
+      containers:
+        - name: merchants-service
+          image: mahmoudaboueleneen/amazon-replica:merchants-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+            - name: SPRING_DATA_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: merchants-db-secret
+                  key: URI
+            - name: SPRING_DATA_MONGODB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: merchants-db-secret
+                  key: MONGO_INITDB_DATABASE
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_USER
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_PASS
+            - name: SPRING_DATA_REDIS_HOST
+              value: merchants-cache-service
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
+            - name: TRANSACTIONS_SERVICE_URL
+              value: http://transactions-service:8080/orders

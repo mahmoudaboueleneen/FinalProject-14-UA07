@@ -1,0 +1,35 @@
+<!-- invoice-template.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body { font-family: Arial; }
+        .header { text-align: center; font-size: 18px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; }
+    </style>
+</head>
+<body>
+<div class="header">Invoice</div>
+<p>Order ID: <span th:text="${order.id}"></span></p>
+<p>User ID: <span th:text="${order.userId}"></span></p>
+<p>Shipping Address: <span th:text="${order.shippingAddress}"></span></p>
+<p>Total: $<span th:text="${order.totalAmount}"></span></p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${order.lineItems}">
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.count}"></td>
+        <td th:text="${item.unitCost}"></td>
+        <td th:text="${item.totalCost}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
