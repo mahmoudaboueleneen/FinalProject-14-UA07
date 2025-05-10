@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transactions-db-service
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  clusterIP: None  # Headless service
+  selector:
+    app: transactions-db

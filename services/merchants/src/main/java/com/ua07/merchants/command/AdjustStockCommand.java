@@ -7,7 +7,6 @@ import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.Command;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Optional;
 
 public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustStockResponse> {
@@ -81,5 +80,4 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
             throw new RuntimeException("Product not found with ID: " + RequestExecuted.getProductId());
         }
     }
-
 }

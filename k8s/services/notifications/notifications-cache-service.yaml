@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-cache-service
+spec:
+  selector:
+    app: notifications-cache
+  ports:
+    - port: 6379
+      targetPort: 6379

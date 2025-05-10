@@ -1,10 +1,9 @@
 package com.ua07.notifications.listener;
 
 import com.ua07.shared.rabbitmq.RabbitMQConstants;
+import java.util.Map;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class NotificationQueueListeners {
@@ -32,8 +31,8 @@ public class NotificationQueueListeners {
         if ("SHORTAGE".equals(message.get("type"))) {
             String productId = (String) message.get("productId");
             int stock = (Integer) message.get("remainingStock");
-            System.out.println("[ALERT] Product " + productId + " is low on stock: only " + stock + " left!");
+            System.out.println(
+                    "[ALERT] Product " + productId + " is low on stock: only " + stock + " left!");
         }
     }
-
 }

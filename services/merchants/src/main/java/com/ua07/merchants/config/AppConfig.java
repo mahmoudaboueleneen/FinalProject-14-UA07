@@ -11,5 +11,4 @@ public class AppConfig {
     public CommandExecutor commandExecutor() {
         return new CommandExecutor();
     }
-
 }

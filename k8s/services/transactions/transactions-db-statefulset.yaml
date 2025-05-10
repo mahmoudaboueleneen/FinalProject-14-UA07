@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: transactions-db-statefulset
+spec:
+  serviceName: "transactions-db-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transactions-db
+  template:
+    metadata:
+      labels:
+        app: transactions-db
+    spec:
+      containers:
+        - name: transactions-db
+          image: postgres
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: transactions-db-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: transactions-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: transactions-db-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: transactions-db-persistent-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: transactions-db-persistent-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: merchants-cache-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: merchants-cache
+  template:
+    metadata:
+      labels:
+        app: merchants-cache
+    spec:
+      containers:
+        - name: merchants-cache
+          image: redis
+          ports:
+            - containerPort: 6379

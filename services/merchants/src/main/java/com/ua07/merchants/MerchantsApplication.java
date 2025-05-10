@@ -10,8 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableCaching
 public class MerchantsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MerchantsApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(MerchantsApplication.class, args);
+    }
 }

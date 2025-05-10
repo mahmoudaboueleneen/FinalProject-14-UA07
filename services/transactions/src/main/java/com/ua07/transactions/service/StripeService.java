@@ -8,5 +8,4 @@ public class StripeService {
     public void processPayment(Double totalAmount) {
         throw new UnsupportedOperationException("Unimplemented method 'processPayment'");
     }
-
 }
