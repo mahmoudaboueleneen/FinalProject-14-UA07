@@ -14,4 +14,3 @@ import lombok.Setter;
 public class AdjustStockResponse extends CommandResponse {
     private Product updatedProduct;
 }
-

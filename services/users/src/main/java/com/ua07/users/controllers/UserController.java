@@ -3,12 +3,11 @@ package com.ua07.users.controllers;
 import com.ua07.shared.auth.AuthConstants;
 import com.ua07.users.models.User;
 import com.ua07.users.services.UserService;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -17,8 +16,8 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
-        this.userService=userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/test")
@@ -40,7 +39,8 @@ public class UserController {
 
     // Get current user
     @GetMapping("/current")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId) {
+    public ResponseEntity<User> getCurrentUser(
+            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId) {
         if (userId == null) {
             return ResponseEntity.badRequest().build(); // or throw a custom exception
         }
@@ -59,5 +59,4 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
 }
