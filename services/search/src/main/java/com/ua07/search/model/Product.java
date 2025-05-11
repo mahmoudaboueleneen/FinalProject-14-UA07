@@ -1,15 +1,15 @@
-package com.ua07.merchants.model;
+// mirror of com.ua07.merchants.model.Product .. update whenever the original class is updated
+package com.ua07.search.model;
 
-import com.ua07.merchants.enums.Category;
+
+import com.ua07.search.enums.Category;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Document(collection = "products")
 @Builder(setterPrefix = "with")
 @Getter
 @Setter

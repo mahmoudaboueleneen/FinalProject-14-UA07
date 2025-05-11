@@ -25,3 +25,5 @@ spec:
               value: search-cache-service
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
+            - name: MERCHANTS_SERVICE_URL
+              value: http://merchants-service:8080

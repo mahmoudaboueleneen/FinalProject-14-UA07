@@ -168,6 +168,7 @@ services:
     environment:
       - spring.data.redis.host=search-cache
       - spring.data.redis.port=6379
+      - merchants.service.url=http://merchants-service:8081
     restart: always
 
   search-cache:
