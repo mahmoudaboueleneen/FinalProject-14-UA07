@@ -2,10 +2,15 @@ package com.ua07.notifications.models;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
+@Setter
+@Getter
 @Document(collection = "notifications")
 public class Notification {
 
@@ -51,75 +56,4 @@ public class Notification {
         this.threshold = threshold;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Boolean getIsRead() {
-        return isRead;
-    }
-
-    public void setIsRead(Boolean isRead) {
-        this.isRead = isRead;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public NotificationType getType() {
-        return type;
-    }
-
-    public void setType(NotificationType type) {
-        this.type = type;
-    }
-
-    public String getProductIdInShortage() {
-        return productIdInShortage;
-    }
-
-    public void setProductIdInShortage(String productIdInShortage) {
-        this.productIdInShortage = productIdInShortage;
-    }
-
-    public Integer getCurrentCount() {
-        return currentCount;
-    }
-
-    public void setCurrentCount(Integer currentCount) {
-        this.currentCount = currentCount;
-    }
-
-    public Integer getThreshold() {
-        return threshold;
-    }
-
-    public void setThreshold(Integer threshold) {
-        this.threshold = threshold;
-    }
 }
