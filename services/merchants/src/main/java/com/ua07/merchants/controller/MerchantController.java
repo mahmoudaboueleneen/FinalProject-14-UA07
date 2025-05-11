@@ -3,6 +3,7 @@ package com.ua07.merchants.controller;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.service.MerchantService;
+import com.ua07.shared.auth.AuthConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -86,7 +87,7 @@ public class MerchantController {
     @PostMapping("/{productId}/addReview")
     public AddReviewResponse addReview(
             @PathVariable UUID productId,
-            @RequestHeader(value = "User-ID", required = true) UUID userId,
+            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId,
             @RequestParam int rating,
             @RequestParam String comment
     ) {
