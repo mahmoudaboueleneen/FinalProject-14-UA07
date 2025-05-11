@@ -13,7 +13,7 @@ public class SearchRequestDTO {
     @Min(value = 0, message = "maxPrice must be >= 0")
     private Double maxPrice;
 
-    @Pattern(regexp = "^(price|popularity)?$", message = "sortBy must be price, or popularity")
+    @Pattern(regexp = "^(price|popularity|recency)?$", message = "sortBy must be price, popularity, or recency")
     private String sortBy;
 
     public SearchRequestDTO() {}

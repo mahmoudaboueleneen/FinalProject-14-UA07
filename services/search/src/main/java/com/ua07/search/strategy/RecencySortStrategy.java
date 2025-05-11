@@ -9,7 +9,7 @@ public class RecencySortStrategy implements SortingStrategy {
     @Override
     public List<Product> sort(List<Product> products) {
         return products.stream()
-                .sorted(Comparator.comparing(Product::getName).reversed())
+                .sorted(Comparator.comparing(Product::getCreatedAt).reversed())
                 .toList();
     }
 }
