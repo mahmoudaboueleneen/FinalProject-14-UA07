@@ -75,6 +75,30 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+    <!--  Observability  -->
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-micrometer1-shim</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+      <version>0.16.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+      <version>1.11.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+    </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -85,6 +109,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-bom</artifactId>
+        <version>1.47.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 		</dependencies>
 	</dependencyManagement>
 
