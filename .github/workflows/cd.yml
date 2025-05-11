@@ -50,42 +50,41 @@ jobs:
           fi
 
       # Build and push images only for changed services
-      # TODO: Uncomment these when the services are fully ready.. commented out to save GitHub Actions minutes
-#      - name: Build and push API Gateway Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
-#        run: |
-#          docker build ./apigateway --tag mahmoudaboueleneen/amazon-replica:apigateway
-#          docker push mahmoudaboueleneen/amazon-replica:apigateway
-#
-#      - name: Build and push Merchants Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
-#        run: |
-#          docker build ./services/merchants --tag mahmoudaboueleneen/amazon-replica:merchants-service
-#          docker push mahmoudaboueleneen/amazon-replica:merchants-service
-#
-#      - name: Build and push Notifications Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
-#        run: |
-#          docker build ./services/notifications --tag mahmoudaboueleneen/amazon-replica:notifications-service
-#          docker push mahmoudaboueleneen/amazon-replica:notifications-service
-#
-#      - name: Build and push Search Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
-#        run: |
-#          docker build ./services/search --tag mahmoudaboueleneen/amazon-replica:search-service
-#          docker push mahmoudaboueleneen/amazon-replica:search-service
-#
-#      - name: Build and push Transactions Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
-#        run: |
-#          docker build ./services/transactions --tag mahmoudaboueleneen/amazon-replica:transactions-service
-#          docker push mahmoudaboueleneen/amazon-replica:transactions-service
-#
-#      - name: Build and push Users Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
-#        run: |
-#          docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
-#          docker push mahmoudaboueleneen/amazon-replica:users-service
+      - name: Build and push API Gateway Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
+        run: |
+          docker build ./apigateway --tag mahmoudaboueleneen/amazon-replica:apigateway
+          docker push mahmoudaboueleneen/amazon-replica:apigateway
+
+      - name: Build and push Merchants Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
+        run: |
+          docker build ./services/merchants --tag mahmoudaboueleneen/amazon-replica:merchants-service
+          docker push mahmoudaboueleneen/amazon-replica:merchants-service
+
+      - name: Build and push Notifications Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
+        run: |
+          docker build ./services/notifications --tag mahmoudaboueleneen/amazon-replica:notifications-service
+          docker push mahmoudaboueleneen/amazon-replica:notifications-service
+
+      - name: Build and push Search Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
+        run: |
+          docker build ./services/search --tag mahmoudaboueleneen/amazon-replica:search-service
+          docker push mahmoudaboueleneen/amazon-replica:search-service
+
+      - name: Build and push Transactions Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
+        run: |
+          docker build ./services/transactions --tag mahmoudaboueleneen/amazon-replica:transactions-service
+          docker push mahmoudaboueleneen/amazon-replica:transactions-service
+
+      - name: Build and push Users Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
+        run: |
+          docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
+          docker push mahmoudaboueleneen/amazon-replica:users-service
 
 # TODO: Uncomment this when deployment is ready
 #  deploy_to_k8s:
