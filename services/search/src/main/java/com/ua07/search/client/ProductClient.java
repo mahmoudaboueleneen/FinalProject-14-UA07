@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "merchants-service", url = "http://merchants-service:8084")
+@FeignClient(name = "merchants-service", url = "${merchants.service.url}")
 public interface ProductClient {
     @GetMapping("/products")
     List<Product> getAllProducts();
 
-    @GetMapping("/products/search")
-    List<Product> searchProductsByKeyword(@RequestParam("keyword") String keyword);
+//    @GetMapping("/products/search")
+//    List<Product> searchProductsByKeyword(@RequestParam("keyword") String keyword);
 }

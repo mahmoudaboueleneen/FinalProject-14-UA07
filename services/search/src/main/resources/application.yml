@@ -9,3 +9,6 @@ spring:
     type: redis
 server:
   port: 8083
+merchants:
+  service:
+    url: http://localhost:8081
