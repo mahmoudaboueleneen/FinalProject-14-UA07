@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 @Document(collection = "preferences")
 public class Preferences {
 
-    @Id private UUID id;
+    @Id private String id;
 
     private UUID userId;
 
