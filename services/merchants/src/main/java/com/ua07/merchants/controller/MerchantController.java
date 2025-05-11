@@ -43,33 +43,33 @@ public class MerchantController {
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable UUID id) {
+    public Product getProductById(@PathVariable String id) {
         return merchantService.getProductById(id);
     }
 
     @PutMapping("/laptops/{id}")
-    public Product updateProductLaptop(@PathVariable UUID id, @RequestBody Product updated) {
+    public Product updateProductLaptop(@PathVariable String id, @RequestBody Product updated) {
         return merchantService.updateProductLaptop(id, updated);
     }
 
     @PutMapping("/books/{id}")
-    public Product updateProductBook(@PathVariable UUID id, @RequestBody Product updated) {
+    public Product updateProductBook(@PathVariable String id, @RequestBody Product updated) {
         return merchantService.updateProductBook(id, updated);
     }
 
     @PutMapping("/jackets/{id}")
-    public Product updateProductJacket(@PathVariable UUID id, @RequestBody Product updated) {
+    public Product updateProductJacket(@PathVariable String id, @RequestBody Product updated) {
         return merchantService.updateProductJacket(id, updated);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable UUID id) {
+    public void deleteProduct(@PathVariable String id) {
         merchantService.deleteProduct(id);
     }
 
     @PutMapping("/{productId}/adjustStock")
     public AdjustStockResponse adjustStock(
-            @PathVariable UUID productId,
+            @PathVariable String productId,
             @RequestParam int stockChange
     ) {
         return merchantService.adjustStock(productId, stockChange);
@@ -85,8 +85,8 @@ public class MerchantController {
 
     @PostMapping("/{productId}/addReview")
     public AddReviewResponse addReview(
-            @PathVariable UUID productId,
-            @RequestHeader(value = "User-ID", required = true) UUID userId,
+            @PathVariable String productId,
+            @RequestHeader(value = "User-ID", required = true) String userId,
             @RequestParam int rating,
             @RequestParam String comment
     ) {

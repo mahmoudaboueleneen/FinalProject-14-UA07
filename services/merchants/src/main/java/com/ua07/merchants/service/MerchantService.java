@@ -38,7 +38,7 @@ public class MerchantService {
 
     public Product createProductLaptop(Product product) {
         Product createdProduct = Product.builder()
-                .withId(UUID.randomUUID())
+                .withId(UUID.randomUUID().toString())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -56,7 +56,7 @@ public class MerchantService {
 
     public Product createProductBook(Product product) {
         Product createdProduct = Product.builder()
-                .withId(UUID.randomUUID())
+                .withId(UUID.randomUUID().toString())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -74,7 +74,7 @@ public class MerchantService {
 
     public Product createProductJacket(Product product) {
         Product createdProduct = Product.builder()
-                .withId(UUID.randomUUID())
+                .withId(UUID.randomUUID().toString())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -95,13 +95,13 @@ public class MerchantService {
     }
 
     @Cacheable(value = "product", key = "#id")
-    public Product getProductById(UUID id) {
+    public Product getProductById(String id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     @CachePut(value = "product", key = "#id")
-    public Product updateProductLaptop(UUID id, Product updated) {
+    public Product updateProductLaptop(String id, Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
@@ -128,7 +128,7 @@ public class MerchantService {
     }
 
     @CachePut(value = "product", key = "#id")
-    public Product updateProductBook(UUID id, Product updated) {
+    public Product updateProductBook(String id, Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
@@ -155,7 +155,7 @@ public class MerchantService {
     }
 
     @CachePut(value = "product", key = "#id")
-    public Product updateProductJacket(UUID id, Product updated) {
+    public Product updateProductJacket(String id, Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
@@ -182,7 +182,7 @@ public class MerchantService {
     }
 
     @CacheEvict(value = "product", key = "#id")
-    public void deleteProduct(UUID id) {
+    public void deleteProduct(String id) {
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found");
         }
@@ -190,7 +190,7 @@ public class MerchantService {
     }
 
     public AdjustStockResponse adjustStock(
-            UUID productId,
+            String productId,
             int stockChange
     ) {
         AdjustStockRequest request = new AdjustStockRequest(productId, stockChange);
@@ -205,8 +205,8 @@ public class MerchantService {
     }
 
     public AddReviewResponse addReview(
-            UUID productId,
-            UUID userId,
+            String productId,
+            String userId,
             int rating,
             String comment
     ) {

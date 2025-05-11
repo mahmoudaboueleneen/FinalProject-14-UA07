@@ -8,7 +8,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review {
-    private UUID userId;
+    private String userId;
     private int rating;
     private String comment;
 }

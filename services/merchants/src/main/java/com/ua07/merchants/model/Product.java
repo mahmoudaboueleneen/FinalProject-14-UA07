@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Product {
 
     //COMMON
-    @Id private UUID id;
+    @Id private String id;
     private String name;
     private String description;
     private double price;

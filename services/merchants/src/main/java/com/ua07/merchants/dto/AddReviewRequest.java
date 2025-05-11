@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddReviewRequest extends CommandRequest {
-    private UUID productId;
-    private UUID userId;
+    private String productId;
+    private String userId;
     private int rating;
     private String comment;
 }
