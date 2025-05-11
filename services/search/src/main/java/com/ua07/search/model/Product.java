@@ -4,7 +4,6 @@ package com.ua07.search.model;
 
 import com.ua07.search.enums.Category;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.UUID;
 public class Product {
 
     //COMMON
-    @Id private UUID id;
+    private String id;
     private String name;
     private String description;
     private double price;
