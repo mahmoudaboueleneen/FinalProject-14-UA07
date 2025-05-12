@@ -42,7 +42,7 @@ public class PaymentService {
         PaymentStrategy paymentStrategy;
         CommandExecutor commandExecutor = new CommandExecutor();
         switch (paymentMethod) {
-            case PaymentMethod.WALLET:
+            case WALLET:
                 paymentStrategy =
                         new WalletPaymentStrategy(
                                 commandExecutor,
@@ -50,7 +50,7 @@ public class PaymentService {
                                 transactionRepository,
                                 walletRepository);
                 break;
-            case PaymentMethod.COD:
+            case COD:
                 paymentStrategy =
                         new CODPaymentStrategy(
                                 commandExecutor, orderRepository, transactionRepository);
