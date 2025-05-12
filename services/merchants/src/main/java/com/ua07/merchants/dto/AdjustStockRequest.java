@@ -12,6 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdjustStockRequest extends CommandRequest {
-    private UUID productId;
+    private String productId;
     private int stockChange;
 }

@@ -50,42 +50,41 @@ jobs:
           fi
 
       # Build and push images only for changed services
-      # TODO: Uncomment these when the services are fully ready.. commented out to save GitHub Actions minutes
-#      - name: Build and push API Gateway Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
-#        run: |
-#          docker build ./apigateway --tag mahmoudaboueleneen/amazon-replica:apigateway
-#          docker push mahmoudaboueleneen/amazon-replica:apigateway
-#
-#      - name: Build and push Merchants Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
-#        run: |
-#          docker build ./services/merchants --tag mahmoudaboueleneen/amazon-replica:merchants-service
-#          docker push mahmoudaboueleneen/amazon-replica:merchants-service
-#
-#      - name: Build and push Notifications Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
-#        run: |
-#          docker build ./services/notifications --tag mahmoudaboueleneen/amazon-replica:notifications-service
-#          docker push mahmoudaboueleneen/amazon-replica:notifications-service
-#
-#      - name: Build and push Search Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
-#        run: |
-#          docker build ./services/search --tag mahmoudaboueleneen/amazon-replica:search-service
-#          docker push mahmoudaboueleneen/amazon-replica:search-service
-#
-#      - name: Build and push Transactions Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
-#        run: |
-#          docker build ./services/transactions --tag mahmoudaboueleneen/amazon-replica:transactions-service
-#          docker push mahmoudaboueleneen/amazon-replica:transactions-service
-#
-#      - name: Build and push Users Image
-#        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
-#        run: |
-#          docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
-#          docker push mahmoudaboueleneen/amazon-replica:users-service
+      - name: Build and push API Gateway Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
+        run: |
+          docker build ./apigateway --tag mahmoudaboueleneen/amazon-replica:apigateway
+          docker push mahmoudaboueleneen/amazon-replica:apigateway
+
+      - name: Build and push Merchants Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
+        run: |
+          docker build ./services/merchants --tag mahmoudaboueleneen/amazon-replica:merchants-service
+          docker push mahmoudaboueleneen/amazon-replica:merchants-service
+
+      - name: Build and push Notifications Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
+        run: |
+          docker build ./services/notifications --tag mahmoudaboueleneen/amazon-replica:notifications-service
+          docker push mahmoudaboueleneen/amazon-replica:notifications-service
+
+      - name: Build and push Search Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
+        run: |
+          docker build ./services/search --tag mahmoudaboueleneen/amazon-replica:search-service
+          docker push mahmoudaboueleneen/amazon-replica:search-service
+
+      - name: Build and push Transactions Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
+        run: |
+          docker build ./services/transactions --tag mahmoudaboueleneen/amazon-replica:transactions-service
+          docker push mahmoudaboueleneen/amazon-replica:transactions-service
+
+      - name: Build and push Users Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
+        run: |
+          docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
+          docker push mahmoudaboueleneen/amazon-replica:users-service
 
 # TODO: Uncomment this when deployment is ready
 #  deploy_to_k8s:
@@ -108,53 +107,103 @@ jobs:
 #        env:
 #          KUBECONFIG: ${{ secrets.KUBECONFIG }}
 #
-#      - name: Apply API Gateway Deployment and Service
+#      - name: Apply RabbitMQ Deployment
+#        run: |
+#          kubectl apply -f k8s/rabbitmq/rabbitmq-secret.yaml
+#          kubectl apply -f k8s/rabbitmq/rabbitmq-deployment.yaml
+#          kubectl apply -f k8s/rabbitmq/rabbitmq-service.yaml
+#
+#      - name: Apply API Gateway Deployment
 #        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'apigateway') }}
 #        run: |
-#          kubectl apply -f k8s/apigateway/deployment.yaml
-#          kubectl apply -f k8s/apigateway/service.yaml
+#          kubectl apply -f k8s/apigateway/apigateway-ingress.yaml
+#          kubectl apply -f k8s/apigateway/apigateway-deployment.yaml
+#          kubectl apply -f k8s/apigateway/apigateway-service.yaml
 #
-#      - name: Apply Merchants Deployment and Service
+#      - name: Apply Merchants Deployment
 #        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/merchants') }}
 #        run: |
-#          kubectl apply -f k8s/services/merchants/deployment.yaml
-#          kubectl apply -f k8s/services/merchants/service.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-cache-deployment.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-cache-service.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-db-secret.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-db-service.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-db-statefulset.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-deployment.yaml
+#          kubectl apply -f k8s/services/merchants/merchants-service.yaml
 #
-#      - name: Apply Notifications Deployment and Service
+#      - name: Apply Notifications Deployment
 #        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/notifications') }}
 #        run: |
-#          kubectl apply -f k8s/services/notifications/deployment.yaml
-#          kubectl apply -f k8s/services/notifications/service.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-cache-deployment.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-cache-service.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-db-secret.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-db-service.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-db-statefulset.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-deployment.yaml
+#          kubectl apply -f k8s/services/notifications/notifications-service.yaml
 #
-#      - name: Apply Search Deployment and Service
+#      - name: Apply Search Deployment
 #        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/search') }}
 #        run: |
-#          kubectl apply -f k8s/services/search/deployment.yaml
-#          kubectl apply -f k8s/services/search/service.yaml
+#          kubectl apply -f k8s/services/search/search-cache-deployment.yaml
+#          kubectl apply -f k8s/services/search/search-cache-service.yaml
+#          kubectl apply -f k8s/services/search/search-deployment.yaml
+#          kubectl apply -f k8s/services/search/search-service.yaml
 #
-#      - name: Apply Transactions Deployment and Service
+#      - name: Apply Transactions Deployment
 #        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/transactions') }}
 #        run: |
-#          kubectl apply -f k8s/services/transactions/deployment.yaml
-#          kubectl apply -f k8s/services/transactions/service.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-cache-deployment.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-cache-service.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-db-secret.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-db-service.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-db-statefulset.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-deployment.yaml
+#          kubectl apply -f k8s/services/transactions/transactions-service.yaml
 #
-#      - name: Apply Users Deployment and Service
+#      - name: Apply Users Deployment
 #        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'services/users') }}
 #        run: |
-#          kubectl apply -f k8s/services/users/deployment.yaml
-#          kubectl apply -f k8s/services/users/service.yaml
+#          kubectl apply -f k8s/services/users/users-db-secret.yaml
+#          kubectl apply -f k8s/services/users/users-db-service.yaml
+#          kubectl apply -f k8s/services/users/users-db-statefulset.yaml
+#          kubectl apply -f k8s/services/users/users-deployment.yaml
+#          kubectl apply -f k8s/services/users/users-service.yaml
 #
-#      - name: Check deployment status
+#      - name: Check Deployment and StatefulSet Status
 #        run: |
-#          kubectl get deployments
-#          kubectl get pods
-#          kubectl get services
-#          kubectl rollout status deployment/apigateway-deployment
-#          kubectl rollout status deployment/merchants-deployment
-#          kubectl rollout status deployment/notifications-deployment
-#          kubectl rollout status deployment/search-deployment
-#          kubectl rollout status deployment/transactions-deployment
-#          kubectl rollout status deployment/users-deployment
+#          # Get all resources to see a broad overview
+#          kubectl get all
+#
+#          # Check status for all Deployments
+#          kubectl rollout status deployment/apigateway-deployment --timeout=900s
+#          kubectl rollout status deployment/merchants-deployment --timeout=900s
+#          kubectl rollout status deployment/notifications-deployment --timeout=900s
+#          kubectl rollout status deployment/search-deployment --timeout=900s
+#          kubectl rollout status deployment/transactions-deployment --timeout=900s
+#          kubectl rollout status deployment/users-deployment --timeout=900s
+#
+#          # Check status for all StatefulSets
+#          kubectl rollout status statefulset/merchants-db-statefulset --timeout=900s
+#          kubectl rollout status statefulset/notifications-db-statefulset --timeout=900s
+#          kubectl rollout status statefulset/transactions-db-statefulset --timeout=900s
+#          kubectl rollout status statefulset/users-db-statefulset --timeout=900s
+#
+#          # Wait for pods to be ready (ensure pods for each service are up and running)
+#          kubectl wait --for=condition=ready pod -l app=apigateway --timeout=600s
+#          kubectl wait --for=condition=ready pod -l app=merchants --timeout=600s
+#          kubectl wait --for=condition=ready pod -l app=notifications --timeout=600s
+#          kubectl wait --for=condition=ready pod -l app=search --timeout=600s
+#          kubectl wait --for=condition=ready pod -l app=transactions --timeout=600s
+#          kubectl wait --for=condition=ready pod -l app=users --timeout=600s
+#
+#          # Check if services are correctly applied (they should be after kubectl apply)
+#          kubectl describe svc apigateway-service
+#          kubectl describe svc merchants-service
+#          kubectl describe svc notifications-service
+#          kubectl describe svc search-service
+#          kubectl describe svc transactions-service
+#          kubectl describe svc users-service
 
   notify_discord:
     runs-on: ubuntu-latest

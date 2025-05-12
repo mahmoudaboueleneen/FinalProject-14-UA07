@@ -1,5 +1,0 @@
-MERCHANTS_SERVICE_URI: lb://merchants-service
-NOTIFICATIONS_SERVICE_URI: lb://notifications-service
-SEARCH_SERVICE_URI: lb://search-service
-TRANSACTIONS_SERVICE_URI: lb://transactions-service
-USERS_SERVICE_URI: lb://users-service

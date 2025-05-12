@@ -21,5 +21,21 @@ server:
 jwt:
   secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3 # Same exact secret as in apigateway
 
-
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+    metrics:
+      tags:
+        application: app
+      distribution:
+        percentiles-histogram:
+          http:
+            server:
+              requests: "true"
+    logging:
+      pattern:
+        level: "trace_id=%mdc{trace_id} span_id=%mdc{span_id} trace_flags=%mdc{trace_flags} %p"
+      level:
+        com.example.app: DEBUG

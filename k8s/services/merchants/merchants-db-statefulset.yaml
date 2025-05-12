@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: merchants-db-statefulset
+spec:
+  serviceName: "merchants-db-service"  # Must match headless service
+  replicas: 1  # Can scale to more for replica set
+  selector:
+    matchLabels:
+      app: merchants-db
+  template:
+    metadata:
+      labels:
+        app: merchants-db
+    spec:
+      containers:
+        - name: merchants-db
+          image: mongo
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: merchants-db-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: merchants-db-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: merchants-db-secret
+                  key: MONGO_INITDB_DATABASE
+          volumeMounts:
+            - name: merchants-db-persistent-volume
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: merchants-db-persistent-volume
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

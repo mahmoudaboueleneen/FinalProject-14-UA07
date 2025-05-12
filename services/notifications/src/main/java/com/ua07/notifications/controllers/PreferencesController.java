@@ -12,25 +12,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("preferences")
 public class PreferencesController {
 
-    @Autowired private PreferencesService service;
+    private final PreferencesService preferencesService;
+
+    @Autowired
+    public PreferencesController(PreferencesService preferencesService) {
+        this.preferencesService = preferencesService;
+    }
 
     @PostMapping
     public Preferences createOrUpdate(@RequestBody Preferences preferences) {
-        return service.createOrUpdate(preferences);
+        return preferencesService.createOrUpdate(preferences);
     }
 
     @GetMapping
     public List<Preferences> getAll() {
-        return service.getAll();
+        return preferencesService.getAll();
     }
 
+    // TODO: Maybe get userId from the header? idk
     @GetMapping("/{userId}")
-    public Optional<Preferences> getById(@PathVariable UUID userId) {
-        return service.getByUserId(userId);
+    public Optional<Preferences> getByUserId(@PathVariable UUID userId) {
+        return preferencesService.getByUserId(userId);
     }
 
+    // TODO: Maybe get userId from the header? idk
     @DeleteMapping("/{userId}")
-    public void delete(@PathVariable UUID userId) {
-        service.delete(userId);
+    public void deleteByUserId(@PathVariable UUID userId) {
+        preferencesService.deleteByUserId(userId);
     }
 }

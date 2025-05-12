@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: search
+  template:
+    metadata:
+      labels:
+        app: search
+    spec:
+      containers:
+        - name: search-service
+          image: mahmoudaboueleneen/amazon-replica:search-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+            - name: SPRING_DATA_REDIS_HOST
+              value: search-cache-service
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
+            - name: MERCHANTS_SERVICE_URL
+              value: http://merchants-service:8080
