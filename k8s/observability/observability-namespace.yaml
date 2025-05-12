@@ -1,0 +1,5 @@
+# This file is extra if we want to be more fancy and have a different namespace for observability
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: observability
