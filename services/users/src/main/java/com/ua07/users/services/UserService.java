@@ -2,13 +2,12 @@ package com.ua07.users.services;
 
 import com.ua07.users.models.User;
 import com.ua07.users.repositories.UserRepository;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -25,13 +24,23 @@ public class UserService {
     }
 
     public User getUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id));
+        return userRepository
+                .findById(id)
+                .orElseThrow(
+                        () ->
+                                new ResponseStatusException(
+                                        HttpStatus.NOT_FOUND, "User not found with ID: " + id));
     }
 
     public User updateUser(UUID id, User updatedUser) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id));
+        User existingUser =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND,
+                                                "User not found with ID: " + id));
 
         existingUser.setFullName(updatedUser.getFullName());
         existingUser.setPhone(updatedUser.getPhone());
@@ -51,7 +60,8 @@ public class UserService {
 
     public void deleteUser(UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id);
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found with ID: " + id);
         }
         userRepository.deleteById(id);
     }

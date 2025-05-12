@@ -1,0 +1,26 @@
+apiVersion: 1
+
+providers:
+  - name: 'RabbitMQ'
+    orgId: 1
+    folder: 'RabbitMQ'
+    type: file
+    disableDeletion: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/RabbitMQ
+
+  - name: 'Redis'
+    orgId: 1
+    folder: 'Redis'
+    type: file
+    disableDeletion: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/Redis
+
+  - name: 'Services'
+    orgId: 1
+    folder: 'Services'
+    type: file
+    disableDeletion: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/Service

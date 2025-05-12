@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transactions-cache-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transactions-cache
+  template:
+    metadata:
+      labels:
+        app: transactions-cache
+    spec:
+      containers:
+        - name: transactions-cache
+          image: redis
+          ports:
+            - containerPort: 6379

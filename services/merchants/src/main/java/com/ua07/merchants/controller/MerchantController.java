@@ -1,100 +1,79 @@
 package com.ua07.merchants.controller;
 
-import com.ua07.merchants.client.OrderClient;
-import com.ua07.merchants.command.AdjustStockCommand;
-import com.ua07.merchants.command.GenerateSalesReportCommand;
-import com.ua07.merchants.command.RecommendProductsCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.model.Product;
-import com.ua07.merchants.repository.ProductRepository;
-import com.ua07.shared.command.CommandExecutor;
+import com.ua07.merchants.service.MerchantService;
+import com.ua07.shared.auth.AuthConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
 public class MerchantController {
 
-    private final ProductRepository productRepository;
-    private final CommandExecutor commandExecutor;
-    private final OrderClient orderClient;
+    private final MerchantService merchantService;
 
     @Autowired
-    public MerchantController(OrderClient orderClient, CommandExecutor commandExecutor, ProductRepository productRepository) {
-        this.orderClient = orderClient;
-        this.commandExecutor = commandExecutor;
-        this.productRepository = productRepository;
+    public MerchantController(MerchantService merchantService) {
+        this.merchantService = merchantService;
     }
 
-    @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        product.setId(UUID.randomUUID());
-        return productRepository.save(product);
+    @PostMapping("/laptops")
+    public Product createProductLaptop(@RequestBody Product product) {
+        return merchantService.createProductLaptop(product);
+    }
+
+    @PostMapping("/books")
+    public Product createProductBook(@RequestBody Product product) {
+        return merchantService.createProductBook(product);
+    }
+
+    @PostMapping("/jackets")
+    public Product createProductJacket(@RequestBody Product product) {
+        return merchantService.createProductJacket(product);
     }
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return merchantService.getAllProducts();
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable UUID id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+    public Product getProductById(@PathVariable String id) {
+        return merchantService.getProductById(id);
     }
 
-    @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable UUID id, @RequestBody Product updated) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+    @PutMapping("/laptops/{id}")
+    public Product updateProductLaptop(@PathVariable String id, @RequestBody Product updated) {
+        return merchantService.updateProductLaptop(id, updated);
+    }
 
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
+    @PutMapping("/books/{id}")
+    public Product updateProductBook(@PathVariable String id, @RequestBody Product updated) {
+        return merchantService.updateProductBook(id, updated);
+    }
 
-            Product updatedProduct = Product.builder()
-                    .withId(product.getId())
-                    .withName(updated.getName())
-                    .withDescription(updated.getDescription())
-                    .withPrice(updated.getPrice())
-                    .withStock(updated.getStock())
-                    .withCategory(updated.getCategory())
-                    .withAdditionalAttributes(updated.getAdditionalAttributes())
-                    .build();
-
-            return productRepository.save(updatedProduct);
-        } else {
-            throw new RuntimeException("Product not found");
-        }
+    @PutMapping("/jackets/{id}")
+    public Product updateProductJacket(@PathVariable String id, @RequestBody Product updated) {
+        return merchantService.updateProductJacket(id, updated);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable UUID id) {
-        if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found");
-        }
-        productRepository.deleteById(id);
+    public void deleteProduct(@PathVariable String id) {
+        merchantService.deleteProduct(id);
     }
 
-    @PutMapping("/{productID}/adjustStock")
+    @PutMapping("/{productId}/adjustStock")
     public AdjustStockResponse adjustStock(
-            @PathVariable UUID productID,
+            @PathVariable String productId,
             @RequestParam int stockChange
     ) {
-        AdjustStockRequest request = new AdjustStockRequest(productID, stockChange);
-        AdjustStockCommand command = new AdjustStockCommand(productRepository);
-        return commandExecutor.execute(command, request);
-    }
-
-    @GetMapping("/{id}/recommendations")
-    public RecommendProductsResponse recommendProducts(@PathVariable UUID id) {
-        RecommendProductsRequest request = new RecommendProductsRequest(id);
-        RecommendProductsCommand command = new RecommendProductsCommand(productRepository);
-        return commandExecutor.execute(command, request);
+        return merchantService.adjustStock(productId, stockChange);
     }
 
     @GetMapping("/salesReport")
@@ -102,9 +81,17 @@ public class MerchantController {
             @RequestParam("yearMonth")
             @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth
     ) {
-        GenerateSalesReportRequest request = new GenerateSalesReportRequest(yearMonth);
-        GenerateSalesReportCommand command = new GenerateSalesReportCommand(orderClient);
-        return commandExecutor.execute(command, request);
+        return merchantService.getSalesReport(yearMonth);
+    }
+
+    @PostMapping("/{productId}/addReview")
+    public AddReviewResponse addReview(
+            @PathVariable String productId,
+            @RequestHeader(value = AuthConstants.USER_ID_HEADER, required = true) UUID userId,
+            @RequestParam int rating,
+            @RequestParam String comment
+    ) {
+        return merchantService.addReview(productId, userId, rating, comment);
     }
 
 }

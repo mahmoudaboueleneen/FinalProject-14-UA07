@@ -8,5 +8,6 @@ package com.ua07.shared.command;
  */
 public interface Command<T extends CommandRequest, Q extends CommandResponse> {
     Q execute(T request);
+
     void undo();
 }

@@ -11,5 +11,4 @@ public class AppConfig {
     public JwtService jwtService() {
         return new JwtService();
     }
-
 }

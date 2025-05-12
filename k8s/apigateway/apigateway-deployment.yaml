@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apigateway
+  template:
+    metadata:
+      labels:
+        app: apigateway
+    spec:
+      containers:
+        - name: apigateway
+          image: mahmoudaboueleneen/amazon-replica:apigateway
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+            - name: SPRING_MAIN_WEB_APPLICATION_TYPE
+              value: reactive
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_ID
+              value: products-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_URI
+              value: http://merchants-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0
+              value: Path=/api/v1/products/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_ID
+              value: notifications-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_URI
+              value: http://notifications-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0
+              value: Path=/api/v1/notifications/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_ID
+              value: preferences-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_URI
+              value: http://notifications-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_PREDICATES_0
+              value: Path=/api/v1/preferences/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_ID
+              value: search-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_URI
+              value: http://search-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_PREDICATES_0
+              value: Path=/api/v1/search/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_4_ID
+              value: orders-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_4_URI
+              value: http://transactions-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_4_PREDICATES_0
+              value: Path=/api/v1/orders/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_4_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_5_ID
+              value: wallets-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_5_URI
+              value: http://transactions-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_5_PREDICATES_0
+              value: Path=/api/v1/wallets/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_5_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_6_ID
+              value: users-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_6_URI
+              value: http://users-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_6_PREDICATES_0
+              value: Path=/api/v1/users/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_6_FILTERS_0
+              value: StripPrefix=2
+
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_7_ID
+              value: auth-path
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_7_URI
+              value: http://users-service:8080
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_7_PREDICATES_0
+              value: Path=/api/v1/auth/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_7_FILTERS_0
+              value: StripPrefix=2

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-db-service
+  labels:
+    app: notifications-db
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  clusterIP: None  # Headless service
+  selector:
+    app: notifications-db

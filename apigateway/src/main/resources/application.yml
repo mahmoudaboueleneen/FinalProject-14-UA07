@@ -1,46 +1,60 @@
+server:
+  port: 8080
+jwt:
+  secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3 # Same exact secret as in users-service
 spring:
   application:
     name: apigateway
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       routes:
         - id: products-path
-          uri: ${MERCHANTS_SERVICE_URI}
+          uri: http://localhost:8081
           predicates:
             - Path=/api/v1/products/**
           filters:
             - StripPrefix=2
         - id: notifications-path
-          uri: ${NOTIFICATIONS_SERVICE_URI}
+          uri: http://localhost:8082
           predicates:
             - Path=/api/v1/notifications/**
           filters:
             - StripPrefix=2
+        - id: preferences-path
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/preferences/**
+          filters:
+            - StripPrefix=2
         - id: search-path
-          uri: ${SEARCH_SERVICE_URI}
+          uri: http://localhost:8083
           predicates:
             - Path=/api/v1/search/**
           filters:
             - StripPrefix=2
         - id: orders-path
-          uri: ${TRANSACTIONS_SERVICE_URI}
+          uri: http://localhost:8084
           predicates:
             - Path=/api/v1/orders/**
           filters:
             - StripPrefix=2
+        - id: wallets-path
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/v1/wallets/**
+          filters:
+            - StripPrefix=2
         - id: users-path
-          uri: ${USERS_SERVICE_URI}
+          uri: http://localhost:8085
           predicates:
             - Path=/api/v1/users/**
           filters:
             - StripPrefix=2
         - id: auth-path
-          uri: ${USERS_SERVICE_URI}
+          uri: http://localhost:8085
           predicates:
             - Path=/api/v1/auth/**
           filters:
             - StripPrefix=2
-server:
-  port: 8080
-jwt:
-  secret: b1c099f06787e9a81505383cbeb148efb48f4fbe14475565b6215586b2aaf4b3 # Same exact secret as in users-service
