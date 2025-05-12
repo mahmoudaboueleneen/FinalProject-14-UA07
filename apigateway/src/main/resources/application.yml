@@ -40,6 +40,12 @@ spring:
             - Path=/api/v1/orders/**
           filters:
             - StripPrefix=2
+        - id: stripe-path
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/v1/stripe/**
+          filters:
+            - StripPrefix=2
         - id: wallets-path
           uri: http://localhost:8084
           predicates:
