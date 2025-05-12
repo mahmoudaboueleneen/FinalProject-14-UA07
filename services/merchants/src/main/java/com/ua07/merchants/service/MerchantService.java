@@ -12,6 +12,7 @@ import com.ua07.merchants.model.Review;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.CommandExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class MerchantService {
@@ -102,7 +104,7 @@ public class MerchantService {
     @Cacheable(value = "product", key = "#id")
     public Product getProductById(String id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id));
     }
 
     @CachePut(value = "product", key = "#id")
@@ -129,7 +131,7 @@ public class MerchantService {
 
             return productRepository.save(updatedProduct);
         } else {
-            throw new RuntimeException("Product not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
         }
     }
 
@@ -157,7 +159,7 @@ public class MerchantService {
 
             return productRepository.save(updatedProduct);
         } else {
-            throw new RuntimeException("Product not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
         }
     }
 
@@ -185,14 +187,14 @@ public class MerchantService {
 
             return productRepository.save(updatedProduct);
         } else {
-            throw new RuntimeException("Product not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
         }
     }
 
     @CacheEvict(value = "product", key = "#id")
     public void deleteProduct(String id) {
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
         }
         productRepository.deleteById(id);
     }
@@ -220,7 +222,7 @@ public class MerchantService {
 
     public AddReviewResponse addReview(
             String productId,
-            String userId,
+            UUID userId,
             int rating,
             String comment
     ) {

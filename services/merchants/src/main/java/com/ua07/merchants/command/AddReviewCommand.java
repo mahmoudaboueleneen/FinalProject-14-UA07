@@ -6,6 +6,8 @@ import com.ua07.merchants.model.Product;
 import com.ua07.merchants.model.Review;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.Command;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -43,7 +45,7 @@ public class AddReviewCommand implements Command<AddReviewRequest, AddReviewResp
             return new AddReviewResponse(product);
         }
         else {
-            throw new RuntimeException("Product not found with ID: " + request.getProductId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with ID: " + request.getProductId());
         }
     }
 

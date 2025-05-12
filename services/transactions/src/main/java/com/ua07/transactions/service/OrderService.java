@@ -2,6 +2,8 @@ package com.ua07.transactions.service;
 
 import com.ua07.transactions.model.*;
 import com.ua07.transactions.repository.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,8 +74,8 @@ public class OrderService {
     }
 
     public List<Order> getConfirmedOrders(String startDate, String endDate) {
-        LocalDateTime start = LocalDateTime.parse(startDate);
-        LocalDateTime end = LocalDateTime.parse(endDate);
+        LocalDateTime start = LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime end = LocalDate.parse(endDate).atTime(23, 59, 59);
 
         return orderRepository.findByStatusAndCreatedAtBetween(OrderStatus.CONFIRMED, start, end);
     }

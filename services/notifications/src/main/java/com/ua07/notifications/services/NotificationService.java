@@ -10,14 +10,43 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class NotificationService {
 
-    @Autowired private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
+    private final NotificationInvoker invoker;
 
-    @Autowired private NotificationInvoker invoker;
+    @Autowired
+    public NotificationService(NotificationRepository notificationRepository, NotificationInvoker invoker) {
+        this.notificationRepository = notificationRepository;
+        this.invoker = invoker;
+    }
+
+    public List<Notification> getAllNotifications() {
+        return notificationRepository.findAll();
+    }
+
+    public Notification getNotificationById(String id) {
+        return notificationRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id));
+    }
+
+    public Notification createNotification(Notification notification) {
+        notification.setTimestamp(Instant.now());
+        notification.setIsRead(false);
+        return notificationRepository.save(notification);
+    }
+
+    public void deleteNotification(String id) {
+        if (!notificationRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id);
+        }
+        notificationRepository.deleteById(id);
+    }
 
     public void sendInAppNotification(Notification notification) {
         SendInAppNotificationCommand sendInAppNotificationCommand =
@@ -34,37 +63,16 @@ public class NotificationService {
         invoker.executeCommand(notification);
     }
 
-    public Notification createNotification(Notification notification) {
-        notification.setTimestamp(Instant.now());
-        notification.setIsRead(false);
-        return notificationRepository.save(notification);
-    }
-
-    public List<Notification> getAllNotifications() {
-        return notificationRepository.findAll();
-    }
-
-    public Optional<Notification> getNotificationById(String id) {
-        return notificationRepository.findById(id);
-    }
-
-    public void deleteNotification(String id) {
-        notificationRepository.deleteById(id);
-    }
-
     public List<Notification> getUnreadNotifications(UUID userId, int page, int size) {
-        return notificationRepository.findByUserIdAndIsReadFalse(
-                userId); // add pagination if needed
+        return notificationRepository.findByUserIdAndIsReadFalse(userId); // add pagination if needed
     }
 
     public Notification markAsRead(String id) {
-        Optional<Notification> notif = notificationRepository.findById(id);
-        if (notif.isPresent()) {
-            Notification n = notif.get();
-            n.setIsRead(true);
-            return notificationRepository.save(n);
-        }
-        return null;
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id));
+
+        notification.setIsRead(true);
+        return notificationRepository.save(notification);
     }
 
     public void markAllAsRead(UUID userId) {

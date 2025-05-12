@@ -3,12 +3,18 @@ package com.ua07.transactions.service;
 import com.ua07.transactions.model.Wallet;
 import com.ua07.transactions.repository.WalletRepository;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class WalletService {
-    WalletRepository walletRepository;
 
+    private final WalletRepository walletRepository;
+
+    @Autowired
     public WalletService(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
@@ -21,7 +27,7 @@ public class WalletService {
     // create new wallet for user given userId
     public Wallet createWallet(UUID userId) {
         if (walletRepository.findByUserId(userId) != null) {
-            throw new RuntimeException("Wallet already exists for user: " + userId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wallet already exists for user: " + userId);
         }
         return walletRepository.save(new Wallet(userId, 0.0));
     }
@@ -30,7 +36,7 @@ public class WalletService {
     public void addMoneyToWallet(UUID userId, double amount) {
         Wallet wallet = walletRepository.findByUserId(userId);
         if (wallet == null) {
-            throw new RuntimeException("Wallet not found for user: " + userId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wallet not found for user: " + userId);
         }
         wallet.setAmount(wallet.getAmount() + amount);
         walletRepository.save(wallet);

@@ -1,5 +1,15 @@
 # This file is used to run the system locally, simulating the Kubernetes prod. environment.
 # Can be used with the pushed images or the local images.
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: "http://localhost:3100/api/prom/push"
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}'
+          max_wait_time: 3s
+      - regex:
+          expression: '^(?P<date>\d{4}-\d{2}-\d{2})T(?P<time>\d{2}:\d{2}:\d{2}.\d{3}) (?P<message>(?s:.*))$$'
 
 services:
   # ============== MISCELLANEOUS MICROSERVICE ==============
@@ -27,6 +37,7 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    logging: *default-logging
 
   redisinsight:
     image: redis/redisinsight:latest
@@ -67,7 +78,15 @@ services:
       - spring.data.redis.host=merchants-cache
       - spring.data.redis.port=6379
       - transactions.service.url=http://transactions-service:8084/orders
+      - OTEL_SERVICE_NAME=merchants-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317 # send traces to Tempo
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc # use gRPC for OTLP
+      - OTEL_RESOURCE_ATTRIBUTES=compose_service=merchants-service # add custom resource attribute to Span for Grafana Trace to Logs feature
+      - OTEL_METRICS_EXPORTER=none # disable metrics exporter
+      - OTEL_LOGS_EXPORTER=none # disable logs exporter
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=merchants-service # override
     restart: always
+    logging: *default-logging
 
   merchants-db:
     image: mongo
@@ -79,6 +98,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: merchants-db
+    logging: *default-logging
 
   merchants-mongo-express:
     image: mongo-express
@@ -99,6 +119,7 @@ services:
     container_name: merchants-cache
     ports:
       - "6380:6379"
+    logging: *default-logging
 
   # ============== NOTIFICATIONS MICROSERVICE ==============
 
@@ -120,7 +141,15 @@ services:
       - spring.rabbitmq.host=rabbitmq
       - spring.data.redis.host=notifications-cache
       - spring.data.redis.port=6379
+      - OTEL_SERVICE_NAME=notifications-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317 # send traces to Tempo
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc # use gRPC for OTLP
+      - OTEL_RESOURCE_ATTRIBUTES=compose_service=notifications-service # add custom resource attribute to Span for Grafana Trace to Logs feature
+      - OTEL_METRICS_EXPORTER=none # disable metrics exporter
+      - OTEL_LOGS_EXPORTER=none # disable logs exporter
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=notifications-service # override
     restart: always
+    logging: *default-logging
 
   notifications-db:
     image: mongo
@@ -132,6 +161,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: notifications-db
+    logging: *default-logging
 
   notifications-mongo-express:
     image: mongo-express
@@ -152,6 +182,7 @@ services:
     container_name: notifications-cache
     ports:
       - "6381:6379"
+    logging: *default-logging
 
   # ============== SEARCH MICROSERVICE ==============
 
@@ -168,13 +199,23 @@ services:
     environment:
       - spring.data.redis.host=search-cache
       - spring.data.redis.port=6379
+      - merchants.service.url=http://merchants-service:8081
+      - OTEL_SERVICE_NAME=search-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317 # send traces to Tempo
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc # use gRPC for OTLP
+      - OTEL_RESOURCE_ATTRIBUTES=compose_service=search-service # add custom resource attribute to Span for Grafana Trace to Logs feature
+      - OTEL_METRICS_EXPORTER=none # disable metrics exporter
+      - OTEL_LOGS_EXPORTER=none # disable logs exporter
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=search-service # override
     restart: always
+    logging: *default-logging
 
   search-cache:
     image: redis:latest
     container_name: search-cache
     ports:
       - "6382:6379"
+    logging: *default-logging
 
   # ============== TRANSACTIONS MICROSERVICE ==============
 
@@ -189,17 +230,25 @@ services:
       - transactions-db
       - transactions-cache
     ports:
-    - "8084:8084"
+      - "8084:8084"
     environment:
-    - spring.datasource.url=jdbc:postgresql://transactions-db:5432/transactions-db
-    - spring.datasource.username=postgres
-    - spring.datasource.password=postgres
-    - spring.datasource.driver-class-name=org.postgresql.Driver
-    - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-    - spring.rabbitmq.host=rabbitmq
-    - spring.data.redis.host=transactions-cache
-    - spring.data.redis.port=6379
+      - spring.datasource.url=jdbc:postgresql://transactions-db:5432/transactions-db
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+      - spring.rabbitmq.host=rabbitmq
+      - spring.data.redis.host=transactions-cache
+      - spring.data.redis.port=6379
+      - OTEL_SERVICE_NAME=transactions-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317 # send traces to Tempo
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc # use gRPC for OTLP
+      - OTEL_RESOURCE_ATTRIBUTES=compose_service=transactions-service # add custom resource attribute to Span for Grafana Trace to Logs feature
+      - OTEL_METRICS_EXPORTER=none # disable metrics exporter
+      - OTEL_LOGS_EXPORTER=none # disable logs exporter
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=transactions-service # override
     restart: always
+    logging: *default-logging
 
   transactions-db:
     image: postgres
@@ -211,12 +260,14 @@ services:
       POSTGRES_DB: transactions-db
     ports:
       - "5434:5432"
+    logging: *default-logging
 
   transactions-cache:
     image: redis:latest
     container_name: transactions-cache
     ports:
       - "6383:6379"
+    logging: *default-logging
 
   # ============== USERS MICROSERVICE ==============
 
@@ -228,6 +279,7 @@ services:
     container_name: users-service
     depends_on:
       - users-db
+      - loki
     ports:
       - "8085:8085"
     environment:
@@ -236,7 +288,15 @@ services:
       - spring.datasource.password=postgres
       - spring.datasource.driver-class-name=org.postgresql.Driver
       - spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+      - OTEL_SERVICE_NAME=users-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317 # send traces to Tempo
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc # use gRPC for OTLP
+      - OTEL_RESOURCE_ATTRIBUTES=compose_service=users-service # add custom resource attribute to Span for Grafana Trace to Logs feature
+      - OTEL_METRICS_EXPORTER=none # disable metrics exporter
+      - OTEL_LOGS_EXPORTER=none # disable logs exporter
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=users-service # override
     restart: always
+    logging: *default-logging
 
   users-db:
     image: postgres
@@ -248,3 +308,56 @@ services:
       POSTGRES_DB: users-db
     ports:
       - "5435:5432"
+    logging: *default-logging
+
+  #  OBSERVABILITY
+  loki:
+    image: grafana/loki:3.0.0
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+      - --enable-feature=exemplar-storage
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  tempo:
+    image: grafana/tempo:2.4.1
+    command:
+      [
+        "--target=all",
+        "--storage.trace.backend=local",
+        "--storage.trace.local.path=/var/tempo",
+        "--auth.enabled=false",
+      ]
+    ports:
+      - "14250:14250"
+      - "4317:4317"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./observability/grafana/:/etc/grafana/provisioning/datasources
+      - ./observability/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./observability/grafana/dashboards:/etc/grafana/dashboards
+    environment:
+      - GF_INSTALL_PLUGINS=redis-datasource
+      - GF_ENABLE_GZIP=true
+    depends_on:
+      - loki
+      - prometheus
+    logging: *default-logging
