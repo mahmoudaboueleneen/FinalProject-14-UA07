@@ -1,16 +1,37 @@
-<!-- invoice-template.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <style>
         body { font-family: Arial; }
-        .header { text-align: center; font-size: 18px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #000; padding: 8px; }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .logo {
+            width: 100px; /* adjust size as needed */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
-<div class="header">Invoice</div>
+
+<div class="header-container">
+    <div class="header">Invoice</div>
+    <div><img th:src="@{static/images/manazone.png}" alt="Logo" class="logo"/></div>
+</div>
+
 <p>Order ID: <span th:text="${order.id}"></span></p>
 <p>User ID: <span th:text="${order.userId}"></span></p>
 <p>Shipping Address: <span th:text="${order.shippingAddress}"></span></p>
@@ -31,5 +52,6 @@
     </tr>
     </tbody>
 </table>
+
 </body>
 </html>

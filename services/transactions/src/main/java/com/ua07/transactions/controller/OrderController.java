@@ -2,6 +2,7 @@ package com.ua07.transactions.controller;
 
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
+import com.ua07.transactions.service.InvoiceService;
 import com.ua07.transactions.service.OrderService;
 import com.ua07.transactions.service.PaymentService;
 import java.util.List;
@@ -16,11 +17,13 @@ public class OrderController {
 
     private final OrderService orderService;
     private final PaymentService paymentService;
+    private final InvoiceService invoiceService;
 
     @Autowired
-    public OrderController(OrderService orderService, PaymentService paymentService) {
+    public OrderController(OrderService orderService, PaymentService paymentService, InvoiceService invoiceService) {
         this.orderService = orderService;
         this.paymentService = paymentService;
+        this.invoiceService = invoiceService;
     }
 
     @GetMapping
@@ -62,5 +65,14 @@ public class OrderController {
     public void payOrder(@PathVariable UUID orderId, @RequestParam PaymentMethod paymentMethod)
             throws Exception {
         paymentService.pay(orderId, paymentMethod);
+    }
+    @GetMapping("/{id}/invoice")
+    public ResponseEntity<byte[]> generateInvoice(@PathVariable UUID id) {
+        byte[] pdfBytes = invoiceService.generateInvoicePdf(id);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=invoice-" + id + ".pdf")
+                .header("Content-Type", "application/pdf")
+                .body(pdfBytes);
     }
 }
