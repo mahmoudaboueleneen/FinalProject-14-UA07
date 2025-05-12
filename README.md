@@ -53,6 +53,13 @@ mvn clean install -DskipTests
 docker compose up -d --build
 ```
 
+Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add it to env.
+
+```
+stripe login
+stripe listen --forward-to localhost:8084/stripe/webhook
+```
+
 ## Contributors
 
 See the AUTHORS file for a list of contributors to this project.
