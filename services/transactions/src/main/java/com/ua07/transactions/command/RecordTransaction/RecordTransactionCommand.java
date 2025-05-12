@@ -32,7 +32,7 @@ public class RecordTransactionCommand
             this.transaction = transaction;
             order.setTransaction(transaction);
             orderRepository.save(order);
-            response.setTransaction(transaction);
+            response.setTransaction(orderRepository.findById(order.getId()).get().getTransaction());
             response.setSuccess(true);
         } catch (Exception e) {
             response.setMessage(e.getMessage());

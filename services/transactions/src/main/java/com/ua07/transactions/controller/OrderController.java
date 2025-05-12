@@ -1,5 +1,6 @@
 package com.ua07.transactions.controller;
 
+import com.ua07.shared.command.CommandResponse;
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
 import com.ua07.transactions.service.InvoiceService;
@@ -62,9 +63,10 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/pay")
-    public void payOrder(@PathVariable UUID orderId, @RequestParam PaymentMethod paymentMethod)
+    public CommandResponse payOrder(
+            @PathVariable UUID orderId, @RequestParam PaymentMethod paymentMethod)
             throws Exception {
-        paymentService.pay(orderId, paymentMethod);
+        return paymentService.pay(orderId, paymentMethod);
     }
     @GetMapping("/{id}/invoice")
     public ResponseEntity<byte[]> generateInvoice(@PathVariable UUID id) {

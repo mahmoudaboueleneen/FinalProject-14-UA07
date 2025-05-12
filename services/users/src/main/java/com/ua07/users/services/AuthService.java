@@ -8,8 +8,6 @@ import com.ua07.users.repositories.UserRepository;
 import com.ua07.users.strategies.EmailLoginStrategy;
 import com.ua07.users.strategies.PhoneLoginStrategy;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.UUID;
-import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,57 +45,61 @@ public class AuthService {
         this.phoneLoginStrategy = phoneLoginStrategy;
     }
 
-    // TODO: Add validation for email and phone number formats
-    // TODO: Add validation for password strength
-    // TODO: Add validation for unique email and phone numbers
+
     public User registerAdmin(RegisterAdminRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User user =
-                User.builder()
-                        .withEmail(request.getEmail())
-                        .withPhone(request.getPhone())
-                        .withPassword(encodedPassword)
-                        .withFullName(request.getFullName())
-                        .withDepartment(request.getDepartment())
-                        .withRole(Role.ADMIN)
-                        .build();
+
+        User user = new User.Builder()
+                .withEmail(request.getEmail())
+                .withPhone(request.getPhone())
+                .withPassword(encodedPassword)
+                .withFullName(request.getFullName())
+                .withDepartment(request.getDepartment())
+                .withRole(Role.ADMIN)
+                .build();
+
         return userRepository.save(user);
     }
+
 
     public User registerMerchant(RegisterMerchantRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User user =
-                User.builder()
-                        .withEmail(request.getEmail())
-                        .withPhone(request.getPhone())
-                        .withPassword(encodedPassword)
-                        .withFullName(request.getFullName())
-                        .withBusinessName(request.getBusinessName())
-                        .withBusinessEmail(request.getBusinessEmail())
-                        .withBusinessPhone(request.getBusinessPhone())
-                        .withTaxId(request.getTaxId())
-                        .withBusinessAddress(request.getBusinessAddress())
-                        .withWebsiteUrl(request.getWebsiteUrl())
-                        .withSupportContact(request.getSupportContact())
-                        .withRole(Role.MERCHANT)
-                        .build();
+
+        User user = new User.Builder()
+                .withEmail(request.getEmail())
+                .withPhone(request.getPhone())
+                .withPassword(encodedPassword)
+                .withFullName(request.getFullName())
+                .withBusinessName(request.getBusinessName())
+                .withBusinessEmail(request.getBusinessEmail())
+                .withBusinessPhone(request.getBusinessPhone())
+                .withTaxId(request.getTaxId())
+                .withBusinessAddress(request.getBusinessAddress())
+                .withWebsiteUrl(request.getWebsiteUrl())
+                .withSupportContact(request.getSupportContact())
+                .withRole(Role.MERCHANT)
+                .build();
+
         return userRepository.save(user);
     }
 
+
     public User registerCustomer(RegisterCustomerRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User user =
-                User.builder()
-                        .withEmail(request.getEmail())
-                        .withPhone(request.getPhone())
-                        .withPassword(encodedPassword)
-                        .withFullName(request.getFullName())
-                        .withShippingAddress(request.getShippingAddress())
-                        .withBillingAddress(request.getBillingAddress())
-                        .withRole(Role.CUSTOMER)
-                        .build();
+
+        User user = new User.Builder()
+                .withEmail(request.getEmail())
+                .withPhone(request.getPhone())
+                .withPassword(encodedPassword)
+                .withFullName(request.getFullName())
+                .withShippingAddress(request.getShippingAddress())
+                .withBillingAddress(request.getBillingAddress())
+                .withRole(Role.CUSTOMER)
+                .build();
+
         return userRepository.save(user);
     }
+
 
     public String login(LoginRequest request) {
         String identifier = request.getIdentifier();

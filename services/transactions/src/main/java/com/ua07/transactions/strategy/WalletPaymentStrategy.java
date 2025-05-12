@@ -1,6 +1,7 @@
 package com.ua07.transactions.strategy;
 
 import com.ua07.shared.command.CommandExecutor;
+import com.ua07.shared.command.CommandResponse;
 import com.ua07.transactions.command.ProcessWalletPayment.ProcessWalletPaymentCommand;
 import com.ua07.transactions.command.ProcessWalletPayment.ProcessWalletPaymentCommandRequest;
 import com.ua07.transactions.command.ProcessWalletPayment.ProcessWalletPaymentCommandResponse;
@@ -38,7 +39,7 @@ public class WalletPaymentStrategy implements PaymentStrategy {
         this.transactionRepository = transactionRepository;
     }
 
-    public void pay(Order order) {
+    public CommandResponse pay(Order order) {
 
         ValidateWalletTransactionCommand validateWalletTransaction =
                 new ValidateWalletTransactionCommand(walletRepository);
@@ -83,5 +84,6 @@ public class WalletPaymentStrategy implements PaymentStrategy {
                     "Wallet transaction recording failed: "
                             + recordTransactionResponse.getMessage());
         }
+        return recordTransactionResponse;
     }
 }
