@@ -48,3 +48,12 @@ management:
         level: "trace_id=%mdc{trace_id} span_id=%mdc{span_id} trace_flags=%mdc{trace_flags} %p"
       level:
         com.example.app: DEBUG
+
+stripe:
+  webhook:
+    secret: <webhook_secret>
+  secret:
+    key: <secret_key>
+  checkout:
+    success-url: http://localhost:8084/stripe/success
+    cancel-url: http://localhost:8084/stripe/cancel
