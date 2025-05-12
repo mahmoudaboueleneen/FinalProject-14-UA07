@@ -31,6 +31,13 @@ public class AddReviewCommand implements Command<AddReviewRequest, AddReviewResp
             }
 
             product.getReviews().add(review);
+
+            double sum = product.getReviews().stream()
+                    .mapToInt(Review::getRating)
+                    .sum();
+            double average = sum / product.getReviews().size();
+            product.setAverageRating(average);
+
             productRepository.save(product);
 
             return new AddReviewResponse(product);

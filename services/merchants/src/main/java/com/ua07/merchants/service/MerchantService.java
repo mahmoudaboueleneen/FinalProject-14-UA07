@@ -7,6 +7,7 @@ import com.ua07.merchants.command.GenerateSalesReportCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
+import com.ua07.merchants.model.Review;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.CommandExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class MerchantService {
                 .withCategory(Category.LAPTOPS)
                 .withCreatedAt(LocalDateTime.now())
                 .withReviews(new ArrayList<>())
+                .withAverageRating(0.0)
                 .withProcessor(product.getProcessor())
                 .withRam(product.getRam())
                 .withStorage(product.getStorage())
@@ -64,6 +66,7 @@ public class MerchantService {
                 .withCategory(Category.BOOKS)
                 .withCreatedAt(LocalDateTime.now())
                 .withReviews(new ArrayList<>())
+                .withAverageRating(0.0)
                 .withAuthor(product.getAuthor())
                 .withGenre(product.getGenre())
                 .withPages(product.getPages())
@@ -82,6 +85,7 @@ public class MerchantService {
                 .withCategory(Category.JACKETS)
                 .withCreatedAt(LocalDateTime.now())
                 .withReviews(new ArrayList<>())
+                .withAverageRating(0.0)
                 .withSize(product.getSize())
                 .withMaterial(product.getMaterial())
                 .withColor(product.getColor())
@@ -116,6 +120,7 @@ public class MerchantService {
                     .withCategory(updated.getCategory())
                     .withCreatedAt(updated.getCreatedAt())
                     .withReviews(updated.getReviews())
+                    .withAverageRating(updated.getAverageRating())
                     .withProcessor(updated.getProcessor())
                     .withRam(updated.getRam())
                     .withStorage(updated.getStorage())
@@ -143,6 +148,7 @@ public class MerchantService {
                     .withCategory(updated.getCategory())
                     .withCreatedAt(updated.getCreatedAt())
                     .withReviews(updated.getReviews())
+                    .withAverageRating(updated.getAverageRating())
                     .withAuthor(updated.getAuthor())
                     .withGenre(updated.getGenre())
                     .withPages(updated.getPages())
@@ -170,6 +176,7 @@ public class MerchantService {
                     .withCategory(updated.getCategory())
                     .withCreatedAt(updated.getCreatedAt())
                     .withReviews(updated.getReviews())
+                    .withAverageRating(updated.getAverageRating())
                     .withSize(updated.getSize())
                     .withMaterial(updated.getMaterial())
                     .withColor(updated.getColor())

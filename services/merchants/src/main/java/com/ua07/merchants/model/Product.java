@@ -26,6 +26,7 @@ public class Product {
     private Category category;
     private LocalDateTime createdAt;
     private List<Review> reviews;
+    private double averageRating;
 
     //LAPTOPS
     private String processor;
