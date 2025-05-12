@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+#  namespace: observability
+spec:
+  type: NodePort  # or LoadBalancer if on cloud
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 32000  # accessible via localhost:32000 if using Minikube
+  selector:
+    app: grafana
