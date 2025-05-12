@@ -29,3 +29,11 @@ spring:
     password: guest
 server:
   port: 8084
+stripe:
+  webhook:
+    secret: <webhook_secret>
+  secret:
+    key: <secret_key>
+  checkout:
+    success-url: http://localhost:8084/stripe/success
+    cancel-url: http://localhost:8084/stripe/cancel

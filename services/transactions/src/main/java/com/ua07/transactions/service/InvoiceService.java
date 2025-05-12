@@ -6,21 +6,18 @@ import com.ua07.transactions.model.OrderStatus;
 import com.ua07.transactions.model.PaymentMethod;
 import com.ua07.transactions.model.Transaction;
 import com.ua07.transactions.model.TransactionStatus;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.thymeleaf.context.Context;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Service
 public class InvoiceService {
