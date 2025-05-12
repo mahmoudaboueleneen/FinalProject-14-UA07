@@ -31,13 +31,27 @@ Amazon Replica is a massively scalable distributed microservices e-commerce appl
 
 ## System Architecture
 
-![system_design](docs/architecture-diagram.png)
+![system_design](docs/images/architecture-diagram.png)
 
 ## Components
 
 ## Deployment
 
 ## 🔭 Observability
+
+## Getting Started
+
+```
+docker plugin install grafana/loki-docker-driver:2.9.2 --alias loki --grant-all-permissions
+```
+
+```
+mvn clean install -DskipTests
+```
+
+```
+docker compose up -d --build
+```
 
 ## Contributors
 
