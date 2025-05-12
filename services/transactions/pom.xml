@@ -99,10 +99,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-kubernetes-discoveryclient</artifactId>
-		</dependency>
-		<dependency>
   <groupId>com.stripe</groupId>
   <artifactId>stripe-java</artifactId>
   <version>29.1.0</version>
