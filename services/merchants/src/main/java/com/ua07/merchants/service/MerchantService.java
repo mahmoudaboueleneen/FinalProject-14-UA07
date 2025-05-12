@@ -4,6 +4,7 @@ import com.ua07.merchants.client.OrderClient;
 import com.ua07.merchants.command.AddReviewCommand;
 import com.ua07.merchants.command.AdjustStockCommand;
 import com.ua07.merchants.command.GenerateSalesReportCommand;
+import com.ua07.merchants.command.ViewStockCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
@@ -194,6 +195,12 @@ public class MerchantService {
             throw new RuntimeException("Product not found");
         }
         productRepository.deleteById(id);
+    }
+
+    public ViewStockResponse viewStock(String productId) {
+        ViewStockRequest request = new ViewStockRequest(productId);
+        ViewStockCommand command = new ViewStockCommand(productRepository);
+        return commandExecutor.execute(command, request);
     }
 
     public AdjustStockResponse adjustStock(
