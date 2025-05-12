@@ -3,7 +3,7 @@ ARG OTEL_AGENT_VERSION="2.14.0"
 RUN curl --silent --fail --insecure -L "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
     -o "$HOME/opentelemetry-javaagent.jar"
 
-FROM openjdk:25-ea-4-jdk-oraclelinux9
+FROM openjdk:23-jdk
 
 WORKDIR /app
 
