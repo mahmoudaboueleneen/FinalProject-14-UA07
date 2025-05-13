@@ -20,10 +20,3 @@ spec:
             - -config.file=/etc/loki/local-config.yaml
           ports:
             - containerPort: 3100
-          volumeMounts:
-            - name: config
-              mountPath: /etc/loki
-      volumes:
-        - name: config
-          configMap:
-            name: loki-configmap
