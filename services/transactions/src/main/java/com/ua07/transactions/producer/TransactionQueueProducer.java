@@ -15,9 +15,9 @@ public class TransactionQueueProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void notifyOrderEvent(String orderId, String eventType, String message) {
+    public void notifyOrderEvent(String userId, String eventType, String message) {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("orderId", orderId);
+        payload.put("userId", userId);
         payload.put("type", eventType); // e.g. ORDER_CONFIRMED, STATUS_UPDATED
         payload.put("message", message);
 

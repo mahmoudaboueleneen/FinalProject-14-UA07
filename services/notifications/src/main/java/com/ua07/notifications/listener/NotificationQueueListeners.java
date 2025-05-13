@@ -1,38 +1,97 @@
 package com.ua07.notifications.listener;
 
+import com.ua07.notifications.command.NotificationCommand;
+import com.ua07.notifications.command.NotificationInvoker;
+import com.ua07.notifications.command.SendEmailNotificationCommand;
+import com.ua07.notifications.command.SendInAppNotificationCommand;
+import com.ua07.notifications.factory.NotificationFactory;
+import com.ua07.notifications.models.Notification;
+import com.ua07.notifications.models.NotificationType;
+import com.ua07.notifications.repositories.PreferencesRepository;
 import com.ua07.shared.rabbitmq.RabbitMQConstants;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import com.ua07.notifications.models.Preferences;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.data.mongodb.core.aggregation.BooleanOperators.Not;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationQueueListeners {
+    NotificationFactory notificationFactory;
+    PreferencesRepository preferencesRepository;
+    NotificationInvoker notificationInvoker;
+    SendEmailNotificationCommand sendEmailNotificationCommand;
+    SendInAppNotificationCommand sendInAppNotificationCommand;
 
+    public NotificationQueueListeners(NotificationFactory notificationFactory, PreferencesRepository preferencesRepository,
+            NotificationInvoker notificationInvoker, SendEmailNotificationCommand sendEmailNotificationCommand,
+            SendInAppNotificationCommand sendInAppNotificationCommand) {
+        this.notificationFactory = notificationFactory;
+        this.preferencesRepository = preferencesRepository;
+        this.notificationInvoker = notificationInvoker;
+        this.sendEmailNotificationCommand = sendEmailNotificationCommand;
+        this.sendInAppNotificationCommand = sendInAppNotificationCommand;}
     @RabbitListener(queues = RabbitMQConstants.TRANSACTION_QUEUE)
     public void handleTransactionEvent(Map<String, Object> message) {
-        String orderId = (String) message.get("orderId");
-        String type = (String) message.get("type");
-        String msg = (String) message.get("message");
 
-        switch (type) {
-            case "ORDER_CONFIRMED":
-                System.out.println("[NOTIFY] Order " + orderId + " confirmed: " + msg);
-                break;
-            case "STATUS_UPDATED":
-                System.out.println("[NOTIFY] Order " + orderId + " status update: " + msg);
-                break;
-            default:
-                System.out.println("[NOTIFY] Order " + orderId + ": " + msg);
+        UUID userId = UUID.fromString((String)message.get("userId"));
+        NotificationType type = NotificationType.valueOf((String) message.get("type"));
+        String msg = (String) message.get("message");
+        Notification notification = NotificationFactory.createCustomerNotification(
+               userId, msg, type
+        );
+
+
+        notificationInvoker.setCommand(sendInAppNotificationCommand);
+        notificationInvoker.executeCommand(notification);
+
+        Optional<Preferences> prefs = preferencesRepository.findByUserId(userId);
+        if(prefs.isEmpty() || !prefs.get().getNotifyByMail()) {
+            return;
         }
+
+        if(prefs.get().getNotifyByMail()){
+            notificationInvoker.setCommand(sendEmailNotificationCommand);
+            notificationInvoker.executeCommand(notification);
+        }
+
+
+
     }
 
     @RabbitListener(queues = RabbitMQConstants.MERCHANT_QUEUE)
     public void handleMerchantShortage(Map<String, Object> message) {
-        if ("SHORTAGE".equals(message.get("type"))) {
-            String productId = (String) message.get("productId");
-            int stock = (Integer) message.get("remainingStock");
-            System.out.println(
-                    "[ALERT] Product " + productId + " is low on stock: only " + stock + " left!");
+        UUID userId = UUID.fromString((String)message.get("userId"));
+        String productIdInShortage = (String) message.get("productIdInShortage");
+        int currentCount = (int) message.get("currentCount");
+
+        Optional<Preferences> prefs = preferencesRepository.findByUserId(userId);
+
+        if(prefs.isEmpty()) return;
+
+        int threshold = prefs.get().getProductShortageThreshold();
+
+        if(currentCount > threshold) {
+            return;
         }
+
+        Notification notification = NotificationFactory.createMerchantNotification(
+                userId, productIdInShortage, currentCount, threshold
+        );
+
+
+
+        notificationInvoker.setCommand(sendInAppNotificationCommand);
+        notificationInvoker.executeCommand(notification);
+
+
+        if(prefs.get().getNotifyByMail()){
+            notificationInvoker.setCommand(sendEmailNotificationCommand);
+            notificationInvoker.executeCommand(notification);
+        }
+
     }
 }

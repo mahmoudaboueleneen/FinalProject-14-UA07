@@ -1,6 +1,7 @@
 package com.ua07.transactions.service;
 
 import com.ua07.transactions.model.*;
+import com.ua07.transactions.producer.TransactionQueueProducer;
 import com.ua07.transactions.repository.*;
 
 import java.time.LocalDate;
@@ -16,11 +17,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class OrderService {
 
+    private final TransactionQueueProducer transactionQueueProducer;
     private final OrderRepository orderRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository,
+            TransactionQueueProducer transactionQueueProducer) {
         this.orderRepository = orderRepository;
+        this.transactionQueueProducer = transactionQueueProducer;
     }
 
     public List<Order> getAllOrders() {
@@ -70,6 +74,10 @@ public class OrderService {
         order.setStatus(OrderStatus.CONFIRMED);
         order.setConfirmedAt(LocalDateTime.now());
         orderRepository.save(order);
+        transactionQueueProducer.notifyOrderEvent(
+                order.getUserId().toString(),
+                "OrderConfirmation",
+                "Order confirmed with ID: " + order.getId());
         return true;
     }
 
