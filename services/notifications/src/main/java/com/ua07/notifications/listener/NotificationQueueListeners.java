@@ -65,8 +65,8 @@ public class NotificationQueueListeners {
     @RabbitListener(queues = RabbitMQConstants.MERCHANT_QUEUE)
     public void handleMerchantShortage(Map<String, Object> message) {
         UUID userId = UUID.fromString((String)message.get("userId"));
-        String productIdInShortage = (String) message.get("productIdInShortage");
-        int currentCount = (int) message.get("currentCount");
+        String productIdInShortage = (String) message.get("productId");
+        int currentCount = (int) message.get("remainingStock");
 
         Optional<Preferences> prefs = preferencesRepository.findByUserId(userId);
 
