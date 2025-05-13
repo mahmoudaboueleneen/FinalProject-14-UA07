@@ -51,3 +51,17 @@ spec:
               value: "6379"
             - name: TRANSACTIONS_SERVICE_URL
               value: http://transactions-service:8080/orders
+            - name: OTEL_SERVICE_NAME
+              value: merchants-service
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://tempo:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: compose_service=merchants-service
+            - name: OTEL_METRICS_EXPORTER
+              value: none
+            - name: OTEL_LOGS_EXPORTER
+              value: none
+            - name: MANAGEMENT_METRICS_TAGS_APPLICATION
+              value: merchants-service

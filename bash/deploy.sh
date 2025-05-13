@@ -2,7 +2,7 @@
 
 BASE_DIR="$(dirname "$(realpath "$0")")/../k8s"
 
-SERVICE_DIRS=("../rabbitmq" "merchants" "notifications" "search" "transactions" "users")
+SERVICE_DIRS=("../rabbitmq" "merchants" "notifications" "search" "transactions" "users" "../observability/grafana" "../observability/prometheus" "../observability/loki" "../observability/tempo")
 
 # Apply ConfigMaps first (if any) before StatefulSets or Secrets
 for SERVICE in "${SERVICE_DIRS[@]}"; do

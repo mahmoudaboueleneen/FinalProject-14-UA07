@@ -310,7 +310,8 @@ services:
       - "5435:5432"
     logging: *default-logging
 
-  #  OBSERVABILITY
+  # ============== OBSERVABILITY ==============
+
   loki:
     image: grafana/loki:3.0.0
     command: -config.file=/etc/loki/local-config.yaml

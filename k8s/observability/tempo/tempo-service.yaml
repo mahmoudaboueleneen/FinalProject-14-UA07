@@ -4,8 +4,12 @@ metadata:
   name: tempo
 #  namespace: observability
 spec:
-  ports:
-    - port: 3200
-      targetPort: 3200
   selector:
     app: tempo
+  ports:
+    - name: grpc
+      port: 14250
+      targetPort: 14250
+    - name: otlp
+      port: 4317
+      targetPort: 4317

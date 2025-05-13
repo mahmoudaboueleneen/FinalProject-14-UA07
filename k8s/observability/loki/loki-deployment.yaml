@@ -26,4 +26,4 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: loki-config
+            name: loki-configmap

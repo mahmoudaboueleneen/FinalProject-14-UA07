@@ -15,15 +15,17 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: prom/prometheus:v2.52.0
-          args:
-            - --config.file=/etc/prometheus/prometheus.yml
+          image: prom/prometheus:v2.51.2
           ports:
             - containerPort: 9090
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--enable-feature=exemplar-storage"
           volumeMounts:
-            - name: config
+            - name: prometheus-config-volume
               mountPath: /etc/prometheus
+              subPath: prometheus.yml
       volumes:
-        - name: config
+        - name: prometheus-config-volume
           configMap:
-            name: prometheus-config
+            name: prometheus-configmap

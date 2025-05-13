@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tempo-config
+  name: tempo-configmap
 #  namespace: observability
 data:
   tempo.yaml: |

@@ -86,6 +86,12 @@ jobs:
           docker build ./services/users --tag mahmoudaboueleneen/amazon-replica:users-service
           docker push mahmoudaboueleneen/amazon-replica:users-service
 
+      - name: Build and push Custom Grafana Image
+        if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'observability') || contains(steps.changed-files.outputs.files, 'docker/Dockerfile-Grafana') }}
+        run: |
+          docker build -f Dockerfile-Grafana ./docker --tag mahmoudaboueleneen/amazon-replica:grafana
+          docker push mahmoudaboueleneen/amazon-replica:grafana
+
 # TODO: Uncomment this when deployment is ready
 #  deploy_to_k8s:
 #    runs-on: ubuntu-latest

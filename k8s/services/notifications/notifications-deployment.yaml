@@ -49,3 +49,17 @@ spec:
               value: notifications-cache-service
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
+            - name: OTEL_SERVICE_NAME
+              value: notifications-service
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://tempo:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: compose_service=notifications-service
+            - name: OTEL_METRICS_EXPORTER
+              value: none
+            - name: OTEL_LOGS_EXPORTER
+              value: none
+            - name: MANAGEMENT_METRICS_TAGS_APPLICATION
+              value: notifications-service

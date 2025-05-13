@@ -65,3 +65,17 @@ spec:
               value: http://transactions-service:8080/stripe/success
             - name: STRIPE_CHECKOUT_CANCEL_URL
               value: http://transactions-service:8080/stripe/cancel
+            - name: OTEL_SERVICE_NAME
+              value: transactions-service
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://tempo:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: compose_service=transactions-service
+            - name: OTEL_METRICS_EXPORTER
+              value: none
+            - name: OTEL_LOGS_EXPORTER
+              value: none
+            - name: MANAGEMENT_METRICS_TAGS_APPLICATION
+              value: transactions-service
