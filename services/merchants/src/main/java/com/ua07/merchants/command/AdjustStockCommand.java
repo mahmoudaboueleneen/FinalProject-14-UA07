@@ -4,6 +4,7 @@ import com.ua07.merchants.dto.AdjustStockRequest;
 import com.ua07.merchants.dto.AdjustStockResponse;
 import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
+import com.ua07.merchants.producer.MerchantQueueProducer;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.Command;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustStockResponse> {
 
     private final ProductRepository productRepository;
-
-    public AdjustStockCommand(ProductRepository productRepository) {
+    private final MerchantQueueProducer merchantQueueProducer;
+    public AdjustStockCommand(ProductRepository productRepository,
+                              MerchantQueueProducer merchantQueueProducer) {
         this.productRepository = productRepository;
+        this.merchantQueueProducer = merchantQueueProducer;
     }
 
     @Override
@@ -43,6 +46,7 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .withProcessor(product.getProcessor())
                         .withRam(product.getRam())
                         .withStorage(product.getStorage())
+                        .withMerchantId(product.getMerchantId())
                         .build();
             } else if (product.getCategory() == Category.BOOKS) {
                 updated = Product.builder()
@@ -57,6 +61,7 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .withAuthor(product.getAuthor())
                         .withGenre(product.getGenre())
                         .withPages(product.getPages())
+                        .withMerchantId(product.getMerchantId())
                         .build();
             }
             else if (product.getCategory() == Category.JACKETS){
@@ -72,6 +77,7 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .withSize(product.getSize())
                         .withMaterial(product.getMaterial())
                         .withColor(product.getColor())
+                        .withMerchantId(product.getMerchantId())
                         .build();
             }
             else {
@@ -79,6 +85,8 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
             }
 
             productRepository.save(updated);
+            
+            merchantQueueProducer.notifyProductShortage(updated.getId(), updated.getStock());
             return new AdjustStockResponse(updated);
         } else {
             throw new RuntimeException("Product not found with ID: " + request.getProductId());

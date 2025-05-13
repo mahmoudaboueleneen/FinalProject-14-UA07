@@ -20,6 +20,7 @@ public class Product {
     //COMMON
     @Id private String id;
     private String name;
+    private String merchantId;
     private String description;
     private double price;
     private int stock;
