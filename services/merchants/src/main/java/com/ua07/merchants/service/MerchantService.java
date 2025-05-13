@@ -41,8 +41,9 @@ public class MerchantService {
     }
 
     public Product createProductLaptop(Product product) {
-        Product createdProduct = Product.builder()
+        Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
+                .withMerchantId(product.getMerchantId())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -60,8 +61,9 @@ public class MerchantService {
     }
 
     public Product createProductBook(Product product) {
-        Product createdProduct = Product.builder()
+        Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
+                .withMerchantId(product.getMerchantId())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -79,8 +81,9 @@ public class MerchantService {
     }
 
     public Product createProductJacket(Product product) {
-        Product createdProduct = Product.builder()
+        Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
+                .withMerchantId(product.getMerchantId())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -114,8 +117,9 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            Product updatedProduct = Product.builder()
+            Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
+                    .withMerchantId(updated.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -142,8 +146,9 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            Product updatedProduct = Product.builder()
+            Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
+                    .withMerchantId(updated.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -170,8 +175,9 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            Product updatedProduct = Product.builder()
+            Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
+                    .withMerchantId(updated.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
