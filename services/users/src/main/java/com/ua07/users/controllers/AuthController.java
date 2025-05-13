@@ -6,10 +6,11 @@ import com.ua07.users.models.User;
 import com.ua07.users.services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,19 +36,19 @@ public class AuthController {
     }
 
     @PostMapping("/register/admin")
-    public ResponseEntity<User> registerAdmin(@RequestBody RegisterAdminRequest request) {
+    public ResponseEntity<User> registerAdmin(@Valid @RequestBody RegisterAdminRequest request) {
         User user = authService.registerAdmin(request);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register/merchant")
-    public ResponseEntity<User> registerMerchant(@RequestBody RegisterMerchantRequest request) {
+    public ResponseEntity<User> registerMerchant(@Valid @RequestBody RegisterMerchantRequest request) {
         User user = authService.registerMerchant(request);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register/customer")
-    public ResponseEntity<User> registerCustomer(@RequestBody RegisterCustomerRequest request) {
+    public ResponseEntity<User> registerCustomer(@Valid @RequestBody RegisterCustomerRequest request) {
         User user = authService.registerCustomer(request);
         return ResponseEntity.ok(user);
     }

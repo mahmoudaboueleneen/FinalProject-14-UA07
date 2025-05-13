@@ -9,6 +9,8 @@ WORKDIR /app
 
 COPY target/*.jar app.jar
 
+COPY src/main/resources/static/images/manazone.png /app/images/
+
 COPY --from=download /home/curl_user/opentelemetry-javaagent.jar /opentelemetry-javaagent.jar
 
 EXPOSE 8084

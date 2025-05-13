@@ -34,8 +34,9 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
 
             Product updated;
             if(product.getCategory() == Category.LAPTOPS){
-                updated = Product.builder()
+                updated = new Product.Builder()
                         .withId(product.getId())
+                        .withMerchantId(product.getMerchantId())
                         .withName(product.getName())
                         .withDescription(product.getDescription())
                         .withPrice(product.getPrice())
@@ -43,14 +44,16 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .withCategory(product.getCategory())
                         .withCreatedAt(product.getCreatedAt())
                         .withReviews(product.getReviews())
+                        .withAverageRating(product.getAverageRating())
                         .withProcessor(product.getProcessor())
                         .withRam(product.getRam())
                         .withStorage(product.getStorage())
                         .withMerchantId(product.getMerchantId())
                         .build();
             } else if (product.getCategory() == Category.BOOKS) {
-                updated = Product.builder()
+                updated = new Product.Builder()
                         .withId(product.getId())
+                        .withMerchantId(product.getMerchantId())
                         .withName(product.getName())
                         .withDescription(product.getDescription())
                         .withPrice(product.getPrice())
@@ -58,6 +61,7 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .withCategory(product.getCategory())
                         .withCreatedAt(product.getCreatedAt())
                         .withReviews(product.getReviews())
+                        .withAverageRating(product.getAverageRating())
                         .withAuthor(product.getAuthor())
                         .withGenre(product.getGenre())
                         .withPages(product.getPages())
@@ -65,8 +69,9 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .build();
             }
             else if (product.getCategory() == Category.JACKETS){
-                updated = Product.builder()
+                updated = new Product.Builder()
                         .withId(product.getId())
+                        .withMerchantId(product.getMerchantId())
                         .withName(product.getName())
                         .withDescription(product.getDescription())
                         .withPrice(product.getPrice())
@@ -74,6 +79,7 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
                         .withCategory(product.getCategory())
                         .withCreatedAt(product.getCreatedAt())
                         .withReviews(product.getReviews())
+                        .withAverageRating(product.getAverageRating())
                         .withSize(product.getSize())
                         .withMaterial(product.getMaterial())
                         .withColor(product.getColor())
