@@ -13,3 +13,6 @@ spec:
     - name: otlp
       port: 4317
       targetPort: 4317
+    - name: http
+      port: 3200
+      targetPort: 3200

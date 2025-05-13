@@ -89,7 +89,7 @@ jobs:
       - name: Build and push Custom Grafana Image
         if: ${{ env.shared-changed == 'true' || contains(steps.changed-files.outputs.files, 'observability') || contains(steps.changed-files.outputs.files, 'docker/Dockerfile-Grafana') }}
         run: |
-          docker build -f Dockerfile-Grafana ./docker --tag mahmoudaboueleneen/amazon-replica:grafana
+          docker build . -f Dockerfile-Grafana --tag mahmoudaboueleneen/amazon-replica:grafana
           docker push mahmoudaboueleneen/amazon-replica:grafana
 
 # TODO: Uncomment this when deployment is ready

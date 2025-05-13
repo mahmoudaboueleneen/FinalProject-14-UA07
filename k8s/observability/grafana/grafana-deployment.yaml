@@ -18,3 +18,4 @@ spec:
           image: mahmoudaboueleneen/amazon-replica:grafana
           ports:
             - containerPort: 3000
+          imagePullPolicy: Always

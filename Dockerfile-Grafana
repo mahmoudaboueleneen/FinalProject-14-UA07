@@ -1,0 +1,10 @@
+FROM grafana/grafana:10.4.2
+
+COPY observability/grafana/datasource.yml /etc/grafana/provisioning/datasources/datasource.yml
+COPY observability/dashboards.yaml /etc/grafana/provisioning/dashboards/dashboards.yaml
+COPY observability/grafana/dashboards /etc/grafana/dashboards
+
+ENV GF_INSTALL_PLUGINS=redis-datasource
+ENV GF_ENABLE_GZIP=true
+
+EXPOSE 3000
