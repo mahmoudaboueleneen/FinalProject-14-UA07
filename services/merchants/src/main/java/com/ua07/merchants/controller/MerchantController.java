@@ -68,6 +68,11 @@ public class MerchantController {
         merchantService.deleteProduct(id);
     }
 
+    @GetMapping("/{productId}/viewStock")
+    public ViewStockResponse viewStock(@PathVariable String productId) {
+        return merchantService.viewStock(productId);
+    }
+
     @PutMapping("/{productId}/adjustStock")
     public AdjustStockResponse adjustStock(
             @PathVariable String productId,

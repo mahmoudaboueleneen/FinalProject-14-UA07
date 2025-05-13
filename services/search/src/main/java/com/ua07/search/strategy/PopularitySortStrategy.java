@@ -9,7 +9,7 @@ public class PopularitySortStrategy implements SortingStrategy {
     @Override
     public List<Product> sort(List<Product> products) {
         return products.stream()
-                .sorted(Comparator.comparingInt(Product::getStock).reversed())
+                .sorted(Comparator.comparingDouble(Product::getAverageRating).reversed())
                 .toList();
     }
 }

@@ -4,9 +4,11 @@ import com.ua07.merchants.client.OrderClient;
 import com.ua07.merchants.command.AddReviewCommand;
 import com.ua07.merchants.command.AdjustStockCommand;
 import com.ua07.merchants.command.GenerateSalesReportCommand;
+import com.ua07.merchants.command.ViewStockCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
+import com.ua07.merchants.model.Review;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.CommandExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,9 @@ public class MerchantService {
     }
 
     public Product createProductLaptop(Product product) {
-        Product createdProduct = Product.builder()
+        Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
+                .withMerchantId(product.getMerchantId())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -48,6 +51,7 @@ public class MerchantService {
                 .withCategory(Category.LAPTOPS)
                 .withCreatedAt(LocalDateTime.now())
                 .withReviews(new ArrayList<>())
+                .withAverageRating(0.0)
                 .withProcessor(product.getProcessor())
                 .withRam(product.getRam())
                 .withStorage(product.getStorage())
@@ -57,8 +61,9 @@ public class MerchantService {
     }
 
     public Product createProductBook(Product product) {
-        Product createdProduct = Product.builder()
+        Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
+                .withMerchantId(product.getMerchantId())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -66,6 +71,7 @@ public class MerchantService {
                 .withCategory(Category.BOOKS)
                 .withCreatedAt(LocalDateTime.now())
                 .withReviews(new ArrayList<>())
+                .withAverageRating(0.0)
                 .withAuthor(product.getAuthor())
                 .withGenre(product.getGenre())
                 .withPages(product.getPages())
@@ -75,8 +81,9 @@ public class MerchantService {
     }
 
     public Product createProductJacket(Product product) {
-        Product createdProduct = Product.builder()
+        Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
+                .withMerchantId(product.getMerchantId())
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -84,6 +91,7 @@ public class MerchantService {
                 .withCategory(Category.JACKETS)
                 .withCreatedAt(LocalDateTime.now())
                 .withReviews(new ArrayList<>())
+                .withAverageRating(0.0)
                 .withSize(product.getSize())
                 .withMaterial(product.getMaterial())
                 .withColor(product.getColor())
@@ -109,8 +117,9 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            Product updatedProduct = Product.builder()
+            Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
+                    .withMerchantId(updated.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -118,6 +127,7 @@ public class MerchantService {
                     .withCategory(updated.getCategory())
                     .withCreatedAt(updated.getCreatedAt())
                     .withReviews(updated.getReviews())
+                    .withAverageRating(updated.getAverageRating())
                     .withProcessor(updated.getProcessor())
                     .withRam(updated.getRam())
                     .withStorage(updated.getStorage())
@@ -136,8 +146,9 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            Product updatedProduct = Product.builder()
+            Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
+                    .withMerchantId(updated.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -145,6 +156,7 @@ public class MerchantService {
                     .withCategory(updated.getCategory())
                     .withCreatedAt(updated.getCreatedAt())
                     .withReviews(updated.getReviews())
+                    .withAverageRating(updated.getAverageRating())
                     .withAuthor(updated.getAuthor())
                     .withGenre(updated.getGenre())
                     .withPages(updated.getPages())
@@ -163,8 +175,9 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            Product updatedProduct = Product.builder()
+            Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
+                    .withMerchantId(updated.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -172,6 +185,7 @@ public class MerchantService {
                     .withCategory(updated.getCategory())
                     .withCreatedAt(updated.getCreatedAt())
                     .withReviews(updated.getReviews())
+                    .withAverageRating(updated.getAverageRating())
                     .withSize(updated.getSize())
                     .withMaterial(updated.getMaterial())
                     .withColor(updated.getColor())
@@ -189,6 +203,12 @@ public class MerchantService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
         }
         productRepository.deleteById(id);
+    }
+
+    public ViewStockResponse viewStock(String productId) {
+        ViewStockRequest request = new ViewStockRequest(productId);
+        ViewStockCommand command = new ViewStockCommand(productRepository);
+        return commandExecutor.execute(command, request);
     }
 
     public AdjustStockResponse adjustStock(
