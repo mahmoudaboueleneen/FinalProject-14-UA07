@@ -1,6 +1,9 @@
 package com.ua07.transactions.controller;
 
 import com.ua07.shared.command.CommandResponse;
+import com.ua07.transactions.dto.OrderConfirmationResponse;
+import com.ua07.transactions.dto.OrderRequest;
+import com.ua07.transactions.dto.OrderResponse;
 import com.ua07.transactions.model.Order;
 import com.ua07.transactions.model.PaymentMethod;
 import com.ua07.transactions.service.InvoiceService;
@@ -37,14 +40,16 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
-    // TODO: This should take a DTO instead.. and take the User ID from the
-    // AuthConstants.USER_ID_HEADER header
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        return ResponseEntity.ok(orderService.createOrder(order));
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest order,@RequestHeader(value = "X-User-Id", required = false) String userId) {
+
+        return orderService.createOrder(order, userId);
     }
 
-    // TODO: Add update!!!
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable UUID id, @RequestBody Order order) {
+        return orderService.updateOrder(id, order);
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
@@ -52,7 +57,7 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/confirm")
-    public boolean confirmOrder(@PathVariable UUID id) {
+    public ResponseEntity<OrderConfirmationResponse> confirmOrder(@PathVariable UUID id) {
         return orderService.confirmOrder(id);
     }
 
