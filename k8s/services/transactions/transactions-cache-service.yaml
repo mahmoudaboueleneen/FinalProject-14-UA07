@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: transactions-cache-service
+  name: transactions-cache
 spec:
   selector:
     app: transactions-cache

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: notifications-cache-service
+  name: notifications-cache
 spec:
   selector:
     app: notifications-cache

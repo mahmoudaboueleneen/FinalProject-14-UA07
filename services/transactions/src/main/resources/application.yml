@@ -48,7 +48,9 @@ management:
         level: "trace_id=%mdc{trace_id} span_id=%mdc{span_id} trace_flags=%mdc{trace_flags} %p"
       level:
         com.example.app: DEBUG
-
+merchants:
+  service:
+    url: http://localhost:8081/products
 stripe:
   webhook:
     secret: <webhook_secret>

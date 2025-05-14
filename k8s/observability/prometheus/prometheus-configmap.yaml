@@ -41,7 +41,7 @@ data:
         metrics_path: "/actuator/prometheus"
     
         static_configs:
-          - targets: [ 'users-service:8085' ]
+          - targets: [ 'users-service:8080' ]
     
       - job_name: 'merchants-service'
     
@@ -50,7 +50,7 @@ data:
         metrics_path: "/actuator/prometheus"
     
         static_configs:
-          - targets: [ 'merchants-service:8081' ]
+          - targets: [ 'merchants-service:8080' ]
     
       - job_name: 'notifications-service'
     
@@ -59,7 +59,7 @@ data:
         metrics_path: "/actuator/prometheus"
     
         static_configs:
-          - targets: ['notifications-service:8082']
+          - targets: ['notifications-service:8080']
     
       - job_name: 'search-service'
     
@@ -68,7 +68,7 @@ data:
         metrics_path: "/actuator/prometheus"
     
         static_configs:
-          - targets: ['search-service:8083']
+          - targets: ['search-service:8080']
     
       - job_name: 'transactions-service'
     
@@ -77,7 +77,7 @@ data:
         metrics_path: "/actuator/prometheus"
     
         static_configs:
-          - targets: [ 'transactions-service:8084' ]
+          - targets: [ 'transactions-service:8080' ]
     
       - job_name: "rabbitmq-server"
         static_configs:
