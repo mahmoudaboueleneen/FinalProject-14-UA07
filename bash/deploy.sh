@@ -2,7 +2,7 @@
 
 BASE_DIR="$(dirname "$(realpath "$0")")/../k8s"
 
-SERVICE_DIRS=("../rabbitmq" "merchants" "notifications" "search" "transactions" "users" "../observability/grafana" "../observability/prometheus" "../observability/loki" "../observability/tempo")
+SERVICE_DIRS=("../rabbitmq" "merchants" "notifications" "search" "transactions" "users" "../observability/grafana" "../observability/prometheus" "../observability/loki" "../observability/tempo" "../observability/promtail")
 
 # Apply ConfigMaps first (if any) before StatefulSets or Secrets
 for SERVICE in "${SERVICE_DIRS[@]}"; do
@@ -48,7 +48,18 @@ for SERVICE in "${SERVICE_DIRS[@]}"; do
     done
 done
 
-# Apply Services after Deployments
+# Apply DaemonSets after Deployments
+for SERVICE in "${SERVICE_DIRS[@]}"; do
+    echo "Applying DaemonSets for $SERVICE..."
+    for FILE in $BASE_DIR/services/$SERVICE/*daemonset*.yaml; do
+        if [[ -f "$FILE" ]]; then
+            echo "Applying $FILE..."
+            kubectl apply -f "$FILE"
+        fi
+    done
+done
+
+# Apply Services after DaemonSets
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying Services for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*service*.yaml; do
@@ -68,55 +79,45 @@ for FILE in $BASE_DIR/apigateway/*.yaml; do
     fi
 done
 
-# Apply the Stripe Listener Deployment manifest
-echo "Applying the Stripe Listener Deployment manifest..."
+# Apply Stripe listener Deployment
 kubectl apply -f "$BASE_DIR/services/transactions/stripe-listener.yaml"
-
-# Wait for the Deployment to be ready
-echo "Waiting for the Stripe listener deployment to complete..."
 kubectl rollout status deployment/stripe-listener
 
-# Get the pod name associated with the Stripe listener deployment
-POD_NAME=$(kubectl get pods --selector=app=stripe-listener -o=jsonpath='{.items[0].metadata.name}')
-
-# Check if the pod name is found
-if [[ -z "$POD_NAME" ]]; then
-  echo "Error: Pod associated with the deployment not found!"
+# Grab the Stripe listener pod name
+POD=$(kubectl get pods -l app=stripe-listener -o jsonpath='{.items[0].metadata.name}')
+if [[ -z "$POD" ]]; then
+  echo "ERROR: stripe-listener pod not found" >&2
   exit 1
 fi
 
-# Attempt to capture the webhook secret from the pod logs
-echo "Fetching logs from pod: $POD_NAME"
-WEBHOOK_SECRET=""
-for attempt in {1..5}; do
-    # Grep the webhook secret from the logs based on the exact output pattern
-    WEBHOOK_SECRET=$(kubectl logs "$POD_NAME" | grep -o 'whsec_[^ ]*' | head -n 1)
-    if [[ -n "$WEBHOOK_SECRET" ]]; then
-        echo "Webhook secret found: $WEBHOOK_SECRET"
-        break
-    else
-        echo "Attempt $attempt: Webhook secret not found, retrying in 5 seconds..."
-        sleep 5
-    fi
+# Extract webhook secret from Stripe CLI logs
+echo "Waiting for Stripe CLI to print webhook secret…"
+for i in {1..10}; do
+  # Remove --since so we search all logs
+  LOGS=$(kubectl logs "$POD" -c stripe-cli || true)
+  # Match alphanumeric + underscores
+  SECRET=$(grep -o 'whsec_[[:alnum:]_]*' <<<"$LOGS" | head -1)
+  if [[ -n "$SECRET" ]]; then
+    echo "Found webhook secret: $SECRET"
+    break
+  fi
+  sleep 5
 done
 
-# Check if the webhook secret was found after retries
-if [ -z "$WEBHOOK_SECRET" ]; then
-  echo "Error: Webhook secret not found in logs!"
+if [[ -z "${SECRET:-}" ]]; then
+  echo "ERROR: webhook secret not found in logs" >&2
   exit 1
 fi
 
-# Check if the webhook secret is already in the secret
-EXISTING_SECRET=$(kubectl get secret stripe-secret -o jsonpath="{.data.STRIPE_WEBHOOK_SECRET}")
+# Read and decode the existing STRIPE_SECRET_KEY from the cluster
+OLD_KEY_ENC=$(kubectl get secret stripe-secret -o jsonpath='{.data.STRIPE_SECRET_KEY}')
+OLD_KEY=$(printf "%s" "$OLD_KEY_ENC" | base64 --decode)
 
-if [[ -z "$EXISTING_SECRET" ]]; then
-  echo "Patching in the webhook secret..."
-  # Update the Kubernetes secret with the new webhook secret
-  kubectl patch secret stripe-secret \
-    -p "{\"data\":{\"STRIPE_WEBHOOK_SECRET\":\"$(echo -n "$WEBHOOK_SECRET" | base64)\"}}"
-else
-  echo "Webhook secret already set, skipping patch."
-fi
+# Recreate the stripe secret in-memory with both keys, then apply
+kubectl create secret generic stripe-secret \
+  --from-literal=STRIPE_SECRET_KEY="$OLD_KEY" \
+  --from-literal=STRIPE_WEBHOOK_SECRET="$SECRET" \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 # Check the status of all resources
 echo "Checking the status of the resources..."
