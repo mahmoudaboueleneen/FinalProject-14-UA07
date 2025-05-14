@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PrometheusExemplarSamplerConfiguration {
-  @Bean
-  public OpenTelemetryAgentSpanContextSupplier openTelemetryAgentSpanContextSupplier() {
-    return new OpenTelemetryAgentSpanContextSupplier();
-  }
+
+    @Bean
+    public OpenTelemetryAgentSpanContextSupplier openTelemetryAgentSpanContextSupplier() {
+        return new OpenTelemetryAgentSpanContextSupplier();
+    }
+
 }

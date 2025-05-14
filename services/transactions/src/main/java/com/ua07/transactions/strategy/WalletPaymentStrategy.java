@@ -12,8 +12,8 @@ import com.ua07.transactions.command.ValidateWalletTransaction.ValidateWalletTra
 import com.ua07.transactions.command.ValidateWalletTransaction.ValidateWalletTransactionCommandRequest;
 import com.ua07.transactions.command.ValidateWalletTransaction.ValidateWalletTransactionCommandResponse;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
-import com.ua07.transactions.model.TransactionStatus;
+import com.ua07.transactions.enums.PaymentMethod;
+import com.ua07.transactions.enums.TransactionStatus;
 import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 import com.ua07.transactions.repository.WalletRepository;

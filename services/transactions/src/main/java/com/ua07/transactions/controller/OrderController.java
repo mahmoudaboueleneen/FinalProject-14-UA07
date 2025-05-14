@@ -5,7 +5,7 @@ import com.ua07.transactions.dto.OrderConfirmationResponse;
 import com.ua07.transactions.dto.OrderRequest;
 import com.ua07.transactions.dto.OrderResponse;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
+import com.ua07.transactions.enums.PaymentMethod;
 import com.ua07.transactions.service.InvoiceService;
 import com.ua07.transactions.service.OrderService;
 import com.ua07.transactions.service.PaymentService;

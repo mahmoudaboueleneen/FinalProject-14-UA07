@@ -2,8 +2,8 @@ package com.ua07.transactions.command.RecordTransaction;
 
 import com.ua07.shared.command.CommandRequest;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
-import com.ua07.transactions.model.TransactionStatus;
+import com.ua07.transactions.enums.PaymentMethod;
+import com.ua07.transactions.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

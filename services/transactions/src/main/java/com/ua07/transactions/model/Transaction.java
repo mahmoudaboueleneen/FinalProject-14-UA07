@@ -1,6 +1,8 @@
 package com.ua07.transactions.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.ua07.transactions.enums.PaymentMethod;
+import com.ua07.transactions.enums.TransactionStatus;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.*;
@@ -12,16 +14,9 @@ import lombok.*;
 @AllArgsConstructor
 public class Transaction {
 
-    // no need for getters and setter for using lombok
-    // other constructors are implemented by NoArgs and AllArgsConstructor
-
-    public Transaction(Order order, PaymentMethod paymentMethod, TransactionStatus status) {
-        this.order = order;
-        this.paymentMethod = paymentMethod;
-        this.status = status;
-    }
-
-    @Id @GeneratedValue private UUID id;
+    @Id
+    @GeneratedValue
+    private UUID id;
 
     @JsonBackReference
     @OneToOne
@@ -33,4 +28,11 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
+
+    public Transaction(Order order, PaymentMethod paymentMethod, TransactionStatus status) {
+        this.order = order;
+        this.paymentMethod = paymentMethod;
+        this.status = status;
+    }
+
 }

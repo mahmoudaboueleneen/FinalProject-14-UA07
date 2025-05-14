@@ -3,7 +3,7 @@ package com.ua07.transactions.service;
 import com.ua07.shared.command.CommandExecutor;
 import com.ua07.shared.command.CommandResponse;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
+import com.ua07.transactions.enums.PaymentMethod;
 import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 import com.ua07.transactions.repository.WalletRepository;

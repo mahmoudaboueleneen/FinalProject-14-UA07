@@ -1,5 +1,6 @@
 package com.ua07.transactions.model;
 
+import com.ua07.transactions.enums.OrderStatus;
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -15,8 +16,28 @@ import lombok.*;
 @AllArgsConstructor
 public class Order {
 
-    // no need for getters and setter for using lombok
-    // other constructors are implemented by NoArgs and AllArgsConstructor
+    @Id @GeneratedValue private UUID id;
+
+    @Column(columnDefinition = "uuid", nullable = false)
+    private UUID userId;
+
+    private Double totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    private LocalDateTime createdAt;
+    @Nullable private LocalDateTime confirmedAt;
+    @Nullable private LocalDateTime cancelledAt;
+    @Nullable private LocalDateTime deliveredAt;
+
+    private String shippingAddress;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderLineItem> lineItems;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Transaction transaction;
 
     public Order(
             UUID userId,
@@ -41,26 +62,4 @@ public class Order {
         this.transaction = transaction;
     }
 
-    @Id @GeneratedValue private UUID id;
-
-    @Column(columnDefinition = "uuid", nullable = false)
-    private UUID userId;
-
-    private Double totalAmount;
-
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
-    private LocalDateTime createdAt;
-    @Nullable private LocalDateTime confirmedAt;
-    @Nullable private LocalDateTime cancelledAt;
-    @Nullable private LocalDateTime deliveredAt;
-
-    private String shippingAddress;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderLineItem> lineItems;
-
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private Transaction transaction;
 }

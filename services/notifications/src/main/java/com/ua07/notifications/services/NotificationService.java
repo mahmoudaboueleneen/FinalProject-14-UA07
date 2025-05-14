@@ -10,6 +10,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -35,17 +38,36 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
+    @Cacheable(value = "notification", key = "#id")
     public Notification getNotificationById(String id) {
         return notificationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id));
     }
 
+    @CachePut(value = "notification", key = "#result.id")
     public Notification createNotification(Notification notification) {
         notification.setTimestamp(Instant.now());
         notification.setIsRead(false);
         return notificationRepository.save(notification);
     }
 
+    @CachePut(value = "notification", key = "#result.id")
+    public Notification updateNotification(String id, Notification notification) {
+        Notification existingNotification = notificationRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id));
+
+        existingNotification.setMessage(notification.getMessage());
+        existingNotification.setType(notification.getType());
+        existingNotification.setProductIdInShortage(notification.getProductIdInShortage());
+        existingNotification.setCurrentCount(notification.getCurrentCount());
+        existingNotification.setThreshold(notification.getThreshold());
+
+        existingNotification.setTimestamp(Instant.now());
+
+        return notificationRepository.save(existingNotification);
+    }
+
+    @CacheEvict(value = "notification", key = "#id")
     public void deleteNotification(String id) {
         if (!notificationRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id);
@@ -72,6 +94,7 @@ public class NotificationService {
         return notificationRepository.findByUserIdAndIsReadFalse(userId); // add pagination if needed
     }
 
+    @CachePut(value = "notification", key = "#result.id")
     public Notification markAsRead(String id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found with id " + id));
@@ -80,10 +103,12 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
-    public void markAllAsRead(UUID userId) {
-        List<Notification> notifications =
-                notificationRepository.findByUserIdAndIsReadFalse(userId);
-        notifications.forEach(n -> n.setIsRead(true));
-        notificationRepository.saveAll(notifications);
-    }
+    // Note: This is problematic for cache eviction. Leave it out for now.
+//    public void markAllAsRead(UUID userId) {
+//        List<Notification> notifications =
+//                notificationRepository.findByUserIdAndIsReadFalse(userId);
+//        notifications.forEach(n -> n.setIsRead(true));
+//        notificationRepository.saveAll(notifications);
+//    }
+
 }

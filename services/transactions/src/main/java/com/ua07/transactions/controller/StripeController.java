@@ -2,7 +2,6 @@ package com.ua07.transactions.controller;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
-import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
@@ -10,13 +9,12 @@ import com.ua07.shared.command.CommandExecutor;
 import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommand;
 import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommandRequest;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
-import com.ua07.transactions.model.TransactionStatus;
+import com.ua07.transactions.enums.PaymentMethod;
+import com.ua07.transactions.enums.TransactionStatus;
 import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 import com.ua07.transactions.service.StripeService;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Map;
+
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;

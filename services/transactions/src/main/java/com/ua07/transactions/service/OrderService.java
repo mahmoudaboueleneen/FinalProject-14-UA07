@@ -6,13 +6,15 @@ import com.ua07.transactions.dto.OrderLineItemRequest;
 import com.ua07.transactions.dto.OrderRequest;
 import com.ua07.transactions.dto.OrderResponse;
 import com.ua07.transactions.dto.OrderLineItemResponse;
+import com.ua07.transactions.enums.OrderStatus;
+import com.ua07.transactions.enums.PaymentMethod;
+import com.ua07.transactions.enums.TransactionStatus;
 import com.ua07.transactions.model.*;
 import com.ua07.transactions.producer.TransactionQueueProducer;
 import com.ua07.transactions.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -170,7 +172,7 @@ public class OrderService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new OrderConfirmationResponse("Order not paid yet.", orderId.toString(), false));
         }
-        if(order.getTransaction().getPaymentMethod()!=PaymentMethod.COD && order.getTransaction().getStatus() != TransactionStatus.APPROVED ) {
+        if(order.getTransaction().getPaymentMethod()!= PaymentMethod.COD && order.getTransaction().getStatus() != TransactionStatus.APPROVED ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new OrderConfirmationResponse("Order payment not approved yet.", orderId.toString(), false));
         }
