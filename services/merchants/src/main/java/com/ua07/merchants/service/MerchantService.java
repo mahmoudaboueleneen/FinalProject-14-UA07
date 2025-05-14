@@ -7,6 +7,7 @@ import com.ua07.merchants.command.GenerateSalesReportCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
+import com.ua07.merchants.producer.MerchantQueueProducer;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.CommandExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,14 @@ public class MerchantService {
     private final CommandExecutor commandExecutor;
     private final OrderClient orderClient;
 
+    private final MerchantQueueProducer merchantQueueProducer;
     @Autowired
-    public MerchantService(ProductRepository productRepository, CommandExecutor commandExecutor, OrderClient orderClient) {
+    public MerchantService(ProductRepository productRepository, CommandExecutor commandExecutor, OrderClient orderClient,
+                           MerchantQueueProducer merchantQueueProducer) {
         this.productRepository = productRepository;
         this.commandExecutor  = commandExecutor;
         this.orderClient = orderClient;
+        this.merchantQueueProducer = merchantQueueProducer;
     }
 
     public Product createProductLaptop(Product product) {
@@ -53,6 +57,7 @@ public class MerchantService {
                 .withProcessor(product.getProcessor())
                 .withRam(product.getRam())
                 .withStorage(product.getStorage())
+                .withMerchantId(product.getMerchantId())
                 .build();
 
         return productRepository.save(createdProduct);
@@ -73,6 +78,7 @@ public class MerchantService {
                 .withAuthor(product.getAuthor())
                 .withGenre(product.getGenre())
                 .withPages(product.getPages())
+                .withMerchantId(product.getMerchantId())
                 .build();
 
         return productRepository.save(createdProduct);
@@ -93,6 +99,7 @@ public class MerchantService {
                 .withSize(product.getSize())
                 .withMaterial(product.getMaterial())
                 .withColor(product.getColor())
+                .withMerchantId(product.getMerchantId())
                 .build();
 
         return productRepository.save(createdProduct);
@@ -129,6 +136,7 @@ public class MerchantService {
                     .withProcessor(updated.getProcessor())
                     .withRam(updated.getRam())
                     .withStorage(updated.getStorage())
+                    .withMerchantId(product.getMerchantId())
                     .build();
 
             return productRepository.save(updatedProduct);
@@ -158,6 +166,7 @@ public class MerchantService {
                     .withAuthor(updated.getAuthor())
                     .withGenre(updated.getGenre())
                     .withPages(updated.getPages())
+                    .withMerchantId(product.getMerchantId())
                     .build();
 
             return productRepository.save(updatedProduct);
@@ -187,6 +196,7 @@ public class MerchantService {
                     .withSize(updated.getSize())
                     .withMaterial(updated.getMaterial())
                     .withColor(updated.getColor())
+                    .withMerchantId(product.getMerchantId())
                     .build();
 
             return productRepository.save(updatedProduct);
@@ -219,7 +229,7 @@ public class MerchantService {
             int stockChange
     ) {
         AdjustStockRequest request = new AdjustStockRequest(productId, stockChange);
-        AdjustStockCommand command = new AdjustStockCommand(productRepository);
+        AdjustStockCommand command = new AdjustStockCommand(productRepository,merchantQueueProducer);
         return commandExecutor.execute(command, request);
     }
 
