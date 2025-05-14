@@ -2,26 +2,26 @@ package com.ua07.notifications.command;
 
 import com.ua07.notifications.client.UserClient;
 import com.ua07.notifications.dtos.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
 
 import com.ua07.notifications.models.Notification;
 import org.springframework.web.server.ResponseStatusException;
 
-@Component
 public class SendEmailNotificationCommand implements NotificationCommand {
 
-    @Autowired
-    private JavaMailSender mailSender;
-
-    private UserClient userClient;
-
-    @Value("${spring.email.username}")
+    @Value("${spring.mail.username}")
     private String from;
+
+    private final JavaMailSender mailSender;
+    private final UserClient userClient;
+
+    public SendEmailNotificationCommand(JavaMailSender mailSender, UserClient userClient) {
+        this.mailSender = mailSender;
+        this.userClient = userClient;
+    }
 
     @Override
     public void execute(Notification notification) {
@@ -31,6 +31,7 @@ public class SendEmailNotificationCommand implements NotificationCommand {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + notification.getUserId());
         }
 
+        // Merchant notification
         if (notification.getProductIdInShortage() != null) {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
@@ -41,6 +42,7 @@ public class SendEmailNotificationCommand implements NotificationCommand {
             return;
         }
 
+        // Customer notification
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(user.getEmail());

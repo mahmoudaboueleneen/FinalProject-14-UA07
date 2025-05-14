@@ -1,5 +1,6 @@
 package com.ua07.notifications.services;
 
+import com.ua07.notifications.client.UserClient;
 import com.ua07.notifications.command.NotificationInvoker;
 import com.ua07.notifications.command.SendEmailNotificationCommand;
 import com.ua07.notifications.command.SendInAppNotificationCommand;
@@ -7,10 +8,10 @@ import com.ua07.notifications.models.Notification;
 import com.ua07.notifications.repositories.NotificationRepository;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,11 +20,15 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationInvoker invoker;
+    private final JavaMailSender mailSender;
+    private final UserClient userClient;
 
     @Autowired
-    public NotificationService(NotificationRepository notificationRepository, NotificationInvoker invoker) {
+    public NotificationService(NotificationRepository notificationRepository, NotificationInvoker invoker, JavaMailSender mailSender, UserClient userClient) {
         this.notificationRepository = notificationRepository;
         this.invoker = invoker;
+        this.mailSender = mailSender;
+        this.userClient = userClient;
     }
 
     public List<Notification> getAllNotifications() {
@@ -50,14 +55,14 @@ public class NotificationService {
 
     public void sendInAppNotification(Notification notification) {
         SendInAppNotificationCommand sendInAppNotificationCommand =
-                new SendInAppNotificationCommand();
+                new SendInAppNotificationCommand(notificationRepository);
 
         invoker.setCommand(sendInAppNotificationCommand);
         invoker.executeCommand(notification);
     }
 
     public void sendEmailNotification(Notification notification) {
-        SendEmailNotificationCommand emailNotificationCommand = new SendEmailNotificationCommand();
+        SendEmailNotificationCommand emailNotificationCommand = new SendEmailNotificationCommand(mailSender, userClient);
 
         invoker.setCommand(emailNotificationCommand);
         invoker.executeCommand(notification);

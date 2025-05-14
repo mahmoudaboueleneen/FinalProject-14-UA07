@@ -18,7 +18,7 @@ public class Notification {
 
     // Required Fields
     private Instant timestamp;
-    private Boolean isRead;
+    private Boolean isRead = false;
     private UUID userId;
 
     // customer-specific

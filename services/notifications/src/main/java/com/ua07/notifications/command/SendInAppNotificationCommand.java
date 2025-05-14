@@ -2,13 +2,14 @@ package com.ua07.notifications.command;
 
 import com.ua07.notifications.models.Notification;
 import com.ua07.notifications.repositories.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SendInAppNotificationCommand implements NotificationCommand {
 
-    @Autowired private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
+
+    public SendInAppNotificationCommand(NotificationRepository notificationRepository) {
+        this.notificationRepository = notificationRepository;
+    }
 
     @Override
     public void execute(Notification notification) {
