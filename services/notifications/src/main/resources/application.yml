@@ -1,6 +1,17 @@
 spring:
   application:
     name: notifications
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mahmoudaboueleneen@gmail.com
+    password: bxcr oqvr ipkm duqh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   data:
     mongodb:
       uri: mongodb://root:example@localhost:27017/notifications-db?authSource=admin
@@ -17,7 +28,9 @@ spring:
     password: guest
 server:
   port: 8082
-
+users:
+  service:
+    url: http://localhost:8085/users
 management:
   endpoints:
     web:
@@ -36,3 +49,4 @@ management:
       level: "trace_id=%mdc{trace_id} span_id=%mdc{span_id} trace_flags=%mdc{trace_flags} %p"
     level:
       com.example.app: DEBUG
+
