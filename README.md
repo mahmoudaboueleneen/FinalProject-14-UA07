@@ -1,4 +1,4 @@
-# Amazon Replica: A Massively Scalable Distributed Microservices E-Commerce Application.
+# Amazon Replica: A Massively Scalable Distributed Microservices E-Commerce Application
 
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![DigitalOcean](https://img.shields.io/badge/DigitalOcean-1433d6?style=for-the-badge&logo=digitalocean&logoColor=white&labelColor=1433d6)
@@ -21,10 +21,53 @@
 
 [//]: # (![Tempo]&#40;https://img.shields.io/badge/Tempo-3B4EFF.svg?style=for-the-badge&logo=grafana-tempo&logoColor=white&#41;)
 
+## Builds
+
+## Table of Contents
+
+## Project Overview
+
+Amazon Replica is a massively scalable distributed microservices e-commerce application. It is designed to handle a large number of concurrent users and transactions, making it suitable for high-traffic e-commerce platforms. The application is built using modern technologies and follows best practices in software development.
+
 ## System Architecture
 
-![system_design](docs/architecture-diagram.png)
+![system_design](docs/images/architecture-diagram.png)
+
+## Components
+
+## Deployment
+
+## 🔭 Observability
+
+## Getting Started
+
+```
+docker plugin install grafana/loki-docker-driver:2.9.2 --alias loki --grant-all-permissions
+```
+
+```
+mvn clean install -DskipTests
+```
+
+```
+docker compose up -d --build
+```
+
+Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add it to env.
+
+```
+stripe login
+stripe listen --forward-to localhost:8084/stripe/webhook
+```
 
 ## Contributors
 
 See the AUTHORS file for a list of contributors to this project.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](./LICENSE) file for more details.
+
+## Credits
+
+- [Workup](https://github.com/Ahmad45123/workup/blob/main/README.md)

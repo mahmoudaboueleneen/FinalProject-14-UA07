@@ -15,15 +15,24 @@ spec:
     spec:
       containers:
         - name: tempo
-          image: grafana/tempo:2.5.0
+          image: grafana/tempo:2.4.1
           args:
-            - -config.file=/etc/tempo/tempo.yaml
+            - "--target=all"
+            - "--storage.trace.backend=local"
+            - "--storage.trace.local.path=/var/tempo"
+            - "--auth.enabled=false"
           ports:
-            - containerPort: 3200
+            - containerPort: 14250
+            - containerPort: 4317
           volumeMounts:
+            - name: tempo-storage
+              mountPath: /var/tempo
             - name: config
-              mountPath: /etc/tempo
+              mountPath: /etc/tempo.yaml
+              subPath: tempo.yaml
       volumes:
+        - name: tempo-storage
+          emptyDir: {}
         - name: config
           configMap:
-            name: tempo-config
+            name: tempo-configmap

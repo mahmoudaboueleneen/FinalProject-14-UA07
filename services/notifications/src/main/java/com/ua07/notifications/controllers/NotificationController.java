@@ -31,12 +31,17 @@ public class NotificationController {
     }
 
     @PostMapping
-    public Notification create(@RequestBody Notification notification) {
+    public Notification createNotification(@RequestBody Notification notification) {
         return notificationService.createNotification(notification);
     }
 
+    @PutMapping("/{id}")
+    public Notification updateNotification(@PathVariable String id, @RequestBody Notification notification) {
+        return notificationService.updateNotification(id, notification);
+    }
+
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    public void deleteNotification(@PathVariable String id) {
         notificationService.deleteNotification(id);
     }
 
@@ -53,10 +58,11 @@ public class NotificationController {
         return notificationService.markAsRead(id);
     }
 
-    @PostMapping("/mark-all-read")
-    public void markAllAsRead(@RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId) {
-        notificationService.markAllAsRead(userId);
-    }
+    // Note: This is problematic for cache eviction. Leave it out for now.
+//    @PostMapping("/mark-all-read")
+//    public void markAllAsRead(@RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId) {
+//        notificationService.markAllAsRead(userId);
+//    }
 
     @PostMapping("/send/in-app")
     public void sendInApp(@RequestBody Notification notification) {

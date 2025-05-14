@@ -148,6 +148,7 @@ services:
       - OTEL_METRICS_EXPORTER=none # disable metrics exporter
       - OTEL_LOGS_EXPORTER=none # disable logs exporter
       - MANAGEMENT_METRICS_TAGS_APPLICATION=notifications-service # override
+      - users.service.url=http://users-service:8085/users
     restart: always
     logging: *default-logging
 
@@ -279,7 +280,6 @@ services:
     container_name: users-service
     depends_on:
       - users-db
-      - loki
     ports:
       - "8085:8085"
     environment:
@@ -310,15 +310,18 @@ services:
       - "5435:5432"
     logging: *default-logging
 
-  #  OBSERVABILITY
+  # ============== OBSERVABILITY ==============
+
   loki:
     image: grafana/loki:3.0.0
+    container_name: loki
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - "3100:3100"
 
   prometheus:
     image: prom/prometheus:v2.51.2
+    container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
@@ -332,6 +335,7 @@ services:
 
   tempo:
     image: grafana/tempo:2.4.1
+    container_name: tempo
     command:
       [
         "--target=all",
@@ -348,6 +352,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.4.2
+    container_name: grafana
     ports:
       - "3000:3000"
     volumes:

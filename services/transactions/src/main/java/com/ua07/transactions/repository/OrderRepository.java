@@ -1,7 +1,7 @@
 package com.ua07.transactions.repository;
 
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.OrderStatus;
+import com.ua07.transactions.enums.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

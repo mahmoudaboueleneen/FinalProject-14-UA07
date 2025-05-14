@@ -4,11 +4,9 @@ import com.ua07.merchants.client.OrderClient;
 import com.ua07.merchants.command.AddReviewCommand;
 import com.ua07.merchants.command.AdjustStockCommand;
 import com.ua07.merchants.command.GenerateSalesReportCommand;
-import com.ua07.merchants.command.ViewStockCommand;
 import com.ua07.merchants.dto.*;
 import com.ua07.merchants.enums.Category;
 import com.ua07.merchants.model.Product;
-import com.ua07.merchants.model.Review;
 import com.ua07.merchants.producer.MerchantQueueProducer;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.CommandExecutor;
@@ -216,9 +214,14 @@ public class MerchantService {
     }
 
     public ViewStockResponse viewStock(String productId) {
-        ViewStockRequest request = new ViewStockRequest(productId);
-        ViewStockCommand command = new ViewStockCommand(productRepository);
-        return commandExecutor.execute(command, request);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            return new ViewStockResponse(product.getId(), product.getName(), product.getStock());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with ID: " + productId);
+        }
     }
 
     public AdjustStockResponse adjustStock(

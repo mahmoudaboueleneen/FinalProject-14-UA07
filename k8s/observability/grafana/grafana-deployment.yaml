@@ -15,28 +15,7 @@ spec:
     spec:
       containers:
         - name: grafana
-          image: grafana/grafana:10.4.2
+          image: mahmoudaboueleneen/amazon-replica:grafana
           ports:
             - containerPort: 3000
-          env:
-            - name: GF_INSTALL_PLUGINS
-              value: redis-datasource
-            - name: GF_ENABLE_GZIP
-              value: "true"
-          volumeMounts:
-            - name: datasource-config
-              mountPath: /etc/grafana/provisioning/datasources
-            - name: dashboards-yaml
-              mountPath: /etc/grafana/provisioning/dashboards
-            - name: dashboards-json
-              mountPath: /etc/grafana/dashboards
-      volumes:
-        - name: datasource-config
-          configMap:
-            name: grafana-datasources
-        - name: dashboards-yaml
-          configMap:
-            name: grafana-dashboards-yaml
-        - name: dashboards-json
-          configMap:
-            name: grafana-dashboards-json
+          imagePullPolicy: Always

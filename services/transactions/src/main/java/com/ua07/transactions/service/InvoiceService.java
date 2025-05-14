@@ -16,13 +16,14 @@ public class InvoiceService {
 
     private final TemplateEngine templateEngine;
     private final OrderService orderService;
+
     @Autowired
     public InvoiceService(TemplateEngine templateEngine, OrderService orderService) {
-
         this.templateEngine = templateEngine;
         this.orderService = orderService;
     }
 
+    // no need to cache this.
     public byte[] generateInvoicePdf(UUID orderId) {
         Order order = orderService.getOrderById(orderId);
 
@@ -41,6 +42,5 @@ public class InvoiceService {
             throw new RuntimeException("PDF generation failed", e);
         }
     }
-
 
 }

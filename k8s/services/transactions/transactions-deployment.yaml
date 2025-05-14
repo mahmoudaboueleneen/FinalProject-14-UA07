@@ -51,3 +51,31 @@ spec:
               value: transactions-cache-service
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
+            - name: STRIPE_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: STRIPE_WEBHOOK_SECRET
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: STRIPE_SECRET_KEY
+            - name: STRIPE_CHECKOUT_SUCCESS_URL
+              value: http://transactions-service:8080/stripe/success
+            - name: STRIPE_CHECKOUT_CANCEL_URL
+              value: http://transactions-service:8080/stripe/cancel
+            - name: OTEL_SERVICE_NAME
+              value: transactions-service
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://tempo:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: compose_service=transactions-service
+            - name: OTEL_METRICS_EXPORTER
+              value: none
+            - name: OTEL_LOGS_EXPORTER
+              value: none
+            - name: MANAGEMENT_METRICS_TAGS_APPLICATION
+              value: transactions-service

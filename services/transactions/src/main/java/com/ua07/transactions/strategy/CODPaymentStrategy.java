@@ -6,8 +6,8 @@ import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommand;
 import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommandRequest;
 import com.ua07.transactions.command.RecordTransaction.RecordTransactionCommandResponse;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
-import com.ua07.transactions.model.TransactionStatus;
+import com.ua07.transactions.enums.PaymentMethod;
+import com.ua07.transactions.enums.TransactionStatus;
 import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 

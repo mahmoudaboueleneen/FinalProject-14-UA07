@@ -1,16 +1,19 @@
 package com.ua07.transactions.controller;
 
+import com.ua07.shared.auth.AuthConstants;
 import com.ua07.shared.command.CommandResponse;
 import com.ua07.transactions.dto.OrderConfirmationResponse;
 import com.ua07.transactions.dto.OrderRequest;
 import com.ua07.transactions.dto.OrderResponse;
 import com.ua07.transactions.model.Order;
-import com.ua07.transactions.model.PaymentMethod;
+import com.ua07.transactions.enums.PaymentMethod;
 import com.ua07.transactions.service.InvoiceService;
 import com.ua07.transactions.service.OrderService;
 import com.ua07.transactions.service.PaymentService;
+
 import java.util.List;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,14 +44,15 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest order,@RequestHeader(value = "X-User-Id", required = false) String userId) {
-
+    public ResponseEntity<OrderResponse> createOrder(
+            @RequestBody OrderRequest order,
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId) {
         return orderService.createOrder(order, userId);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable UUID id, @RequestBody Order order) {
-        return orderService.updateOrder(id, order);
+        return ResponseEntity.ok(orderService.updateOrder(id, order));
     }
 
     @DeleteMapping("/{id}")
@@ -73,6 +77,7 @@ public class OrderController {
             throws Exception {
         return paymentService.pay(orderId, paymentMethod);
     }
+
     @GetMapping("/{id}/invoice")
     public ResponseEntity<byte[]> generateInvoice(@PathVariable UUID id) {
         byte[] pdfBytes = invoiceService.generateInvoicePdf(id);

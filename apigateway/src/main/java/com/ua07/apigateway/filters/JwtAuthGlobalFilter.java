@@ -55,8 +55,14 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
             }
         }
 
-        // No token found, continue unauthenticated
-        return chain.filter(exchange);
+        // No token found
+        String path = exchange.getRequest().getURI().getPath();
+        if (path.startsWith("/auth")) {
+            return chain.filter(exchange);
+        } else {
+            exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
     }
 
     @Override

@@ -18,7 +18,7 @@ public class Notification {
 
     // Required Fields
     private Instant timestamp;
-    private Boolean isRead;
+    private Boolean isRead = false;
     private UUID userId;
 
     // customer-specific
@@ -47,13 +47,15 @@ public class Notification {
             Integer threshold) {
         this.id = id;
         this.timestamp = timestamp;
-        this.isRead = isRead;
         this.userId = userId;
         this.message = message;
         this.type = type;
         this.productIdInShortage = productIdInShortage;
         this.currentCount = currentCount;
         this.threshold = threshold;
+
+        this.isRead = false;
+
     }
 
 }

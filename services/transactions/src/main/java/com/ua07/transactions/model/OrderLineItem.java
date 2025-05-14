@@ -12,6 +12,20 @@ import lombok.*;
 @Builder
 public class OrderLineItem {
 
+    @Id
+    @GeneratedValue
+    private UUID id;
+    private UUID productId;
+    private String name;
+    private Integer count;
+    private Double unitCost;
+    private Double totalCost;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    @JsonBackReference
+    private Order order;
+
     public OrderLineItem(
             UUID productId,
             String name,
@@ -27,19 +41,4 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    // no need for getters and setter for using lombok
-    // other constructors are implemented by NoArgs and AllArgsConstructor
-
-    @Id @GeneratedValue private UUID id;
-
-    private UUID productId;
-    private String name;
-    private Integer count;
-    private Double unitCost;
-    private Double totalCost;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    @JsonBackReference
-    private Order order;
 }

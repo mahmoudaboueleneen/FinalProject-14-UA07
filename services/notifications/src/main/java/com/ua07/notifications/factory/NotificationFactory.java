@@ -1,15 +1,11 @@
 package com.ua07.notifications.factory;
 
-
 import com.ua07.notifications.models.Notification;
 import com.ua07.notifications.models.NotificationType;
 
 import java.time.Instant;
 import java.util.UUID;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class NotificationFactory {
 
     public static Notification createCustomerNotification(UUID userId, String message, NotificationType type) {
@@ -34,4 +30,5 @@ public class NotificationFactory {
         notification.setThreshold(threshold);
         return notification;
     }
+
 }
