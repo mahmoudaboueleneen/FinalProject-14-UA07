@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stripe-listener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stripe-listener
+  template:
+    metadata:
+      labels:
+        app: stripe-listener
+    spec:
+      containers:
+        - name: stripe-cli
+          image: stripe/stripe-cli:latest
+          command:
+            - sh
+            - -c
+            - stripe listen --forward-to http://transactions-service:8080/stripe/webhook --api-key $STRIPE_API_KEY
+          env:
+            - name: STRIPE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: STRIPE_SECRET_KEY

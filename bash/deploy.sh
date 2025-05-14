@@ -68,20 +68,20 @@ for FILE in $BASE_DIR/apigateway/*.yaml; do
     fi
 done
 
-# Apply the Stripe Listener Job manifest
-echo "Applying the Stripe Listener Job manifest..."
-kubectl apply -f "$BASE_DIR/stripe-listener-job.yaml"
+# Apply the Stripe Listener Deployment manifest
+echo "Applying the Stripe Listener Deployment manifest..."
+kubectl apply -f "$BASE_DIR/services/transactions/stripe-listener.yaml"
 
-# Wait for the Job to complete
-echo "Waiting for the Stripe listener job to complete..."
-kubectl wait --for=condition=complete --timeout=5m job/stripe-listener-job
+# Wait for the Deployment to be ready
+echo "Waiting for the Stripe listener deployment to complete..."
+kubectl rollout status deployment/stripe-listener
 
-# Get the pod name associated with the Stripe listener job
-POD_NAME=$(kubectl get pods --selector=job-name=stripe-listener-job -o=jsonpath='{.items[0].metadata.name}')
+# Get the pod name associated with the Stripe listener deployment
+POD_NAME=$(kubectl get pods --selector=app=stripe-listener -o=jsonpath='{.items[0].metadata.name}')
 
 # Check if the pod name is found
 if [[ -z "$POD_NAME" ]]; then
-  echo "Error: Pod associated with the job not found!"
+  echo "Error: Pod associated with the deployment not found!"
   exit 1
 fi
 
@@ -90,7 +90,7 @@ echo "Fetching logs from pod: $POD_NAME"
 WEBHOOK_SECRET=""
 for attempt in {1..5}; do
     # Grep the webhook secret from the logs based on the exact output pattern
-    WEBHOOK_SECRET=$(kubectl logs "$POD_NAME" | grep -o 'Your webhook signing secret is whsec_[^ ]*' | awk '{print $NF}' | head -n 1)
+    WEBHOOK_SECRET=$(kubectl logs "$POD_NAME" | grep -o 'whsec_[^ ]*' | head -n 1)
     if [[ -n "$WEBHOOK_SECRET" ]]; then
         echo "Webhook secret found: $WEBHOOK_SECRET"
         break
@@ -106,10 +106,17 @@ if [ -z "$WEBHOOK_SECRET" ]; then
   exit 1
 fi
 
-# Update the Kubernetes Secret with the new webhook secret
-echo "Updating the Kubernetes secret with the new webhook secret..."
-kubectl patch secret stripe-secret \
-  -p "{\"data\":{\"STRIPE_WEBHOOK_SECRET\":\"$(echo -n "$WEBHOOK_SECRET" | base64)\"}}"
+# Check if the webhook secret is already in the secret
+EXISTING_SECRET=$(kubectl get secret stripe-secret -o jsonpath="{.data.STRIPE_WEBHOOK_SECRET}")
+
+if [[ -z "$EXISTING_SECRET" ]]; then
+  echo "Patching in the webhook secret..."
+  # Update the Kubernetes secret with the new webhook secret
+  kubectl patch secret stripe-secret \
+    -p "{\"data\":{\"STRIPE_WEBHOOK_SECRET\":\"$(echo -n "$WEBHOOK_SECRET" | base64)\"}}"
+else
+  echo "Webhook secret already set, skipping patch."
+fi
 
 # Check the status of all resources
 echo "Checking the status of the resources..."

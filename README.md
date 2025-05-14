@@ -35,11 +35,9 @@ Amazon Replica is a massively scalable distributed microservices e-commerce appl
 
 ## Components
 
-## Deployment
-
 ## 🔭 Observability
 
-## Getting Started
+## Developing with Docker Compose
 
 ```
 docker plugin install grafana/loki-docker-driver:2.9.2 --alias loki --grant-all-permissions
@@ -53,12 +51,14 @@ mvn clean install -DskipTests
 docker compose up -d --build
 ```
 
-Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add it to env.
+Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add its path to your path environment variable.
 
 ```
 stripe login
 stripe listen --forward-to localhost:8084/stripe/webhook
 ```
+
+## Deployment to Kubernetes Local Cluster (Minikube)
 
 ## Contributors
 
