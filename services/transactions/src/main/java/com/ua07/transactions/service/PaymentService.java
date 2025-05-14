@@ -12,15 +12,18 @@ import com.ua07.transactions.strategy.PaymentStrategy;
 import com.ua07.transactions.strategy.StripePaymentStrategy;
 import com.ua07.transactions.strategy.WalletPaymentStrategy;
 import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PaymentService {
 
-    OrderRepository orderRepository;
-    TransactionRepository transactionRepository;
-    WalletRepository walletRepository;
-    StripeService stripeService;
+    private final OrderRepository orderRepository;
+    private final TransactionRepository transactionRepository;
+    private final WalletRepository walletRepository;
+    private final StripeService stripeService;
 
     public PaymentService(
             OrderRepository orderRepository,
@@ -34,34 +37,25 @@ public class PaymentService {
     }
 
     public CommandResponse pay(UUID orderId, PaymentMethod paymentMethod) {
-        Order order =
-                orderRepository
-                        .findById(orderId)
-                        .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + orderId));
 
         PaymentStrategy paymentStrategy;
         CommandExecutor commandExecutor = new CommandExecutor();
-        switch (paymentMethod) {
-            case WALLET:
-                paymentStrategy =
-                        new WalletPaymentStrategy(
-                                commandExecutor,
-                                orderRepository,
-                                transactionRepository,
-                                walletRepository);
-                break;
-            case COD:
-                paymentStrategy =
-                        new CODPaymentStrategy(
-                                commandExecutor, orderRepository, transactionRepository);
-                break;
-            case PaymentMethod.CARD:
-                paymentStrategy = new StripePaymentStrategy(commandExecutor, stripeService);
-                break;
-            default:
-                throw new RuntimeException("Invalid payment method: " + paymentMethod);
-        }
+
+        paymentStrategy = switch (paymentMethod) {
+            case WALLET -> new WalletPaymentStrategy(
+                    commandExecutor,
+                    orderRepository,
+                    transactionRepository,
+                    walletRepository);
+            case COD -> new CODPaymentStrategy(
+                    commandExecutor, orderRepository, transactionRepository);
+            case PaymentMethod.CARD -> new StripePaymentStrategy(commandExecutor, stripeService);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid payment method: " + paymentMethod);
+        };
 
         return paymentStrategy.pay(order);
     }
+
 }

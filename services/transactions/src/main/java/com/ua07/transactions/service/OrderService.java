@@ -20,7 +20,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,7 +39,7 @@ public class OrderService {
 
     @Autowired
     public OrderService(OrderRepository orderRepository,
-            TransactionQueueProducer transactionQueueProducer, StockClient stockClient) {
+                        TransactionQueueProducer transactionQueueProducer, StockClient stockClient) {
         this.orderRepository = orderRepository;
         this.transactionQueueProducer = transactionQueueProducer;
         this.stockClient = stockClient;
@@ -45,13 +49,10 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    @Cacheable(value = "order", key = "#id")
     public Order getOrderById(UUID id) {
-        return orderRepository
-                .findById(id)
-                .orElseThrow(
-                        () ->
-                                new ResponseStatusException(
-                                        HttpStatus.NOT_FOUND, "Order not found with ID: " + id));
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + id));
     }
 
     public double getProductPrice(String productId) {
@@ -59,33 +60,33 @@ public class OrderService {
         return (double) product.get("price");
     }
 
-    public OrderResponse getOrderResponse(OrderRequest orderRequest){
-        System.out.println("OrderRequest: " + orderRequest.getOrderLineItems());
+
+    public OrderResponse getOrderResponse(OrderRequest orderRequest) {
         OrderResponse response = new OrderResponse();
         response.setOrderLineItems(new ArrayList<OrderLineItemResponse>());
-        for (OrderLineItemRequest item: orderRequest.getOrderLineItems()){
+        for (OrderLineItemRequest item : orderRequest.getOrderLineItems()) {
             OrderLineItemResponse orderLineItemResponse = new OrderLineItemResponse(
-                            item.getProductId(),
-                            item.getProductName(),
-                            item.getQuantity(),
-                            0,
-                            0,
-                            0,"",true);
-            try{
+                    item.getProductId(),
+                    item.getProductName(),
+                    item.getQuantity(),
+                    0,
+                    0,
+                    0, "", true);
+            try {
                 int stock = getStock(item.getProductId());
                 double price = getProductPrice(item.getProductId());
 
                 orderLineItemResponse.setMaxQuantity(stock);
                 orderLineItemResponse.setPrice(price);
                 orderLineItemResponse.setTotalPrice(price * item.getQuantity());
-                    
-                if(stock >= item.getQuantity()) {
+
+                if (stock >= item.getQuantity()) {
                     orderLineItemResponse.setMessage("Enough stock available");
-                }else{
+                } else {
                     orderLineItemResponse.setMessage("Not enough stock available");
                     orderLineItemResponse.setValid(false);
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Error fetching product details: " + e.getMessage());
                 orderLineItemResponse.setMessage("Item unavailable");
                 orderLineItemResponse.setValid(false);
@@ -95,22 +96,47 @@ public class OrderService {
         return response;
     }
 
-    public boolean isOrderValid(OrderResponse orderResponse){
-        for (OrderLineItemResponse item: orderResponse.getOrderLineItems()){
-            if(!item.isValid()){
+    public boolean isOrderValid(OrderResponse orderResponse) {
+        for (OrderLineItemResponse item : orderResponse.getOrderLineItems()) {
+            if (!item.isValid()) {
                 return false;
             }
         }
         return true;
     }
 
-    public Order makeOrder(OrderResponse orderResponse, String userId) {
+    public ResponseEntity<OrderResponse> createOrder(OrderRequest order, UUID userId) {
+        OrderResponse orderResponse = getOrderResponse(order);
+        System.out.println("OrderResponse: " + orderResponse.getOrderLineItems());
+        if (!isOrderValid(orderResponse)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(orderResponse);
+        }
+        Order newOrder = makeOrder(orderResponse, userId);
+        orderRepository.save(newOrder);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderResponse);
+    }
+
+    @CacheEvict(value = "order", key = "#id")
+    public void deleteOrder(UUID id) {
+        if (!orderRepository.existsById(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Order not found with ID: " + id);
+        }
+        orderRepository.deleteById(id);
+    }
+
+    private Order makeOrder(OrderResponse orderResponse, UUID userId) {
         System.out.println("OrderResponse to make order: " + orderResponse.getOrderLineItems());
+
         Order order = new Order();
-        order.setLineItems(new ArrayList<OrderLineItem>());
-        order.setUserId(UUID.fromString(userId));
+        order.setLineItems(new ArrayList<>());
+        order.setUserId(userId);
         order.setStatus(OrderStatus.CREATED);
         order.setCreatedAt(LocalDateTime.now());
+
         for (OrderLineItemResponse item : orderResponse.getOrderLineItems()) {
             OrderLineItem orderLineItem = new OrderLineItem();
             orderLineItem.setProductId(UUID.fromString(item.getProductId()));
@@ -122,35 +148,15 @@ public class OrderService {
             order.getLineItems().add(orderLineItem);
             stockClient.adjustStock(orderLineItem.getProductId().toString(), -(orderLineItem.getCount()));
         }
+
         order.setTotalAmount(orderResponse.getOrderLineItems().stream()
                 .mapToDouble(OrderLineItemResponse::getTotalPrice)
                 .sum());
         return order;
-    
+
     }
 
-    public ResponseEntity<OrderResponse> createOrder(OrderRequest order,String userId) {
-        OrderResponse orderResponse = getOrderResponse(order);
-        System.out.println("OrderResponse: " + orderResponse.getOrderLineItems());
-        if(!isOrderValid(orderResponse)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(orderResponse);
-        }
-        Order newOrder = makeOrder(orderResponse, userId);
-        orderRepository.save(newOrder);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderResponse);
-    }
-
-    public void deleteOrder(UUID id) {
-        if (!orderRepository.existsById(id)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Order not found with ID: " + id);
-        }
-        orderRepository.deleteById(id);
-    }
-
+    @CacheEvict(value = "order", key = "#orderId")
     public ResponseEntity<OrderConfirmationResponse> confirmOrder(UUID orderId) {
         // Order order = orderRepository.findById(orderId)
         //         .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " +
@@ -160,19 +166,19 @@ public class OrderService {
 
         if (optionalOrder.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new OrderConfirmationResponse("Order not found with ID: " + orderId, orderId.toString(), false)); 
+                    .body(new OrderConfirmationResponse("Order not found with ID: " + orderId, orderId.toString(), false));
         }
         Order order = optionalOrder.get();
 
-        if(order.getStatus() != OrderStatus.CREATED) {
+        if (order.getStatus() != OrderStatus.CREATED) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new OrderConfirmationResponse("Order is not in a valid state for confirmation,", orderId.toString(), false));
         }
-        if(order.getTransaction() == null) {
+        if (order.getTransaction() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new OrderConfirmationResponse("Order not paid yet.", orderId.toString(), false));
         }
-        if(order.getTransaction().getPaymentMethod()!= PaymentMethod.COD && order.getTransaction().getStatus() != TransactionStatus.APPROVED ) {
+        if (order.getTransaction().getPaymentMethod() != PaymentMethod.COD && order.getTransaction().getStatus() != TransactionStatus.APPROVED) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new OrderConfirmationResponse("Order payment not approved yet.", orderId.toString(), false));
         }
@@ -185,7 +191,7 @@ public class OrderService {
                 "OrderConfirmation",
                 "Order confirmed with ID: " + order.getId());
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new OrderConfirmationResponse("Order confirmed." , orderId.toString(), true));
+                .body(new OrderConfirmationResponse("Order confirmed.", orderId.toString(), true));
     }
 
     public int getStock(String productId) {
@@ -200,14 +206,13 @@ public class OrderService {
         return orderRepository.findByStatusAndCreatedAtBetween(OrderStatus.CONFIRMED, start, end);
     }
 
-    public ResponseEntity<Order> updateOrder(UUID id, Order order) {
+    @CachePut(value = "order", key = "#id")
+    public Order updateOrder(UUID id, Order order) {
         Optional<Order> existingOptOrder = orderRepository.findById(id);
-        if(existingOptOrder.isEmpty()) {
+        if (existingOptOrder.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + id);
         }
-        Order savedOrder = orderRepository.save(order);
-        return ResponseEntity.ok(savedOrder);
+        return orderRepository.save(order);
     }
-
 
 }
