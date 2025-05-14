@@ -63,3 +63,5 @@ spec:
               value: none
             - name: MANAGEMENT_METRICS_TAGS_APPLICATION
               value: notifications-service
+            - name: USERS_SERVICE_URL
+              value: http://users-service:8080/users
