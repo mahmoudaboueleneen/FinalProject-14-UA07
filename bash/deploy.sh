@@ -4,7 +4,7 @@ BASE_DIR="$(dirname "$(realpath "$0")")/../k8s"
 
 SERVICE_DIRS=("../rabbitmq" "merchants" "notifications" "search" "transactions" "users" "../observability/grafana" "../observability/prometheus" "../observability/loki" "../observability/tempo" "../observability/promtail")
 
-# Apply ConfigMaps first (if any) before StatefulSets or Secrets
+# Apply ConfigMaps first (if any)
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying ConfigMaps for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*configmap*.yaml; do
@@ -15,7 +15,7 @@ for SERVICE in "${SERVICE_DIRS[@]}"; do
     done
 done
 
-# Apply Secrets after ConfigMaps
+# Apply Secrets
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying Secrets for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*secret*.yaml; do
@@ -26,7 +26,62 @@ for SERVICE in "${SERVICE_DIRS[@]}"; do
     done
 done
 
-# Apply StatefulSets after Secrets
+# Apply ServiceAccounts
+for SERVICE in "${SERVICE_DIRS[@]}"; do
+    echo "Applying ServiceAccounts for $SERVICE..."
+    for FILE in $BASE_DIR/services/$SERVICE/*serviceaccount*.yaml; do
+        if [[ -f "$FILE" ]]; then
+            echo "Applying $FILE..."
+            kubectl apply -f "$FILE"
+        fi
+    done
+done
+
+# Apply Roles
+for SERVICE in "${SERVICE_DIRS[@]}"; do
+    echo "Applying Roles for $SERVICE..."
+    for FILE in $BASE_DIR/services/$SERVICE/*role*.yaml; do
+        if [[ -f "$FILE" ]]; then
+            echo "Applying $FILE..."
+            kubectl apply -f "$FILE"
+        fi
+    done
+done
+
+# Apply RoleBindings
+for SERVICE in "${SERVICE_DIRS[@]}"; do
+    echo "Applying RoleBindings for $SERVICE..."
+    for FILE in $BASE_DIR/services/$SERVICE/*rolebinding*.yaml; do
+        if [[ -f "$FILE" ]]; then
+            echo "Applying $FILE..."
+            kubectl apply -f "$FILE"
+        fi
+    done
+done
+
+# Apply ClusterRoles
+for SERVICE in "${SERVICE_DIRS[@]}"; do
+    echo "Applying ClusterRoles for $SERVICE..."
+    for FILE in $BASE_DIR/services/$SERVICE/*clusterrole*.yaml; do
+        if [[ -f "$FILE" ]]; then
+            echo "Applying $FILE..."
+            kubectl apply -f "$FILE"
+        fi
+    done
+done
+
+# Apply ClusterRoleBindings
+for SERVICE in "${SERVICE_DIRS[@]}"; do
+    echo "Applying ClusterRoleBindings for $SERVICE..."
+    for FILE in $BASE_DIR/services/$SERVICE/*clusterrolebinding*.yaml; do
+        if [[ -f "$FILE" ]]; then
+            echo "Applying $FILE..."
+            kubectl apply -f "$FILE"
+        fi
+    done
+done
+
+# Apply StatefulSets
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying StatefulSets for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*statefulset*.yaml; do
@@ -37,7 +92,7 @@ for SERVICE in "${SERVICE_DIRS[@]}"; do
     done
 done
 
-# Apply Deployments after StatefulSets
+# Apply Deployments
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying Deployments for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*deployment*.yaml; do
@@ -48,7 +103,7 @@ for SERVICE in "${SERVICE_DIRS[@]}"; do
     done
 done
 
-# Apply DaemonSets after Deployments
+# Apply DaemonSets
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying DaemonSets for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*daemonset*.yaml; do
@@ -59,7 +114,7 @@ for SERVICE in "${SERVICE_DIRS[@]}"; do
     done
 done
 
-# Apply Services after DaemonSets
+# Apply Services
 for SERVICE in "${SERVICE_DIRS[@]}"; do
     echo "Applying Services for $SERVICE..."
     for FILE in $BASE_DIR/services/$SERVICE/*service*.yaml; do

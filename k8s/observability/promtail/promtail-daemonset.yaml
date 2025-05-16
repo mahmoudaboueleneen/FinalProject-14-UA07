@@ -12,6 +12,7 @@ spec:
       labels:
         app: promtail
     spec:
+      serviceAccountName: default
       containers:
         - name: promtail
           image: grafana/promtail:2.7.0
@@ -20,7 +21,23 @@ spec:
           volumeMounts:
             - name: promtail-config
               mountPath: /etc/promtail
+            - name: positions
+              mountPath: /tmp
+            - name: varlog
+              mountPath: /var/log
+              readOnly: true
+            - name: dockerc
+              mountPath: /var/lib/docker/containers
+              readOnly: true
       volumes:
         - name: promtail-config
           configMap:
             name: promtail-config
+        - name: positions
+          emptyDir: {}
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: dockerc
+          hostPath:
+            path: /var/lib/docker/containers

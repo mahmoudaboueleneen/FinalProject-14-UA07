@@ -35,7 +35,7 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
         logger.info("Incoming request: {} {}", request.getMethod(), path);
 
         // Allow auth-related paths and preflight CORS requests without JWT
-        if (path.startsWith("/auth") || request.getMethod() == HttpMethod.OPTIONS) {
+        if (path.contains("/auth") || request.getMethod() == HttpMethod.OPTIONS) {
             logger.debug("Skipping JWT auth for path: {}", path);
             return chain.filter(exchange);
         }
