@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-config
+data:
+  config.yaml: |
+    server:
+      http_listen_port: 3101
+      grpc_listen_port: 0
+
+    positions:
+      filename: /tmp/positions.yaml
+
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+
+    scrape_configs:
+      - job_name: kubernetes-pods
+        pipeline_stages:
+          # 1) Join multi-line stacktraces (if any) by looking for lines that start with a full RFC3339 timestamp + Z
+          - multiline:
+              firstline: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z'
+              max_wait_time: 3s
+
+          # 2) Extract all the pieces we need into named captures
+          - regex:
+              expression: >-
+                ^(?P<date>\d{4}-\d{2}-\d{2})
+                T
+                (?P<time>\d{2}:\d{2}:\d{2}\.\d{3})Z\s+
+                trace_id=(?P<trace_id>[0-9a-f]+)\s+
+                span_id=(?P<span_id>[0-9a-f]+)\s+
+                trace_flags=(?P<trace_flags>[0-9a-f]+)\s+
+                (?P<type>[A-Z]+)\s+---\s+
+                (?P<msg>.*)$
+
+          # 3) Drop the raw “line” field now that everything’s parsed
+          - labels:
+              log: msg
+
+        kubernetes_sd_configs:
+          - role: pod
+
+        relabel_configs:
+          - source_labels:
+              - __meta_kubernetes_namespace
+            target_label: namespace
+        
+          - source_labels:
+              - __meta_kubernetes_pod_name
+            target_label: pod
+        
+          - source_labels:
+              - __meta_kubernetes_container_name
+            target_label: container
+        
+          - source_labels:
+              - __meta_kubernetes_pod_label_compose_service
+            target_label: compose_service
+        
+          - source_labels:
+              - __meta_kubernetes_pod_label_app
+            target_label: service
+        
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+
+        static_configs:
+          - targets: ["localhost"]
+            labels:
+              job: varlogs
+              __path__: /var/log/containers/*.log
