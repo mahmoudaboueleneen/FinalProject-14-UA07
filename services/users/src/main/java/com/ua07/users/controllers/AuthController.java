@@ -28,7 +28,7 @@ public class AuthController {
         try {
             String token = authService.login(loginRequest);
             return ResponseEntity.ok()
-                    .header("Set-Cookie", AuthConstants.ACCESS_TOKEN_COOKIE + "=" + token + "; HttpOnly; Secure; SameSite=Strict")
+                    .header("Set-Cookie", AuthConstants.ACCESS_TOKEN_COOKIE + "=" + token + "; HttpOnly; Secure; SameSite=Strict; Path=/")
                     .body("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Login failed: " + e.getMessage());

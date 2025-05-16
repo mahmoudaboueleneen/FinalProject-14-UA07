@@ -248,6 +248,7 @@ services:
       - OTEL_METRICS_EXPORTER=none # disable metrics exporter
       - OTEL_LOGS_EXPORTER=none # disable logs exporter
       - MANAGEMENT_METRICS_TAGS_APPLICATION=transactions-service # override
+      - merchants.service.url=http://merchants-service:8081/products
     restart: always
     logging: *default-logging
 

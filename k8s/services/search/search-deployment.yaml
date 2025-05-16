@@ -22,7 +22,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: k8s
             - name: SPRING_DATA_REDIS_HOST
-              value: search-cache-service
+              value: search-cache
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
             - name: MERCHANTS_SERVICE_URL

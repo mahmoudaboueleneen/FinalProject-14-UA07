@@ -48,7 +48,7 @@ spec:
                   name: rabbitmq-secret
                   key: RABBITMQ_DEFAULT_PASS
             - name: SPRING_DATA_REDIS_HOST
-              value: transactions-cache-service
+              value: transactions-cache
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
             - name: STRIPE_WEBHOOK_SECRET
@@ -79,3 +79,5 @@ spec:
               value: none
             - name: MANAGEMENT_METRICS_TAGS_APPLICATION
               value: transactions-service
+            - name: MERCHANTS_SERVICE_URL
+              value: http://merchants-service:8080/products

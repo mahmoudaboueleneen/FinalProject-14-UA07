@@ -16,3 +16,6 @@ spec:
     - name: http
       port: 3200
       targetPort: 3200
+    - name: http2
+      port: 80
+      targetPort: 80
