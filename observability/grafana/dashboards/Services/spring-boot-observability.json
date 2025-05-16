@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -39,7 +39,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -71,7 +72,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
           "datasource": {
@@ -121,7 +122,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -153,7 +155,7 @@
         "textMode": "value_and_name",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
           "datasource": {
@@ -214,7 +216,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -257,7 +260,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
           "datasource": {
@@ -291,7 +294,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -326,7 +330,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
           "datasource": {
@@ -364,7 +368,6 @@
             "axisPlacement": "auto",
             "axisSoftMax": 1,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -395,7 +398,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red"
+                "color": "red",
+                "value": null
               },
               {
                 "color": "green",
@@ -464,7 +468,6 @@
             "axisPlacement": "auto",
             "axisSoftMax": 1,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -495,7 +498,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -563,7 +567,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -594,7 +597,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -662,7 +666,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -693,7 +696,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -761,7 +765,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -792,7 +795,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -860,7 +864,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -891,7 +894,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -977,7 +981,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "sum by(type) (rate({compose_service=~\".*-service\"} | pattern `<date>T<time>Z <_>=<trace_id> <_>=<span_id> <_>=<trace_flags> <type> <_> --- <msg>` | type != \"\" |= \"$log_keyword\" [1m]))",
+          "expr": "sum by(type) (\r\n  rate(\r\n    {filename=~\"^.*/$log_keyword-$log_source_type.*\\\\.log$\"}\r\n    | json\r\n    | pattern `<date>T<time>Z trace_id=<trace_id> span_id=<span_id> trace_flags=<trace_flags> (?P<type>[A-Z]+) --- <msg>`\r\n    |= \"$log_keyword\"\r\n    [1m]\r\n  )\r\n)\r\n",
           "legendFormat": "{{type}}",
           "queryType": "range",
           "refId": "A"
@@ -990,10 +994,6 @@
       "datasource": {
         "type": "loki",
         "uid": "loki"
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
       },
       "gridPos": {
         "h": 9,
@@ -1022,7 +1022,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{compose_service=~\".*-service\"} | pattern `<date>T<time>Z <_>=<trace_id> <_>=<span_id> <_>=<trace_flags> <type> <_> --- <msg>` | line_format \"{{.compose_service}}\\t{{.type}}\\ttrace_id={{.trace_id}}\\t{{.msg}}\" |= \"$log_keyword\"",
+          "expr": "{filename=~\"^.*/$log_keyword-$log_source_type.*\\\\.log$\"}\r\n| json\r\n| line_format \"{{.container}}\\t{{.log}}\"",
           "hide": false,
           "queryType": "range",
           "refId": "A"
@@ -1032,24 +1032,26 @@
       "type": "logs"
     }
   ],
-  "preload": false,
   "refresh": "5s",
-  "schemaVersion": 41,
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "users-service",
-          "value": "users-service"
+          "selected": true,
+          "text": "merchants-service",
+          "value": "merchants-service"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
         "definition": "label_values(application)",
+        "hide": 0,
         "includeAll": false,
         "label": "Application Name",
+        "multi": false,
         "name": "app_name",
         "options": [],
         "query": {
@@ -1058,35 +1060,102 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "text": "",
-          "value": ""
+          "selected": true,
+          "text": "Merchants",
+          "value": "merchants"
         },
         "description": "query with keyword",
+        "hide": 0,
+        "includeAll": false,
         "label": "Log Query",
+        "multi": false,
         "name": "log_keyword",
         "options": [
           {
+            "selected": false,
+            "text": "API Gateway",
+            "value": "apigateway"
+          },
+          {
+            "selected": false,
+            "text": "Users",
+            "value": "users"
+          },
+          {
             "selected": true,
-            "text": "",
-            "value": ""
+            "text": "Merchants",
+            "value": "merchants"
+          },
+          {
+            "selected": false,
+            "text": "Transactions",
+            "value": "transactions"
+          },
+          {
+            "selected": false,
+            "text": "Search",
+            "value": "search"
+          },
+          {
+            "selected": false,
+            "text": "Notifications",
+            "value": "notifications"
           }
         ],
-        "query": "",
-        "type": "textbox"
+        "query": "API Gateway : apigateway, Users : users, Merchants : merchants, Transactions : transactions, Search : search, Notifications : notifications",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "Service",
+          "value": "deployment"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Log Source Type",
+        "multi": false,
+        "name": "log_source_type",
+        "options": [
+          {
+            "selected": true,
+            "text": "Service",
+            "value": "deployment"
+          },
+          {
+            "selected": false,
+            "text": "Database",
+            "value": "db-statefulset"
+          },
+          {
+            "selected": false,
+            "text": "Cache",
+            "value": "cache-deployment"
+          }
+        ],
+        "query": "Service : deployment, Database : db-statefulset, Cache : cache-deployment",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Spring Boot Observability",
   "uid": "dLsDQIUnzb",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }

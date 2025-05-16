@@ -3,6 +3,7 @@
 BASE_DIR="$(dirname "$(realpath "$0")")/../k8s"
 
 SERVICE_DIRS=("../rabbitmq" "merchants" "notifications" "search" "transactions" "users" "../observability/grafana" "../observability/prometheus" "../observability/loki" "../observability/tempo" "../observability/promtail")
+#SERVICE_DIRS=("../rabbitmq" "merchants" "../observability/grafana" "../observability/prometheus" "../observability/loki" "../observability/tempo" "../observability/promtail")
 
 # Apply ConfigMaps first (if any)
 for SERVICE in "${SERVICE_DIRS[@]}"; do

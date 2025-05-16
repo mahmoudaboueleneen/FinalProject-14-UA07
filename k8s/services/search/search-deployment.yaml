@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: search-deployment
+  labels:
+    app: search
+    compose_service: search-service
 spec:
   replicas: 2
   selector:
@@ -11,6 +14,7 @@ spec:
     metadata:
       labels:
         app: search
+        compose_service: notifications-service
     spec:
       containers:
         - name: search-service

@@ -1,8 +1,8 @@
+--- # promtail-daemonset.yaml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: promtail
-  namespace: default
 spec:
   selector:
     matchLabels:
@@ -12,32 +12,120 @@ spec:
       labels:
         app: promtail
     spec:
-      serviceAccountName: default
+      serviceAccountName: promtail-serviceaccount
       containers:
         - name: promtail
-          image: grafana/promtail:2.7.0
+          image: grafana/promtail:2.9.2
           args:
             - -config.file=/etc/promtail/promtail.yaml
+            - -log.level=info
+          env:
+            # required for kubernetes_sd_configs
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           volumeMounts:
-            - name: promtail-config
-              mountPath: /etc/promtail
-            - name: positions
-              mountPath: /tmp
             - name: varlog
               mountPath: /var/log
-              readOnly: true
-            - name: dockerc
+            - name: podlogs
+              mountPath: /var/log/pods
+            - name: containers
               mountPath: /var/lib/docker/containers
               readOnly: true
+            - name: promtail-config
+              mountPath: /etc/promtail
       volumes:
-        - name: promtail-config
-          configMap:
-            name: promtail-config
-        - name: positions
-          emptyDir: {}
         - name: varlog
           hostPath:
             path: /var/log
-        - name: dockerc
+        - name: podlogs
+          hostPath:
+            path: /var/log/pods
+        - name: containers
           hostPath:
             path: /var/lib/docker/containers
+        - name: promtail-config
+          configMap:
+            name: promtail-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-config
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+
+    positions:
+      filename: /tmp/positions.yaml
+
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+
+    scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+
+        pipeline_stages:
+          # parse Docker JSON log into attributes + message
+          - docker: {}
+
+        relabel_configs:
+          # copy standard Kubernetes labels
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+
+          # copy your compose_service pod-label into a real label
+          - source_labels: [__meta_kubernetes_pod_label_compose_service]
+            target_label: compose_service
+
+          # copy any other pod-labels wholesale
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+
+          # build the __path__ to each container’s logfile under /var/log/pods
+          - action: replace
+            source_labels:
+              - __meta_kubernetes_pod_uid
+              - __meta_kubernetes_pod_container_name
+            regex: (.+);(.+)
+            replacement: /var/log/pods/$1/$2/*.log
+            target_label: __path__
+---
+# RBAC
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: promtail-serviceaccount
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: promtail-clusterrole
+rules:
+  - apiGroups: [""]
+    resources: ["nodes","services","pods"]
+    verbs: ["get","watch","list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: promtail-binding
+subjects:
+  - kind: ServiceAccount
+    name: promtail-serviceaccount
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: promtail-clusterrole
+  apiGroup: rbac.authorization.k8s.io
