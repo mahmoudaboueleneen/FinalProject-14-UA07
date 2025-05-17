@@ -29,14 +29,6 @@ public class AdjustStockCommand implements Command<AdjustStockRequest, AdjustSto
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            if (request.getRole() != Role.MERCHANT) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
-            }
-
-            if (request.getUserId() != product.getMerchantId()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
-            }
-
             int newStock = product.getStock() + request.getStockChange();
             if (newStock < 0){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Resulting stock cannot be negative");

@@ -265,11 +265,9 @@ public class MerchantService {
 
     public AdjustStockResponse adjustStock(
             String productId,
-            UUID userId,
-            Role role,
             int stockChange
     ) {
-        AdjustStockRequest request = new AdjustStockRequest(productId, userId, role, stockChange);
+        AdjustStockRequest request = new AdjustStockRequest(productId, stockChange);
         AdjustStockCommand command = new AdjustStockCommand(productRepository,merchantQueueProducer);
         return commandExecutor.execute(command, request);
     }

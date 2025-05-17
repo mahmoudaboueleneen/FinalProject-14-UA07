@@ -102,11 +102,12 @@ public class MerchantController {
     @PutMapping("/{productId}/adjustStock")
     public AdjustStockResponse adjustStock(
             @PathVariable String productId,
-            @RequestParam int stockChange,
-            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
-            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role
+            @RequestParam int stockChange
+//            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+//            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role
     ) {
-        return merchantService.adjustStock(productId, userId, role, stockChange);
+//        return merchantService.adjustStock(productId, userId, role, stockChange);
+        return merchantService.adjustStock(productId, stockChange);
     }
 
     @GetMapping("/salesReport")
