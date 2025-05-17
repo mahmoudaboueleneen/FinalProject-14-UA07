@@ -176,7 +176,7 @@ kubectl create secret generic stripe-secret \
   --dry-run=client -o yaml | kubectl apply -f -
 
 # Restart the transactions deployment after applying the new secret
-kubectl rollout restart deployment transactions-service
+kubectl rollout restart deployment transactions-deployment
 
 # Check the status of all resources
 echo "Checking the status of the resources..."
