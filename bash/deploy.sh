@@ -175,6 +175,9 @@ kubectl create secret generic stripe-secret \
   --from-literal=STRIPE_WEBHOOK_SECRET="$SECRET" \
   --dry-run=client -o yaml | kubectl apply -f -
 
+# Restart the transactions deployment after applying the new secret
+kubectl rollout restart deployment transactions-service
+
 # Check the status of all resources
 echo "Checking the status of the resources..."
 kubectl get all --all-namespaces

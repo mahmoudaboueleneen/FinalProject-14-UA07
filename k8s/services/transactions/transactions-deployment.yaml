@@ -6,7 +6,7 @@ metadata:
     app: transactions
     compose_service: transactions-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: transactions

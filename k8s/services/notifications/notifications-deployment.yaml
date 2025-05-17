@@ -6,7 +6,7 @@ metadata:
     app: notifications
     compose_service: notifications-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: notifications

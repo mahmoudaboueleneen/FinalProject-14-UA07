@@ -6,7 +6,7 @@ metadata:
     app: users
     compose_service: users-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: users

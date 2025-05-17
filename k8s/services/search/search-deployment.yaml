@@ -6,7 +6,7 @@ metadata:
     app: search
     compose_service: search-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: search
