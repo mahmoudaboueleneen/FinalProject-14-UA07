@@ -15,8 +15,10 @@ import com.ua07.transactions.repository.OrderRepository;
 import com.ua07.transactions.repository.TransactionRepository;
 import com.ua07.transactions.service.StripeService;
 
-import java.util.Optional;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ public class StripeController {
     private StripeService stripeService;
     private OrderRepository orderRepository;
     private TransactionRepository transactionRepository;
+    private static final Logger log = LoggerFactory.getLogger(StripeController.class);
 
     @Value("${stripe.webhook.secret}")
     private String webhookSecret;
@@ -73,42 +76,61 @@ public class StripeController {
         return ResponseEntity.ok(htmlResponse);
     }
 
-   @PostMapping("/webhook")
-    public ResponseEntity<String> handleWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
-        try {
-            Event event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
+    @PostMapping("/webhook")
+    public ResponseEntity<String> handleWebhook(
+            @RequestBody String payload,
+            @RequestHeader("Stripe-Signature") String sigHeader) {
 
-            if ("checkout.session.completed".equals(event.getType())) {
-                Optional<StripeObject> dataObject = event.getDataObjectDeserializer().getObject();
-                if (dataObject.isPresent()) {
-                    if (dataObject.get() instanceof Session) {
-                        Session session = (Session) dataObject.get();
-                        String orderIdStr = session.getMetadata().get("orderId");
-                        if (orderIdStr != null) {
-                            try {
-                                UUID orderId = UUID.fromString(orderIdStr);
-                                System.out.println("Processing orderId: " + orderId.toString());
-                                Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-                                CommandExecutor commandExecutor = new CommandExecutor();
-                                RecordTransactionCommandRequest recordTransactionCommandRequest =
-                                        new RecordTransactionCommandRequest(order, PaymentMethod.CARD, TransactionStatus.APPROVED);
-                                RecordTransactionCommand command =
-                                        new RecordTransactionCommand(orderRepository, transactionRepository);
-                                commandExecutor.execute(command, recordTransactionCommandRequest);
-                                System.out.println("Transaction recorded for orderId: " + orderIdStr);
-                            } catch (IllegalArgumentException e) {
-                                System.err.println("Invalid orderId format: " + orderIdStr + ", error: " + e.getMessage());
-                            }
-                        } 
-                    } 
-                }
-            } 
+        log.info("▶️  [Webhook] Invoked /stripe/webhook (payloadLen={} sigHeader={})",
+                payload.length(), sigHeader);
+
+        Event event;
+        try {
+            event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
         } catch (SignatureVerificationException e) {
-            System.err.println("Invalid signature: " + e.getMessage());
-            return ResponseEntity.badRequest().body("Invalid signature");
-        } catch (Exception e) {
-            System.err.println("Error processing webhook for event: " + e.getMessage());
+            log.error("❌ Invalid Stripe signature", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid signature");
         }
+
+        log.info("↪️  [Webhook] Parsed event type={}", event.getType());
+
+        if ("checkout.session.completed".equals(event.getType())) {
+            // Bypass the Optional deserializer and cast the raw object
+            StripeObject raw = event.getData().getObject();
+            if (raw instanceof Session) {
+                Session session = (Session) raw;
+                log.debug("[Webhook] Session metadata: {}", session.getMetadata());
+
+                String orderIdStr = session.getMetadata().get("orderId");
+                if (orderIdStr == null) {
+                    log.warn("⚠️  No orderId metadata on Session {}", session.getId());
+                } else {
+                    try {
+                        UUID orderId = UUID.fromString(orderIdStr);
+                        log.info("🔄 Processing orderId={}", orderId);
+
+                        Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+                        new CommandExecutor().execute(
+                                new RecordTransactionCommand(orderRepository, transactionRepository),
+                                new RecordTransactionCommandRequest(order, PaymentMethod.CARD, TransactionStatus.APPROVED)
+                        );
+
+                        log.info("✅ Transaction recorded for orderId={}", orderId);
+                    } catch (IllegalArgumentException e) {
+                        log.error("❌ Invalid orderId format: {}", orderIdStr, e);
+                    } catch (Exception e) {
+                        log.error("❌ Error recording transaction for orderId={}", orderIdStr, e);
+                    }
+                }
+            } else {
+                log.warn("⚠️  Expected checkout.session.completed Session but got {}",
+                        raw.getClass().getName());
+            }
+        }
+
         return ResponseEntity.ok("Received");
     }
+
 }
