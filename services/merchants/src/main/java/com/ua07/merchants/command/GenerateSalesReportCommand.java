@@ -7,10 +7,14 @@ import com.ua07.shared.command.Command;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import com.ua07.shared.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 public class GenerateSalesReportCommand
         implements Command<GenerateSalesReportRequest, GenerateSalesReportResponse> {
@@ -23,6 +27,10 @@ public class GenerateSalesReportCommand
 
     @Override
     public GenerateSalesReportResponse execute(GenerateSalesReportRequest request) {
+        if (request.getRole() != Role.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Admin");
+        }
+
         LocalDate startDate = request.getYearMonth().atDay(1);
         LocalDate endDate = request.getYearMonth().atEndOfMonth();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;

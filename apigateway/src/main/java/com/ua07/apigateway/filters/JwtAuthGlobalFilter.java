@@ -1,6 +1,7 @@
 package com.ua07.apigateway.filters;
 
 import com.ua07.shared.auth.AuthConstants;
+import com.ua07.shared.enums.Role;
 import com.ua07.shared.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -58,12 +59,14 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
         try {
             if (jwtService.isTokenValid(token)) {
                 UUID userId = jwtService.extractUserId(token);
+                Role role = jwtService.extractRole(token);
 
                 if (userId != null) {
                     logger.info("Authenticated user: {}", userId);
                     // Forward user ID to downstream services
                     ServerHttpRequest mutatedRequest = request.mutate()
                             .header(AuthConstants.USER_ID_HEADER, userId.toString())
+                            .header(AuthConstants.USER_ROLE_HEADER, role.name())
                             .build();
 
                     ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();

@@ -4,6 +4,7 @@ import com.ua07.merchants.dto.*;
 import com.ua07.merchants.model.Product;
 import com.ua07.merchants.service.MerchantService;
 import com.ua07.shared.auth.AuthConstants;
+import com.ua07.shared.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -24,18 +25,27 @@ public class MerchantController {
     }
 
     @PostMapping("/laptops")
-    public Product createProductLaptop(@RequestBody Product product) {
-        return merchantService.createProductLaptop(product);
+    public Product createProductLaptop(
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role,
+            @RequestBody Product product) {
+        return merchantService.createProductLaptop(userId, role, product);
     }
 
     @PostMapping("/books")
-    public Product createProductBook(@RequestBody Product product) {
-        return merchantService.createProductBook(product);
+    public Product createProductBook(
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role,
+            @RequestBody Product product) {
+        return merchantService.createProductBook(userId, role, product);
     }
 
     @PostMapping("/jackets")
-    public Product createProductJacket(@RequestBody Product product) {
-        return merchantService.createProductJacket(product);
+    public Product createProductJacket(
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role,
+            @RequestBody Product product) {
+        return merchantService.createProductJacket(userId, role, product);
     }
 
     @GetMapping
@@ -49,23 +59,39 @@ public class MerchantController {
     }
 
     @PutMapping("/laptops/{id}")
-    public Product updateProductLaptop(@PathVariable String id, @RequestBody Product updated) {
-        return merchantService.updateProductLaptop(id, updated);
+    public Product updateProductLaptop(
+            @PathVariable String id,
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role,
+            @RequestBody Product updated) {
+        return merchantService.updateProductLaptop(id, userId, role, updated);
     }
 
     @PutMapping("/books/{id}")
-    public Product updateProductBook(@PathVariable String id, @RequestBody Product updated) {
-        return merchantService.updateProductBook(id, updated);
+    public Product updateProductBook(
+            @PathVariable String id,
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role,
+            @RequestBody Product updated) {
+        return merchantService.updateProductBook(id, userId, role, updated);
     }
 
     @PutMapping("/jackets/{id}")
-    public Product updateProductJacket(@PathVariable String id, @RequestBody Product updated) {
-        return merchantService.updateProductJacket(id, updated);
+    public Product updateProductJacket(
+            @PathVariable String id,
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role,
+            @RequestBody Product updated) {
+        return merchantService.updateProductJacket(id, userId, role, updated);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable String id) {
-        merchantService.deleteProduct(id);
+    public void deleteProduct(
+            @PathVariable String id,
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role
+    ) {
+        merchantService.deleteProduct(id, userId, role);
     }
 
     @GetMapping("/{productId}/viewStock")
@@ -76,17 +102,19 @@ public class MerchantController {
     @PutMapping("/{productId}/adjustStock")
     public AdjustStockResponse adjustStock(
             @PathVariable String productId,
-            @RequestParam int stockChange
+            @RequestParam int stockChange,
+            @RequestHeader(AuthConstants.USER_ID_HEADER) UUID userId,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role
     ) {
-        return merchantService.adjustStock(productId, stockChange);
+        return merchantService.adjustStock(productId, userId, role, stockChange);
     }
 
     @GetMapping("/salesReport")
     public GenerateSalesReportResponse getSalesReport(
-            @RequestParam("yearMonth")
-            @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth
+            @RequestParam("yearMonth") @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth,
+            @RequestHeader(AuthConstants.USER_ROLE_HEADER) Role role
     ) {
-        return merchantService.getSalesReport(yearMonth);
+        return merchantService.getSalesReport(role, yearMonth);
     }
 
     @PostMapping("/{productId}/addReview")

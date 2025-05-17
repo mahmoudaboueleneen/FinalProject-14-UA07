@@ -40,4 +40,5 @@ public class PreferencesController {
     public void deleteByUserId(@PathVariable UUID userId) {
         preferencesService.deleteByUserId(userId);
     }
+
 }
