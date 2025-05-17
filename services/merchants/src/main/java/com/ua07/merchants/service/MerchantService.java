@@ -62,7 +62,6 @@ public class MerchantService {
                 .withProcessor(product.getProcessor())
                 .withRam(product.getRam())
                 .withStorage(product.getStorage())
-                .withMerchantId(product.getMerchantId())
                 .build();
 
         return productRepository.save(createdProduct);
@@ -87,7 +86,6 @@ public class MerchantService {
                 .withAuthor(product.getAuthor())
                 .withGenre(product.getGenre())
                 .withPages(product.getPages())
-                .withMerchantId(product.getMerchantId())
                 .build();
 
         return productRepository.save(createdProduct);
@@ -112,7 +110,6 @@ public class MerchantService {
                 .withSize(product.getSize())
                 .withMaterial(product.getMaterial())
                 .withColor(product.getColor())
-                .withMerchantId(product.getMerchantId())
                 .build();
 
         return productRepository.save(createdProduct);
@@ -157,7 +154,6 @@ public class MerchantService {
                     .withProcessor(updated.getProcessor())
                     .withRam(updated.getRam())
                     .withStorage(updated.getStorage())
-                    .withMerchantId(product.getMerchantId())
                     .build();
 
             return productRepository.save(updatedProduct);
@@ -195,7 +191,6 @@ public class MerchantService {
                     .withAuthor(updated.getAuthor())
                     .withGenre(updated.getGenre())
                     .withPages(updated.getPages())
-                    .withMerchantId(product.getMerchantId())
                     .build();
 
             return productRepository.save(updatedProduct);
@@ -233,7 +228,6 @@ public class MerchantService {
                     .withSize(updated.getSize())
                     .withMaterial(updated.getMaterial())
                     .withColor(updated.getColor())
-                    .withMerchantId(product.getMerchantId())
                     .build();
 
             return productRepository.save(updatedProduct);
