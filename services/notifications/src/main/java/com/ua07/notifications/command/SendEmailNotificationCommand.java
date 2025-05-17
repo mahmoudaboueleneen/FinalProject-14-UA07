@@ -39,6 +39,7 @@ public class SendEmailNotificationCommand implements NotificationCommand {
             message.setSubject("Product with ID: " + notification.getProductIdInShortage()
                     + " has fallen under the stock threshold of " + notification.getThreshold()
                     + " with current count of " + notification.getCurrentCount());
+            mailSender.send(message);
             return;
         }
 
