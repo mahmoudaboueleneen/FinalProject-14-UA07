@@ -38,7 +38,9 @@ public class SearchController {
                         product.getDescription(),
                         product.getPrice(),
                         product.getCategory(),
-                        product.getStock()
+                        product.getStock(),
+                        product.getCreatedAt(),
+                        product.getAverageRating()
                 ))
                 .collect(Collectors.toList());
     }
