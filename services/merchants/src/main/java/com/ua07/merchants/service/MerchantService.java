@@ -10,6 +10,7 @@ import com.ua07.merchants.model.Product;
 import com.ua07.merchants.producer.MerchantQueueProducer;
 import com.ua07.merchants.repository.ProductRepository;
 import com.ua07.shared.command.CommandExecutor;
+import com.ua07.shared.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,10 +43,14 @@ public class MerchantService {
         this.merchantQueueProducer = merchantQueueProducer;
     }
 
-    public Product createProductLaptop(Product product) {
+    public Product createProductLaptop(UUID userId, Role role, Product product) {
+        if (role != Role.MERCHANT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
+        }
+
         Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
-                .withMerchantId(product.getMerchantId())
+                .withMerchantId(userId)
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -63,10 +68,14 @@ public class MerchantService {
         return productRepository.save(createdProduct);
     }
 
-    public Product createProductBook(Product product) {
+    public Product createProductBook(UUID userId, Role role, Product product) {
+        if (role != Role.MERCHANT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
+        }
+
         Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
-                .withMerchantId(product.getMerchantId())
+                .withMerchantId(userId)
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -84,10 +93,14 @@ public class MerchantService {
         return productRepository.save(createdProduct);
     }
 
-    public Product createProductJacket(Product product) {
+    public Product createProductJacket(UUID userId, Role role, Product product) {
+        if (role != Role.MERCHANT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
+        }
+
         Product createdProduct = new Product.Builder()
                 .withId(UUID.randomUUID().toString())
-                .withMerchantId(product.getMerchantId())
+                .withMerchantId(userId)
                 .withName(product.getName())
                 .withDescription(product.getDescription())
                 .withPrice(product.getPrice())
@@ -116,15 +129,23 @@ public class MerchantService {
     }
 
     @CachePut(value = "product", key = "#id")
-    public Product updateProductLaptop(String id, Product updated) {
+    public Product updateProductLaptop(String id, UUID userId, Role role, Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
+            if (role != Role.MERCHANT) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
+            }
+
+            if (userId != product.getMerchantId()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+            }
+
             Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
-                    .withMerchantId(updated.getMerchantId())
+                    .withMerchantId(product.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -146,15 +167,23 @@ public class MerchantService {
     }
 
     @CachePut(value = "product", key = "#id")
-    public Product updateProductBook(String id, Product updated) {
+    public Product updateProductBook(String id, UUID userId, Role role, Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
+            if (role != Role.MERCHANT) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
+            }
+
+            if (userId != product.getMerchantId()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+            }
+
             Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
-                    .withMerchantId(updated.getMerchantId())
+                    .withMerchantId(product.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -176,15 +205,23 @@ public class MerchantService {
     }
 
     @CachePut(value = "product", key = "#id")
-    public Product updateProductJacket(String id, Product updated) {
+    public Product updateProductJacket(String id, UUID userId, Role role, Product updated) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
+            if (role != Role.MERCHANT) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
+            }
+
+            if (userId != product.getMerchantId()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+            }
+
             Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
-                    .withMerchantId(updated.getMerchantId())
+                    .withMerchantId(product.getMerchantId())
                     .withName(updated.getName())
                     .withDescription(updated.getDescription())
                     .withPrice(updated.getPrice())
@@ -206,10 +243,18 @@ public class MerchantService {
     }
 
     @CacheEvict(value = "product", key = "#id")
-    public void deleteProduct(String id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
+    public void deleteProduct(String id, UUID userId, Role role) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id));
+
+        if (role != Role.MERCHANT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
         }
+
+        if (userId != product.getMerchantId()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+        }
+
         productRepository.deleteById(id);
     }
 
@@ -226,15 +271,17 @@ public class MerchantService {
 
     public AdjustStockResponse adjustStock(
             String productId,
+            UUID userId,
+            Role role,
             int stockChange
     ) {
-        AdjustStockRequest request = new AdjustStockRequest(productId, stockChange);
+        AdjustStockRequest request = new AdjustStockRequest(productId, userId, role, stockChange);
         AdjustStockCommand command = new AdjustStockCommand(productRepository,merchantQueueProducer);
         return commandExecutor.execute(command, request);
     }
 
-    public GenerateSalesReportResponse getSalesReport(YearMonth yearMonth) {
-        GenerateSalesReportRequest request = new GenerateSalesReportRequest(yearMonth);
+    public GenerateSalesReportResponse getSalesReport(Role role, YearMonth yearMonth) {
+        GenerateSalesReportRequest request = new GenerateSalesReportRequest(role, yearMonth);
         GenerateSalesReportCommand command = new GenerateSalesReportCommand(orderClient);
         return commandExecutor.execute(command, request);
     }
