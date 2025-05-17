@@ -36,7 +36,8 @@ public class SendEmailNotificationCommand implements NotificationCommand {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(user.getEmail());
-            message.setSubject("Product with ID: " + notification.getProductIdInShortage()
+            message.setSubject("Product Shortage Notification");
+            message.setText("Product with ID: " + notification.getProductIdInShortage()
                     + " has fallen under the stock threshold of " + notification.getThreshold()
                     + " with current count of " + notification.getCurrentCount());
             mailSender.send(message);
