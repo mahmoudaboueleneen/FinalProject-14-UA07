@@ -132,13 +132,10 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            if (role != Role.MERCHANT) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
-            }
+        if (!userId.equals(product.getMerchantId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+        }
 
-            if (userId != product.getMerchantId()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
-            }
 
             Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
@@ -169,13 +166,10 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            if (role != Role.MERCHANT) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
-            }
+        if (!userId.equals(product.getMerchantId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+        }
 
-            if (userId != product.getMerchantId()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
-            }
 
             Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
@@ -206,13 +200,10 @@ public class MerchantService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            if (role != Role.MERCHANT) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
-            }
+        if (!userId.equals(product.getMerchantId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
+        }
 
-            if (userId != product.getMerchantId()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
-            }
 
             Product updatedProduct = new Product.Builder()
                     .withId(product.getId())
@@ -241,11 +232,9 @@ public class MerchantService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id));
 
-        if (role != Role.MERCHANT) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User role is not Merchant");
-        }
 
-        if (userId != product.getMerchantId()) {
+
+        if (!userId.equals(product.getMerchantId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not the owner merchant of the product");
         }
 

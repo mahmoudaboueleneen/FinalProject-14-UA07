@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class SendEmailNotificationCommand implements NotificationCommand {
 
-    @Value("${spring.mail.username}")
     private String from;
 
     private final JavaMailSender mailSender;
@@ -21,6 +20,8 @@ public class SendEmailNotificationCommand implements NotificationCommand {
     public SendEmailNotificationCommand(JavaMailSender mailSender, UserClient userClient) {
         this.mailSender = mailSender;
         this.userClient = userClient;
+
+        this.from = System.getenv("SPRING_MAIL_USERNAME");
     }
 
     @Override
