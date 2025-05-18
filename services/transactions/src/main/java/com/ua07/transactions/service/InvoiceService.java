@@ -25,7 +25,7 @@ public class InvoiceService {
 
     // no need to cache this.
     public byte[] generateInvoicePdf(UUID orderId) {
-        Order order = orderService.getOrderById(orderId);
+        Order order = orderService.getOrderByIdNonCacheable(orderId);
 
         Context context = new Context();
         context.setVariable("order", order);

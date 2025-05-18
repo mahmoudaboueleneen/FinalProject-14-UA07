@@ -55,6 +55,12 @@ public class OrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + id));
     }
 
+    // to be used only by the InvoiceService to avoid cached results causing problems in creating invoice
+    public Order getOrderByIdNonCacheable(UUID id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with ID: " + id));
+    }
+
     public double getProductPrice(String productId) {
         Map<String, Object> product = stockClient.getProductById(productId);
         return (double) product.get("price");
