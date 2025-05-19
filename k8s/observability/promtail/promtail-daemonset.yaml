@@ -12,13 +12,15 @@ spec:
       labels:
         app: promtail
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: promtail-serviceaccount
       containers:
         - name: promtail
           image: grafana/promtail:2.9.2
           args:
             - -config.file=/etc/promtail/promtail.yaml
-            - -log.level=info
+            - -log.level=debug
           env:
             # required for kubernetes_sd_configs
             - name: HOSTNAME
@@ -32,6 +34,8 @@ spec:
               mountPath: /var/log/pods
             - name: containers
               mountPath: /var/lib/docker/containers
+            - name: container-logs
+              mountPath: /var/log/containers
               readOnly: true
             - name: promtail-config
               mountPath: /etc/promtail
@@ -45,6 +49,9 @@ spec:
         - name: containers
           hostPath:
             path: /var/lib/docker/containers
+        - name: container-logs
+          hostPath:
+            path: /var/log/containers
         - name: promtail-config
           configMap:
             name: promtail-config
@@ -93,13 +100,11 @@ data:
           - action: labelmap
             regex: __meta_kubernetes_pod_label_(.+)
 
-          # build the __path__ to each container’s logfile under /var/log/pods
-          - action: replace
-            source_labels:
-              - __meta_kubernetes_pod_uid
-              - __meta_kubernetes_pod_container_name
-            regex: (.+);(.+)
-            replacement: /var/log/pods/$1/$2/*.log
+          # Match on the container-logs directory instead:
+          - source_labels: [__meta_kubernetes_pod_name, __meta_kubernetes_namespace, __meta_kubernetes_pod_container_name]
+            separator: ";"
+            regex: (.+);(.+);(.+)
+            replacement: /var/log/containers/${1}_${2}_${3}-*.log
             target_label: __path__
 ---
 # RBAC
