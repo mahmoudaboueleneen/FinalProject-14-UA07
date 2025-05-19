@@ -67,4 +67,5 @@ public class AuthController {
         authService.changePassword(userId, request);
         return ResponseEntity.ok("Password changed successfully");
     }
+
 }
