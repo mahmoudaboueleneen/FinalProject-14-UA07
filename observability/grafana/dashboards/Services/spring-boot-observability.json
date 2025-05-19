@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 5,
   "links": [],
   "panels": [
     {
@@ -981,7 +981,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "sum by(type) (\r\n  rate(\r\n    {filename=~\"^.*/$log_keyword-$log_source_type.*\\\\.log$\"}\r\n    | json\r\n    | pattern `<date>T<time>Z trace_id=<trace_id> span_id=<span_id> trace_flags=<trace_flags> (?P<type>[A-Z]+) --- <msg>`\r\n    |= \"$log_keyword\"\r\n    [1m]\r\n  )\r\n)\r\n",
+          "expr": "sum by(type) (\r\n  rate(\r\n    {filename=~\"^.*/$log_keyword-$log_source_type.*\\\\.log$\"}\r\n    |= \"$log_keyword\"\r\n    [1m]\r\n  )\r\n)\r\n",
           "legendFormat": "{{type}}",
           "queryType": "range",
           "refId": "A"
@@ -1022,7 +1022,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{filename=~\"^.*/$log_keyword-$log_source_type.*\\\\.log$\"}\r\n| json\r\n| line_format \"{{.container}}\\t{{.log}}\"",
+          "expr": "{filename=~\"^.*/$log_keyword-$log_source_type.*\\\\.log$\"}",
           "hide": false,
           "queryType": "range",
           "refId": "A"
@@ -1040,8 +1040,8 @@
       {
         "current": {
           "selected": true,
-          "text": "merchants-service",
-          "value": "merchants-service"
+          "text": "users-service",
+          "value": "users-service"
         },
         "datasource": {
           "type": "prometheus",
@@ -1067,8 +1067,8 @@
       {
         "current": {
           "selected": true,
-          "text": "Merchants",
-          "value": "merchants"
+          "text": "Notifications",
+          "value": "notifications"
         },
         "description": "query with keyword",
         "hide": 0,
@@ -1088,7 +1088,7 @@
             "value": "users"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "Merchants",
             "value": "merchants"
           },
@@ -1103,7 +1103,7 @@
             "value": "search"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Notifications",
             "value": "notifications"
           }
@@ -1149,7 +1149,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
