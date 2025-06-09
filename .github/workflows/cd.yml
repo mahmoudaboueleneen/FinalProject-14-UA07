@@ -92,7 +92,7 @@ jobs:
           docker build . -f Dockerfile-Grafana --tag mahmoudaboueleneen/amazon-replica:grafana
           docker push mahmoudaboueleneen/amazon-replica:grafana
 
-# TODO: Uncomment this when deployment is ready
+# TODO: Uncomment this when we've set up our DigitalOcean Kubernetes cluster
 #  deploy_to_k8s:
 #    runs-on: ubuntu-latest
 #    needs: build_and_push
@@ -101,17 +101,13 @@ jobs:
 #      - name: Checkout code
 #        uses: actions/checkout@v4
 #
-#      - name: Set up kubectl
-#        uses: azure/setup-kubectl@v1  # TODO: Use the actual action based on our CSP like Google Cloud's `setup-gcloud` if using GKE.
+#      - name: Install doctl
+#        uses: digitalocean/action-doctl@v2
 #        with:
-#          version: 'latest'
+#          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 #
-#      - name: Set up kubeconfig
-#        run: |
-#          mkdir -p ~/.kube
-#          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-#        env:
-#          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+#      - name: Authenticate and get kubeconfig
+#        run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }}
 #
 #      - name: Apply RabbitMQ Deployment
 #        run: |
@@ -178,32 +174,23 @@ jobs:
 #
 #      - name: Check Deployment and StatefulSet Status
 #        run: |
-#          # Get all resources to see a broad overview
 #          kubectl get all
-#
-#          # Check status for all Deployments
 #          kubectl rollout status deployment/apigateway-deployment --timeout=900s
 #          kubectl rollout status deployment/merchants-deployment --timeout=900s
 #          kubectl rollout status deployment/notifications-deployment --timeout=900s
 #          kubectl rollout status deployment/search-deployment --timeout=900s
 #          kubectl rollout status deployment/transactions-deployment --timeout=900s
 #          kubectl rollout status deployment/users-deployment --timeout=900s
-#
-#          # Check status for all StatefulSets
 #          kubectl rollout status statefulset/merchants-db-statefulset --timeout=900s
 #          kubectl rollout status statefulset/notifications-db-statefulset --timeout=900s
 #          kubectl rollout status statefulset/transactions-db-statefulset --timeout=900s
 #          kubectl rollout status statefulset/users-db-statefulset --timeout=900s
-#
-#          # Wait for pods to be ready (ensure pods for each service are up and running)
 #          kubectl wait --for=condition=ready pod -l app=apigateway --timeout=600s
 #          kubectl wait --for=condition=ready pod -l app=merchants --timeout=600s
 #          kubectl wait --for=condition=ready pod -l app=notifications --timeout=600s
 #          kubectl wait --for=condition=ready pod -l app=search --timeout=600s
 #          kubectl wait --for=condition=ready pod -l app=transactions --timeout=600s
 #          kubectl wait --for=condition=ready pod -l app=users --timeout=600s
-#
-#          # Check if services are correctly applied (they should be after kubectl apply)
 #          kubectl describe svc apigateway-service
 #          kubectl describe svc merchants-service
 #          kubectl describe svc notifications-service
