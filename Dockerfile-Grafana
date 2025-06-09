@@ -1,3 +1,6 @@
+# This Dockerfile is used to build a custom Grafana image with custom datasource and dashboard configurations.
+# It extends the official Grafana image and adds necessary files for provisioning.
+
 FROM grafana/grafana:10.4.2
 
 COPY observability/grafana/datasource.yml /etc/grafana/provisioning/datasources/datasource.yml
