@@ -30,16 +30,18 @@
 1. [Project Overview](#project-overview)
 2. [System Design](#system-design)
 3. [Components](#components)
-    - [Microservices, Databases & Caching](#microservices-databases--caching)
+    - [Microservices, Databases, Caching & Design Patterns](#microservices-databases-caching--design-patterns)
         - [Users Microservice](#users-microservice)
         - [Transactions Microservice](#transactions-microservice)
         - [Merchants Microservice](#merchants-microservice)
         - [Notifications Microservice](#notifications-microservice)
         - [Search Microservice](#search-microservice)
-        - [API Documentation](#api-documentation)
+    - [API Documentation](#api-documentation)
     - [Message Queues](#message-queues)
+    - [Synchronous Communication](#synchronous-communication)
     - [API Gateway](#api-gateway)
 4. [Observability](#observability)
+    - [Dashboards](#dashboards)
     - [Metrics](#metrics)
     - [Logging](#logging)
     - [Tracing](#tracing)
@@ -63,19 +65,53 @@ and is designed to be observability-first, with built-in support for metrics, lo
 
 ## Components
 
-### Microservices, Databases & Caching
+### Microservices, Databases, Caching & Design Patterns
 
-#### 👥 Users Microservice
+<details id="users-microservice">
+   <summary>
+      👥 Users Microservice
+   </summary>
+   This microservice handles user CRUD operations, and auth functionalities like login, register (as customer, merchant, or admin), logout, and change password.
+   It uses a PostgreSQL database for storing user data. It also uses Spring Security for authentication and JWT for token-based authentication. It applies the Strategy design pattern for using different login mechanisms (e.g. using mobile phone or email) dynamically based on the provided identifier, and the Builder design pattern for building user profiles for registration based on the user role.
+</details>
 
-#### 💳 Transactions Microservice
 
-#### 🔎 Search Microservice
+<details id="transactions-microservice">
+   <summary>
+      💳 Transactions Microservice
+   </summary>
+   This microservice handles transactions, including creating orders, processing payments (using Stripe, wallet, or cash-on-delivery), and generating invoices. It uses a PostgreSQL database for storing transaction data and Redis for caching frequently accessed data.
+   It notifies the Notifications microservice about confirmed orders and using RabbitMQ. 
+   It applies the Command design pattern for processing payments and the Strategy design pattern for using different payment methods (e.g. Stripe, wallet, or cash-on-delivery) dynamically based on the provided payment method.
+</details>
 
-#### 🚚 Merchants Microservice
 
-#### 🔔 Notifications Microservice
+<details id="merchants-microservice">
+   <summary>
+      🚚 Merchants Microservice
+   </summary>
+    This microservice handles product management. It uses a MongoDB database for storing product data. It also uses Redis for caching frequently accessed data. It notifies the Notifications microservice about product quantity updates using RabbitMQ.
+</details>
 
-#### 📰 API Documentation
+
+<details id="notifications-microservice">
+   <summary>
+      🔔 Notifications Microservice
+   </summary>
+    This microservice handles notifications, including sending email and in-app notifications to users. It uses RabbitMQ for asynchronous communication with other microservices, and Redis for caching frequently accessed data. It also handles user notification preferences, such as whether to receive email notifications or not, and what product stock threshold to notify the merchant about when the stock drops below.
+</details>
+
+
+<details id="search-microservice">
+   <summary>
+      🔎 Search Microservice
+   </summary>
+    This microservice handles search functionality for products. It currently uses no database, and uses Redis for caching frequently accessed data. It applies the Specification design pattern for building dynamic search queries based on user input, and the Strategy design pattern for using different sorting methods for the results based on the provided search criteria.
+
+   In the future, it can be extended to use Elasticsearch for advanced, more optimized search capabilities.
+</details>
+
+<h3 id="api-documentation">📰 API Documentation</h4>
 
 This project uses OpenAPI 3.0 for API documentation for each microservice. The API documentation is generated automatically from the code using the Springdoc OpenAPI library.
 
@@ -87,23 +123,84 @@ http://localhost:8085/swagger-ui/index.html
 
 ![Users Microservice API Documentation](./docs/images/swagger.jpg)
 
-### 📬 Message Queues
+<h3 id="message-queues">📬 Message Queues (Asynchronous Communication)</h4>
 
 This project uses RabbitMQ 🐰 as the message queue for asynchronous communication between microservices. Each microservice that needs to send or receive messages from the message queue has a dedicated RabbitMQ exchange and queue.
 
-### 🌐 API Gateway
+<h3 id="synchronous-communication">📡 Synchronous Communication</h4>
 
-## 🔭 Observability
+This project uses OpenFeign for synchronous communication between microservices. Each microservice that needs to communicate with another microservice declares an OpenFeign client to make HTTP requests to the other microservice's exposed API controller endpoints.
+
+<h3 id="api-gateway">🌐 API Gateway</h4>
+
+This project uses Spring Cloud Gateway as the API Gateway for routing requests to the appropriate microservice. The API Gateway is responsible for handling incoming requests, routing them to the appropriate microservice, and returning the response to the client.
+
+It also handles cross-cutting concerns such as authentication and request/response transformation. It verifies the JWT token for authenticated requests, and forwards the request to the appropriate microservice based on the request path after attaching the extracted User ID and User Role from the JWT to the request headers, to be used by the microservices downstream.
+
+<h2 id="observability">🔭 Observability</h4>
 
 ![Observability](./docs/images/observability.jpg)
 
+### Dashboards
+
+This project uses Grafana for visualizing metrics, logs, and traces. It provides a unified way for monitoring the entire system. The dashboards are configured to display metrics from Prometheus, logs from Loki, and traces from Tempo.
+
+<details>
+  <summary>Spring Boot Microservices Dashboard</summary>
+
+![Microservices Dashboard](./docs/images/dashboard-1.png)
+![Microservices Dashboard](./docs/images/dashboard-2.png)
+![Logs](./docs/images/logs.jpg)
+
+</details>
+
+<details>
+  <summary>Redis Dashboard</summary>
+
+![Redis Dashboard](./docs/images/redis.png)
+![Redis Dashboard](./docs/images/redis-2.png)
+
+</details>
+
+<details>
+  <summary>RabbitMQ Dashboard</summary>
+
+![RabbitMQ Dashboard](./docs/images/rabbitmq-1.png)
+![RabbitMQ Dashboard](./docs/images/rabbitmq-2.png)
+
+</details>
+
+<details>
+  <summary>Traces Dashboard</summary>
+
+![Traces Dashboard](./docs/images/traces.png)
+![Traces Dashboard](./docs/images/traces-2.png)
+![Traces Dashboard](./docs/images/traces-3.png)
+
+</details>
+
+<details>
+  <summary>Metrics to Traces</summary>
+
+![Metrics to Traces](./docs/images/metrics_to_traces.png)
+
+</details>
+
+
 ### Metrics
+
+This project uses Prometheus for collecting and storing metrics from the microservices. Each microservice exposes a `/actuator/prometheus` endpoint that Prometheus scrapes to collect metrics.
 
 ### Logging
 
+This project uses Grafana Loki for logging. In the Docker Compose environment, each microservice is configured to use the Loki Docker driver for logging, which sends logs to the Loki server. The logs can be viewed in Grafana.
+In the Kubernetes environment, the Loki docker driver is replaced with Promtail, which is a log collector that sends logs to Loki.
+
 ### Tracing
 
-## CI/CD
+This project uses OpenTelemetry for distributed tracing. Each microservice is instrumented with OpenTelemetry to collect traces and send them to the Tempo server. The traces can be viewed in Grafana.
+
+<h2 id="cicd">🌟 CI/CD</h2>
 
 This project uses GitHub Actions for continuous integration and continuous deployment (CI/CD). The CI/CD pipeline is defined in the `.github/workflows` directory.
 
@@ -146,7 +243,7 @@ The following commands are generally required for either case.
     ```
 
 3. Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add its path to your path environment variable on your operating system.
-This is necessary to enable the Stripe payment functionality through a stripe sandbox in the Transactions microservice.
+This is necessary to enable the Stripe payment functionality in the Transactions microservice, through a local Stripe sandbox.
 
 4. After that, you can run the following command to start listening to Stripe events and forward them to the Transactions microservice webhook endpoint.
     ```
@@ -156,8 +253,13 @@ This is necessary to enable the Stripe payment functionality through a stripe sa
 5. Copy the webhook secret that is printed in the terminal after running the previous command, and paste it in the `application.yml` file of the Transactions microservice in `services/transactions`.
 6. Download the Postman collection from the `docs/postman` directory and import it into Postman.
 7. Update the Postman collection's `host` variable in the `local` environment to the URL of the API Gateway or the Microservice you want to interact with.
+8. When done, you can stop the services by running:
 
-## 🚀 Deployment to Kubernetes Local Cluster (Minikube)
+    ```bash
+    docker compose down
+    ```
+   
+<h2 id="deployment-to-kubernetes-local-cluster-minikube">🚀 Deployment to Kubernetes Local Cluster (Minikube)</h2>
 
 This system is designed to be deployed on a Kubernetes cluster. The deployment files are located in the `k8s` directory. 
 
@@ -191,10 +293,19 @@ To deploy the system on a local Kubernetes cluster, we use Minikube. To set up M
 10. Log in to Grafana using the default credentials:
     - Username: `admin`
     - Password: `admin`
+11. When done, you can stop the Minikube cluster by running:
 
-## 🧪 Testing
+    ```bash
+    minikube stop
+    ```
 
-Our system is designed to be tested using JUnit 5 with Spring Boot Test. 
+<h2 id="testing">🧪 Testing</h2>
+
+Our system is designed to be tested using JUnit 5 with Spring Boot Test.
+
+Testing was done primarily using Postman, and the Postman collection is available in the `docs/postman` directory. The collection includes tests for each microservice's API endpoints, and it can be used to test the entire system end-to-end.
+
+Unit Tests and Integration Tests are yet to be implemented for the microservices, but the system is designed to be easily testable using JUnit 5. Each microservice should have its own test suite, and the tests can be run using Maven.
 
 ## Contributors & Teams
 
