@@ -1,6 +1,6 @@
 ![Namazone](./docs/images/namazone.png)
 
-# Amazon Replica: A Massively Scalable Distributed Microservices E-Commerce Application
+# Namazone: A Massively Scalable Distributed Microservices E-Commerce Application
 
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![DigitalOcean](https://img.shields.io/badge/DigitalOcean-1433d6?style=for-the-badge&logo=digitalocean&logoColor=white&labelColor=1433d6)
@@ -19,8 +19,9 @@
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-000000.svg?style=for-the-badge&logo=opentelemetry&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/Prometheus-000000?style=for-the-badge&logo=prometheus&labelColor=000000)
-![Loki](https://img.shields.io/badge/Loki-F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
-![Tempo](https://img.shields.io/badge/Tempo-3B4EFF.svg?style=for-the-badge&logo=grafana&logoColor=white)
+![Loki](https://img.shields.io/badge/Loki-F48400.svg?style=for-the-badge&logo=grafana&logoColor=white)
+![Tempo](https://img.shields.io/badge/Tempo-F15400.svg?style=for-the-badge&logo=grafana&logoColor=white)
+![Promtail](https://img.shields.io/badge/Promtail-F4B000.svg?style=for-the-badge&logo=grafana&logoColor=white)
 
 ## Builds
 
@@ -50,14 +51,15 @@
 5. [CI/CD](#cicd)
 6. [Developing with Docker Compose](#local-development-with-docker-compose)
 7. [Deployment to Kubernetes Local Cluster (Minikube)](#deployment-to-kubernetes-local-cluster-minikube)
-8. [Testing](#testing)
-9. [Contributors & Teams](#contributors--teams)
-10. [License](#license)
-11. [Credits](#credits)
+8. [Deployment to DigitalOcean](#deployment-to-digitalocean)
+9. [Testing](#testing)
+10. [Contributors & Teams](#contributors--teams)
+11. [License](#license)
+12. [Credits](#credits)
 
 ## Project Overview
 
-This project is a distributed microservices E-commerce application that allows merchants to list products and customers to purchase products using wallet, credit card (Stripe), or cash on delivery (COD), generate invoices, and admins to view sales reports for the system. 
+Namazone is a distributed microservices E-commerce application inspired as an Amazon Replica that allows merchants to list products and customers to purchase products using wallet, credit card (Stripe), or cash on delivery (COD), generate invoices, and admins to view sales reports for the system. 
 The system is designed to be massively scalable, with each microservice handling a specific domain of the application. The architecture is built using Spring Boot for the backend, with various databases and caching mechanisms to ensure high availability and performance, and uses Kubernetes for a highly available and scalable deployment,
 and is designed to be observability-first, with built-in support for metrics, logging, and tracing.
 
@@ -222,7 +224,7 @@ The CD pipeline is triggered on every push to the `main` branch. It does the fol
 
     ![Discord Notification](./docs/images/discord.png)
 
-## Local Development with Docker Compose
+<h2 id="local-development-with-docker-compose">🐳 Local Development with Docker Compose</h2>
 
 This project uses Docker Compose to run the entire system locally for development purposes. In each microservice folder (e.g. `services/users`, `services/transactions`, etc.), there is a `docker-compose.yml` file that defines the service and its dependencies (e.g. its database, cache).
 This can be used to run each microservice independently for development and testing purposes if the microservice does not depend on other microservices or on the message queue.
@@ -300,6 +302,10 @@ To deploy the system on a local Kubernetes cluster, we use Minikube. To set up M
     ```bash
     minikube stop
     ```
+    
+<h2 id="deployment-to-digitalocean">☁️ Deployment to DigitalOcean</h2>
+
+This system is designed to be deployed on a Kubernetes cluster on DigitalOcean. Our CD pipeline is set up to automatically deploy the system to a DigitalOcean Kubernetes cluster whenever changes are pushed to the `main` branch, and what remains is to set up the DigitalOcean Kubernetes cluster and the necessary resources on the cloud.
 
 <h2 id="testing">🧪 Testing</h2>
 
@@ -352,4 +358,5 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 ## Credits
 
 - [Workup - GitHub Repo](https://github.com/Ahmad45123/workup/blob/main/README.md)
+- [Marwan Fouad - Creator of 'Namazone' Logo]()
 - Architecture of Massively Scalable Applications course, the German University in Cairo

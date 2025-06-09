@@ -1,1 +1,0 @@
-This directory contains Dockerfiles for custom images used in the project.
