@@ -1,3 +1,5 @@
+![Namazone](./docs/images/namazone.png)
+
 # Amazon Replica: A Massively Scalable Distributed Microservices E-Commerce Application
 
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
