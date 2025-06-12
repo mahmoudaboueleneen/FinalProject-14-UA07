@@ -358,5 +358,5 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 ## Credits
 
 - [Workup - GitHub Repo](https://github.com/Ahmad45123/workup/blob/main/README.md)
-- [Marwan Fouad - Creator of 'Namazone' Logo]()
+- [Marwan Fouad - Creator of 'Namazone' Logo (@svjp7)](https://github.com/svjp7)
 - Architecture of Massively Scalable Applications course, the German University in Cairo
