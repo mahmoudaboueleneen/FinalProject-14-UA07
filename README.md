@@ -226,7 +226,17 @@ The CD pipeline is triggered on every push to the `main` branch. It does the fol
 
 <h2 id="local-development-with-docker-compose">🐳 Local Development with Docker Compose</h2>
 
-This project uses Docker Compose to run the entire system locally for development purposes. In each microservice folder (e.g. `services/users`, `services/transactions`, etc.), there is a `docker-compose.yml` file that defines the service and its dependencies (e.g. its database, cache).
+### Prerequisites
+
+- Docker Desktop
+- Maven 3.9.10+
+- Java 23
+
+### Getting Started 
+
+This project uses Docker Compose to run the entire system locally for development purposes.
+
+In each microservice folder (e.g. `services/users`, `services/transactions`, etc.), there is a `docker-compose.yml` file that defines the service and its dependencies (e.g. its database, cache).
 This can be used to run each microservice independently for development and testing purposes if the microservice does not depend on other microservices or on the message queue.
 
 To run the entire system locally, you can use the provided `docker-compose.yml` file in the root directory of the project. This file defines all the services, databases, and message queue needed to run the application, also including the API Gateway and the observability stack (Prometheus, Grafana, Loki, Tempo).
@@ -245,19 +255,21 @@ The following commands are generally required for either case.
     mvn clean install -DskipTests
     docker compose up -d --build
     ```
-
-3. Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add its path to your path environment variable on your operating system.
+3. Add an email and its app password to the `application.yml` file of the Notifications microservice in `services/notifications`. This is necessary to enable the email notification functionality in the Notifications microservice.
+   - You can use any email service provider, such as Gmail, Outlook, etc.
+   - This email will be used to send notifications to users, such as order confirmations, product stock updates, etc.
+4. Add your stripe secret key to the `application.yml` file of the Transactions microservice in `services/transactions`.
+5. Install stripe cli from this [link](https://github.com/stripe/stripe-cli/releases/tag/v1.27.0) and add its path to your path environment variable on your operating system.
 This is necessary to enable the Stripe payment functionality in the Transactions microservice, through a local Stripe sandbox.
-
-4. After that, you can run the following command to start listening to Stripe events and forward them to the Transactions microservice webhook endpoint.
+6. After that, you can run the following command to start listening to Stripe events and forward them to the Transactions microservice webhook endpoint.
     ```
     stripe login
     stripe listen --forward-to localhost:8084/stripe/webhook
     ```
-5. Copy the webhook secret that is printed in the terminal after running the previous command, and paste it in the `application.yml` file of the Transactions microservice in `services/transactions`.
-6. Download the Postman collection from the `docs/postman` directory and import it into Postman.
-7. Update the Postman collection's `host` variable in the `local` environment to the URL of the API Gateway or the Microservice you want to interact with.
-8. When done, you can stop the services by running:
+7. Copy the webhook secret that is printed in the terminal after running the previous command, and paste it in the `application.yml` file of the Transactions microservice in `services/transactions`.
+8. Download the Postman collection from the `docs/postman` directory and import it into Postman.
+9. Update the Postman collection's `host` variable in the `local` environment to the URL of the API Gateway or the Microservice you want to interact with.
+10. When done, you can stop the services by running:
 
     ```bash
     docker compose down
@@ -276,28 +288,29 @@ To deploy the system on a local Kubernetes cluster, we use Minikube. To set up M
    ```bash
    minikube start --driver=docker --memory=7000 --cpus=8
    ```
-4. Run our deployment script to deploy the system to the Minikube (Note: This script is used instead of the `kubectl apply -f ./k8s/ -r` command as it does some additional setup work to set up the Stripe CLI sandbox and dynamically update the K8s secret with the Stripe webhook secret after its deployment):
+4. Add your stripe secret key to the `stripe-secret.yaml` file in the `k8s/services/transactions` directory.
+5. Run our deployment script to deploy the system to the Minikube (Note: This script is used instead of the `kubectl apply -f ./k8s/ -r` command as it does some additional setup work to set up the Stripe CLI sandbox and dynamically update the K8s secret with the Stripe webhook secret after its deployment):
 
    ```bash
    ./bash/deploy.sh
    ```
-5. Expose the API Gateway service to access it from outside the cluster:
+6. Expose the API Gateway service to access it from outside the cluster:
 
    ```bash
    minikube service apigateway-service
    ```
-6. Copy the API Gateway URL that will be opened in your browser. This URL will be used to access the API Gateway and, consequently, the entire system.
-7. Download the Postman collection from the `docs/postman` directory and import it into Postman.
-8. Update the Postman collection's `host` variable in the `local` environment to the URL of the API Gateway you previously copied.
-9. Expose the Grafana service to access it in your browser:
+7. Copy the API Gateway URL that will be opened in your browser. This URL will be used to access the API Gateway and, consequently, the entire system.
+8. Download the Postman collection from the `docs/postman` directory and import it into Postman.
+9. Update the Postman collection's `host` variable in the `local` environment to the URL of the API Gateway you previously copied.
+10. Expose the Grafana service to access it in your browser:
    
    ```bash
    minikube service grafana
    ```
-10. Log in to Grafana using the default credentials:
+11. Log in to Grafana using the default credentials:
     - Username: `admin`
     - Password: `admin`
-11. When done, you can stop the Minikube cluster by running:
+12. When done, you can stop the Minikube cluster by running:
 
     ```bash
     minikube stop
