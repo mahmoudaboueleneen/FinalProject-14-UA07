@@ -54,9 +54,9 @@ merchants:
     url: http://localhost:8081/products
 stripe:
   webhook:
-    secret: whsec_0939a1aba00c484a5fd6fbc27eedebaa5600eb481bdd8063f990d9404114be5f
+    secret: <wh-secret> # Replace with your actual Stripe webhook secret
   secret:
-    key: sk_test_51OAAgrInWvBmeb1G7neAw3wqIhQsgMQSYbGm3LONfvjr4VbcJgzPg1yeUOC2cS7Vghfx8p3N6S727FLDWdKdMJZy00cvAOVpkm
+    key: <stripe-secret-key> # Replace with your actual Stripe secret key
   checkout:
     success-url: http://localhost:8084/stripe/success
     cancel-url: http://localhost:8084/stripe/cancel

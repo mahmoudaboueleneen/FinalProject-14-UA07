@@ -1,0 +1,1374 @@
+{
+	"info": {
+		"_postman_id": "a93c8512-89fc-4f38-b9c3-5c6bc776a079",
+		"name": "Amazon Replica",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27883073"
+	},
+	"item": [
+		{
+			"name": "Merchants",
+			"item": [
+				{
+					"name": "Create Product Laptop",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Lenovo Laptop5\",\r\n    \"description\": \"A cool laptop.\",\r\n    \"price\": 50.0,\r\n    \"stock\": 10,\r\n    \"category\": \"LAPTOPS\",\r\n    \"processor\": \"Intel i7-8700\",\r\n    \"ram\": \"16gb\",\r\n    \"storage\": \"512gb\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/laptops",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"laptops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-ID",
+								"value": "1c63592e-0a49-4bf6-af15-fa93b177f555",
+								"type": "text"
+							},
+							{
+								"key": "X-User-Role",
+								"value": "MERCHANT",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Distributed Systems Book\",\r\n    \"description\": \"A cool book.\",\r\n    \"price\": 20.0,\r\n    \"stock\": 30,\r\n    \"category\": \"BOOKS\",\r\n    \"author\": \"Mahmoud Aboueleneen\",\r\n    \"genre\": \"Software Engineering\",\r\n    \"pages\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/books",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product Jacket",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Leather Jacket\",\r\n    \"description\": \"A cool jacket.\",\r\n    \"price\": 20.0,\r\n    \"stock\": 30,\r\n    \"category\": \"JACKETS\",\r\n    \"size\": \"XL\",\r\n    \"material\": \"Leather\",\r\n    \"color\": \"Black\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/jackets",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"jackets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/5806129e-db75-407d-ba9b-9fe11450ff30",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"5806129e-db75-407d-ba9b-9fe11450ff30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Laptop",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Lenovo Laptop\",\r\n    \"description\": \"A cool laptoppppppppppppp.\",\r\n    \"price\": 20.0,\r\n    \"stock\": 30,\r\n    \"category\": \"LAPTOPS\",\r\n    \"processor\": \"Intel i7-8700\",\r\n    \"ram\": \"16gb\",\r\n    \"storage\": \"512gb\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/laptops/ee8d990c-6f30-4d5a-a5a2-1e180d800679",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"laptops",
+								"ee8d990c-6f30-4d5a-a5a2-1e180d800679"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Book",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-User-ID",
+								"value": "1c63592e-0a49-4bf6-af15-fa93b177f555",
+								"type": "text"
+							},
+							{
+								"key": "X-User-Role",
+								"value": "MERCHANT",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"5806129e-db75-407d-ba9b-9fe11450ff30\",\r\n    \"merchantId\": \"1c63592e-0a49-4bf6-af15-fa93b177f555\",\r\n    \"name\": \"Distributed Systems Book\",\r\n    \"description\": \"A book.\",\r\n    \"price\": 20.0,\r\n    \"stock\": 20,\r\n    \"category\": \"BOOKS\",\r\n    \"createdAt\": \"2025-05-18T10:35:47.35\",\r\n    \"reviews\": [],\r\n    \"averageRating\": 0.0,\r\n    \"processor\": null,\r\n    \"ram\": null,\r\n    \"storage\": null,\r\n    \"author\": \"Mahmoud Aboueleneen\",\r\n    \"genre\": \"Software Engineering\",\r\n    \"pages\": 12,\r\n    \"size\": null,\r\n    \"material\": null,\r\n    \"color\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/books/5806129e-db75-407d-ba9b-9fe11450ff30",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"books",
+								"5806129e-db75-407d-ba9b-9fe11450ff30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Jacket",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Leather Jacket\",\r\n    \"description\": \"A cool jacket.\",\r\n    \"price\": 20.0,\r\n    \"stock\": 30,\r\n    \"category\": \"JACKETS\",\r\n    \"size\": \"XL\",\r\n    \"material\": \"Leather\",\r\n    \"color\": \"Black\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/jackets/123c4c50-bf66-4b7b-8e4d-c9a597090ef6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"jackets",
+								"123c4c50-bf66-4b7b-8e4d-c9a597090ef6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/78e1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"78e1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Stock",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/bd0c197c-5f61-46b1-ab02-8aa3c44d5689/viewStock",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"bd0c197c-5f61-46b1-ab02-8aa3c44d5689",
+								"viewStock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adjust Stock",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/bd0c197c-5f61-46b1-ab02-8aa3c44d5689/adjustStock?stockChange=2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"bd0c197c-5f61-46b1-ab02-8aa3c44d5689",
+								"adjustStock"
+							],
+							"query": [
+								{
+									"key": "stockChange",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sales Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/salesReport?yearMonth=2025-05",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"salesReport"
+							],
+							"query": [
+								{
+									"key": "yearMonth",
+									"value": "2025-05"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/products/bd0c197c-5f61-46b1-ab02-8aa3c44d5689/addReview?rating=5&comment=bad product!",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								"bd0c197c-5f61-46b1-ab02-8aa3c44d5689",
+								"addReview"
+							],
+							"query": [
+								{
+									"key": "rating",
+									"value": "5"
+								},
+								{
+									"key": "comment",
+									"value": "bad product!"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get All Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/notifications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notification By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/notifications/13dd9cf5-fffb-4abd-837c-fcc624130a70",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"13dd9cf5-fffb-4abd-837c-fcc624130a70"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Notification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Test notification message\",\r\n    \"userId\": \"f8859672-a25b-4b99-bddc-103237004ea6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/notifications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Notification",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Test notification messagaaaaaeadada\",\r\n    \"userId\": \"f8859672-a25b-4b99-bddc-103237004ea6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/notifications/682abe0e2eb27c0cfd64ec9d",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"682abe0e2eb27c0cfd64ec9d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/notifications/682abe0e2eb27c0cfd64ec9d",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"682abe0e2eb27c0cfd64ec9d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User's Unread Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "page",
+								"value": "0",
+								"type": "text"
+							},
+							{
+								"key": "size",
+								"value": "10",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/notifications/unread",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"unread"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notification As Read",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "78e132d1-ba8d-442a-a86a-4653b7df799a",
+								"type": "text"
+							},
+							{
+								"key": "page",
+								"value": "0",
+								"type": "text"
+							},
+							{
+								"key": "size",
+								"value": "10",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/notifications/mark-read/13dd9cf5-fffb-4abd-837c-fcc624130a70",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"mark-read",
+								"13dd9cf5-fffb-4abd-837c-fcc624130a70"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send In-App Notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "78e132d1-ba8d-442a-a86a-4653b7df799a",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Test notification message INAPP\",\r\n    \"userId\": \"f23224e7-747c-44bb-98c0-b474854d5136\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/notifications/send/in-app",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"send",
+								"in-app"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Email Notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "1c63592e-0a49-4bf6-af15-fa93b177f555",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Test notification message EMAIL2\",\r\n    \"userId\": \"1c63592e-0a49-4bf6-af15-fa93b177f555\"\r\n}\r\n// {\r\n//     \"message\": \"Test notification message EMAIL FOR MERCHANT\",\r\n//     \"userId\": \"f8a0846a-54d4-4461-bafa-c4a4e5c16ea5\",\r\n//     \"productIdInShortage\": \"f8a0846a-54d4-4461-bafa-c4a4e5c16ea5\",\r\n//     \"currentCount\": \"2\",\r\n//     \"threshold\": \"5\"\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/notifications/send/email",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"notifications",
+								"send",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create or Update Preferences",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"1c63592e-0a49-4bf6-af15-fa93b177f555\",\r\n    \"notifyByMail\": true,\r\n    \"productShortageThreshold\": 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/preferences",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"preferences"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Preferences",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/preferences",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"preferences"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Preferences By User Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/preferences/2b8a6cfc-01b9-4542-8829-411032bc499b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"preferences",
+								"2b8a6cfc-01b9-4542-8829-411032bc499b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Preferences By User Id Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/preferences/2b8a6cfc-01b9-4542-8829-411032bc499b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"preferences",
+								"2b8a6cfc-01b9-4542-8829-411032bc499b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Test notification message EMAIL\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/search?keyword=y&category=BOOKS&minPrice=0&maxPrice=100&sortBy=price",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "y"
+								},
+								{
+									"key": "category",
+									"value": "BOOKS"
+								},
+								{
+									"key": "minPrice",
+									"value": "0"
+								},
+								{
+									"key": "maxPrice",
+									"value": "100"
+								},
+								{
+									"key": "sortBy",
+									"value": "price"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders/98e6901b-a55d-4159-a63a-2073dd57eade",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"98e6901b-a55d-4159-a63a-2073dd57eade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "1c63592e-0a49-4bf6-af15-fa93b177f555",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderLineItems\": [\r\n        {\r\n            \"productId\": \"e3297c3d-684f-43f0-bfef-cf88db5b85a5\",\r\n            \"productName\": \"Lenovo Laptop5\",\r\n            \"quantity\": 3\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders/6ba2d3ea-3298-49ac-8202-074110adb097",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"6ba2d3ea-3298-49ac-8202-074110adb097"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders/ee6619ff-aadd-4369-b861-6400bbccceb0/confirm",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"ee6619ff-aadd-4369-b861-6400bbccceb0",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Confirmed Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders/confirmed?startDate=2025-05-01&endDate=2025-06-01",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"confirmed"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-05-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-06-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "87609b60-c9a6-460e-88c9-985ba4499393",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Ibrahim\",\r\n    \"email\": \"ibrahim.soltan918@gmail.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/orders/ee6619ff-aadd-4369-b861-6400bbccceb0/pay?paymentMethod=COD",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"ee6619ff-aadd-4369-b861-6400bbccceb0",
+								"pay"
+							],
+							"query": [
+								{
+									"key": "paymentMethod",
+									"value": "COD"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Invoice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders/82b8a14a-33f8-4f9b-9851-ebd783270f60/invoice",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"82b8a14a-33f8-4f9b-9851-ebd783270f60",
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Wallet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/wallets?userId=2b8a6cfc-01b9-4542-8829-411032bc499b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"wallets"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "2b8a6cfc-01b9-4542-8829-411032bc499b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Funds To Wallet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/wallets/addFunds?userId=2b8a6cfc-01b9-4542-8829-411032bc499b&amount=1000",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"wallets",
+								"addFunds"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "2b8a6cfc-01b9-4542-8829-411032bc499b"
+								},
+								{
+									"key": "amount",
+									"value": "1000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Wallet Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/wallets?userId=f8a0846a-54d4-4461-bafa-c4a4e5c16ea5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"wallets"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "f8a0846a-54d4-4461-bafa-c4a4e5c16ea5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identifier\": \"01155151636\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"identifier\": \"01155551606\",\r\n    \"password\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/auth/login",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Set-Cookie",
+									"value": "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNzg2NDdmNy1lYjlhLTQyZjktODgyZS1kZTQ2NDZlZGNhYmUiLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NDczNzQ1NTcsImV4cCI6MTc0NzQ2MDk1N30.0aoqYRPBHX3Q-aI6Vjt2HNMJo8GZAIa01MqP-_6bwJA; HttpOnly; Secure; SameSite=Strict"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "16"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 May 2025 05:49:17 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "Login successful"
+						}
+					]
+				},
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin4@adminnn.com\",\r\n    \"phone\": \"01155151639\",\r\n    \"password\": \"1234\",\r\n    \"fullName\": \"Mahmoud\",\r\n    \r\n    \"department\": \"HR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/register/admin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Merchant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"mahmoudabouelenen@gmail.com\",\r\n    \"phone\": \"01244431436\",\r\n    \"password\": \"1234\",\r\n    \"fullName\": \"Mahmoud\",\r\n    \r\n    \"businessName\": \"Fake Company\",\r\n    \"businessEmail\": \"fakecompany@example.com\",\r\n    \"businessPhone\": \"01122221505\",\r\n    \"taxId\": \"iaiwfksntkear\",\r\n    \"businessAddress\": \"123 Whatever St., Whatever City\",\r\n    \"websiteUrl\": \"https://example.com/\",\r\n    \"supportContact\": \"Mahmoud\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/register/merchant",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"merchant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"ibrahim.soltan918@gmail.com\",\r\n    \"phone\": \"01155551606\",\r\n    \"password\": \"1234\",\r\n    \"fullName\": \"Ibrahim\",\r\n\r\n    \"shippingAddress\": \"HR\",\r\n    \"billingAddress\": \"123 Billing St., Billing City\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/register/customer",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/auth/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"12345\",\r\n    \"confirmPassword\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/change-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Users Controller",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users/test",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"testusername\",\r\n    \"email\": \"testusername@example.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/users/a1fc2e45-6476-49ef-8075-76e8a57eaf9b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"a1fc2e45-6476-49ef-8075-76e8a57eaf9b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"testusername\",\r\n    \"email\": \"testusername@example.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/users/current",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"current"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "87609b60-c9a6-460e-88c9-985ba4499393",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"34c1ebc2-3967-4264-8e7e-a657843a53df\",\r\n    \"email\": \"admin2@admin.com\",\r\n    \"phone\": \"01144441676\",\r\n    \"role\": \"ADMIN\",\r\n    \"createdAt\": \"2025-05-24T16:08:57.855403Z\",\r\n    \"fullName\": \"Mahmoudddd\",\r\n    \"shippingAddress\": null,\r\n    \"billingAddress\": null,\r\n    \"businessName\": \"Fake Company\",\r\n    \"businessEmail\": \"fakecompany@example.com\",\r\n    \"businessPhone\": \"01122221505\",\r\n    \"taxId\": \"iaiwfksntkear\",\r\n    \"businessAddress\": \"123 Whatever St., Whatever City\",\r\n    \"websiteUrl\": \"https://example.com/\",\r\n    \"supportContact\": \"Mahmoud\",\r\n    \"department\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/34c1ebc2-3967-4264-8e7e-a657843a53df",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"34c1ebc2-3967-4264-8e7e-a657843a53df"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"testusername\",\r\n    \"email\": \"testusername@example.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/users/34c1ebc2-3967-4264-8e7e-a657843a53df",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"34c1ebc2-3967-4264-8e7e-a657843a53df"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
